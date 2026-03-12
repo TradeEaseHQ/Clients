@@ -1,0 +1,30 @@
+# Environment files — NEVER commit real keys
+.env
+.env.local
+.env.*.local
+pipeline/.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+*.egg-info/
+dist/
+build/
+
+# Node / Next.js
+node_modules/
+dashboard/.next/
+dashboard/out/
+dashboard/build/
+
+# macOS
+.DS_Store
+
+# Playwright
+test-results/
+
+# Editor
+.vscode/
+.idea/

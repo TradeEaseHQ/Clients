@@ -1,0 +1,35 @@
+[project]
+name = "leadscraper-pipeline"
+version = "0.1.0"
+description = "Automated lead-gen and demo-site engine for local service businesses"
+requires-python = ">=3.11"
+dependencies = [
+    "playwright>=1.43.0",
+    "supabase>=2.4.0",
+    "anthropic>=0.25.0",
+    "jinja2>=3.1.4",
+    "httpx>=0.27.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.0",
+    "pillow>=10.3.0",
+    "python-dotenv>=1.0.1",
+    "beautifulsoup4>=4.12.3",
+    "lxml>=5.2.1",
+    "click>=8.1.7",
+]
+
+[project.scripts]
+run-campaign = "pipeline.run_campaign:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pipeline"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.6",
+]
