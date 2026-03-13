@@ -1,0 +1,40 @@
+{
+  "template_id": "housekeeping-v1",
+  "niche": "housekeeping",
+  "version": "1.0",
+  "fields": {
+    "business_name": { "required": true, "type": "string", "source": "businesses.name" },
+    "tagline": { "required": false, "type": "string", "source": "ai_generated", "fallback": "Professional Cleaning Services You Can Trust" },
+    "phone": { "required": true, "type": "string", "source": "businesses.phone" },
+    "city": { "required": true, "type": "string", "source": "businesses.city" },
+    "state": { "required": true, "type": "string", "source": "businesses.state" },
+    "address": { "required": false, "type": "string", "source": "businesses.address", "fallback": "" },
+    "rating": { "required": false, "type": "decimal", "source": "businesses.rating", "fallback": null },
+    "review_count": { "required": false, "type": "integer", "source": "businesses.review_count", "fallback": 0 },
+    "years_in_business": { "required": false, "type": "integer", "source": "extracted_content.years_in_business", "fallback": null },
+    "owner_name": { "required": false, "type": "string", "source": "extracted_content.owner_name", "fallback": null },
+    "tagline": { "required": false, "type": "string", "source": "ai_generated", "fallback": "Professional Cleaning Services You Can Trust" },
+    "about_text": { "required": false, "type": "text", "source": "ai_generated", "fallback": "We are a trusted local cleaning service dedicated to making your home shine." },
+    "trust_statement": { "required": false, "type": "string", "source": "ai_generated", "fallback": "Bonded, insured, and background-checked for your peace of mind." },
+    "service_area_text": { "required": false, "type": "string", "source": "ai_generated", "fallback": "Serving the greater area and surrounding communities." },
+    "services_enhanced": { "required": false, "type": "list", "source": "ai_generated", "fallback": [
+      {"name": "Standard House Cleaning", "description": "Thorough top-to-bottom cleaning of your entire home."},
+      {"name": "Deep Cleaning", "description": "Extra-detail clean for move-ins, post-construction, or a reset."},
+      {"name": "Move-In / Move-Out Cleaning", "description": "Leave your old place spotless or start fresh in your new one."},
+      {"name": "Weekly & Bi-Weekly Service", "description": "Regular scheduled cleaning so your home is always guest-ready."},
+      {"name": "Post-Construction Cleanup", "description": "We handle the dust and debris so you can enjoy your new space."}
+    ]},
+    "faq_items": { "required": false, "type": "list", "source": "ai_generated", "fallback": [
+      {"question": "Do you bring your own supplies?", "answer": "Yes — we bring all cleaning supplies and equipment. Just let us know if you have preferences."},
+      {"question": "Are you insured?", "answer": "Absolutely. We are fully bonded and insured for your peace of mind."},
+      {"question": "What if I'm not satisfied?", "answer": "We'll come back and make it right — your satisfaction is guaranteed."},
+      {"question": "How do I book?", "answer": "Call or text us, or use the quote form below. We'll get back to you within a few hours."},
+      {"question": "Do I need to be home?", "answer": "Not at all. Many clients provide a key or code and we take care of everything while they're away."},
+      {"question": "What areas do you serve?", "answer": "We serve the greater area and surrounding communities. Call us to confirm your location."}
+    ]},
+    "service_areas": { "required": false, "type": "list", "source": "extracted_content.service_areas", "fallback": [] },
+    "booking_url": { "required": false, "type": "string", "source": "static", "fallback": "#contact" },
+    "website_url": { "required": false, "type": "string", "source": "businesses.website_url", "fallback": "" },
+    "demo_banner_text": { "required": true, "type": "string", "source": "static", "fallback": "Demo site created for {{business_name}} by Trade Ease" }
+  }
+}

@@ -46,15 +46,7 @@ export default async function DemosPage() {
               </span>
             </div>
             {d.preview_url && (
-              <a
-                href={d.preview_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-blue-600 hover:underline"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Open demo →
-              </a>
+              <p className="text-xs text-blue-600 mt-1 truncate">{d.preview_url.replace(/^https?:\/\//, "").slice(0, 40)}…</p>
             )}
             <p className="text-xs text-gray-400 mt-2">
               {new Date(d.created_at).toLocaleDateString()}

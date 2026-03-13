@@ -1,0 +1,460 @@
+/* ============================================================
+   Trade Ease — Housekeeping V1 Template
+   Mobile-first. Clean. CSS variables for easy brand theming.
+   ============================================================ */
+
+:root {
+  --brand: #2a7d4f;
+  --brand-dark: #1e5c3a;
+  --brand-light: #e8f5ee;
+  --accent: #f5a623;
+  --text: #1a1a2e;
+  --text-light: #5a6070;
+  --border: #e2e8f0;
+  --white: #ffffff;
+  --bg: #f8fafb;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+  --radius: 10px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--white);
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--brand); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Demo Banner ── */
+.demo-banner {
+  background: var(--accent);
+  color: #1a1a2e;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.demo-banner a { color: var(--text); font-weight: 700; }
+
+/* ── Nav ── */
+.nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 40px;
+  z-index: 90;
+  box-shadow: var(--shadow-sm);
+}
+.nav-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--brand);
+}
+.nav-phone {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--brand);
+}
+.nav-links { display: none; }
+@media (min-width: 768px) {
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { color: var(--text-light); font-size: 14px; font-weight: 500; }
+  .nav-links a:hover { color: var(--brand); text-decoration: none; }
+}
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  color: var(--white);
+  padding: 64px 20px 72px;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.hero-tagline {
+  font-size: clamp(16px, 2.5vw, 20px);
+  opacity: .88;
+  max-width: 520px;
+  margin: 0 auto 32px;
+}
+.hero-phone {
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 800;
+  letter-spacing: -.5px;
+  margin-bottom: 24px;
+}
+.hero-phone a { color: var(--white); }
+.cta-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: transform .15s, box-shadow .15s;
+  text-decoration: none;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,.18); text-decoration: none; }
+.btn-primary { background: var(--accent); color: #1a1a2e; }
+.btn-outline { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,.7); }
+.btn-brand { background: var(--brand); color: var(--white); }
+.btn-sm { padding: 10px 20px; font-size: 14px; }
+
+/* ── Trust Bar ── */
+.trust-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 20px;
+}
+.trust-items {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px 32px;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.trust-icon { font-size: 20px; }
+
+/* ── Section base ── */
+.section { padding: 64px 20px; }
+.section-alt { background: var(--bg); }
+.container { max-width: 1040px; margin: 0 auto; }
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--text-light);
+  max-width: 540px;
+  margin-bottom: 40px;
+}
+
+/* ── Services ── */
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 600px) { .services-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 900px) { .services-grid { grid-template-columns: repeat(3, 1fr); } }
+.service-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s, transform .2s;
+}
+.service-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.service-icon { font-size: 28px; margin-bottom: 14px; }
+.service-name { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.service-desc { font-size: 14px; color: var(--text-light); line-height: 1.55; }
+
+/* ── How It Works ── */
+.steps { display: flex; flex-direction: column; gap: 32px; }
+@media (min-width: 700px) { .steps { flex-direction: row; } }
+.step { flex: 1; text-align: center; padding: 0 16px; }
+.step-number {
+  width: 48px; height: 48px;
+  background: var(--brand);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800;
+  margin: 0 auto 16px;
+}
+.step-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--text-light); }
+
+/* ── About ── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+@media (min-width: 768px) { .about-grid { grid-template-columns: 1fr 1fr; } }
+.about-img-placeholder {
+  background: var(--brand-light);
+  border-radius: var(--radius);
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+.about-text { font-size: 16px; color: var(--text-light); line-height: 1.75; margin-bottom: 24px; }
+.trust-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+.trust-pill {
+  background: var(--brand-light);
+  color: var(--brand-dark);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── Reviews ── */
+.reviews-note {
+  text-align: center;
+  background: var(--brand-light);
+  border-radius: var(--radius);
+  padding: 20px;
+  font-size: 14px;
+  color: var(--brand-dark);
+  margin-bottom: 32px;
+  font-style: italic;
+}
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 700px) { .reviews-grid { grid-template-columns: repeat(3, 1fr); } }
+.review-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.review-stars { color: var(--accent); font-size: 18px; margin-bottom: 10px; }
+.review-text { font-size: 14px; color: var(--text-light); font-style: italic; margin-bottom: 14px; line-height: 1.6; }
+.review-author { font-size: 13px; font-weight: 700; color: var(--text); }
+.reviews-cta { text-align: center; margin-top: 28px; font-size: 14px; color: var(--text-light); }
+
+/* ── Service Area ── */
+.area-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+.area-tag {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ── AI Chat Mockup ── */
+.ai-cta-section {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2a7d4f 100%);
+  color: var(--white);
+  padding: 56px 20px;
+  text-align: center;
+}
+.ai-cta-section .section-title { color: var(--white); }
+.ai-cta-section .section-sub { color: rgba(255,255,255,.75); margin: 0 auto 32px; }
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 12px; }
+.faq-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.faq-q {
+  width: 100%;
+  text-align: left;
+  padding: 18px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text);
+}
+.faq-q:hover { background: var(--bg); }
+.faq-a {
+  padding: 0 20px 18px;
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.65;
+  display: none;
+}
+.faq-item.open .faq-a { display: block; }
+.faq-chevron { font-size: 18px; transition: transform .2s; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+/* ── Contact Form ── */
+#contact { padding: 64px 20px; }
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 600px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+label { font-size: 13px; font-weight: 600; color: var(--text); }
+input, select, textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--white);
+  width: 100%;
+  transition: border-color .15s, box-shadow .15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(42,125,79,.12);
+}
+textarea { resize: vertical; min-height: 120px; }
+.form-submit { grid-column: 1 / -1; }
+
+/* ── Footer ── */
+footer {
+  background: var(--text);
+  color: rgba(255,255,255,.7);
+  padding: 40px 20px;
+  text-align: center;
+}
+.footer-name { color: var(--white); font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+.footer-phone { margin-bottom: 8px; font-size: 16px; }
+.footer-phone a { color: rgba(255,255,255,.85); }
+.footer-copy { font-size: 12px; margin-top: 20px; opacity: .5; }
+
+/* ── AI Chat Widget (mockup) ── */
+.chat-widget-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--brand);
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  padding: 14px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 200;
+  transition: transform .15s;
+}
+.chat-widget-btn:hover { transform: scale(1.04); }
+.chat-panel {
+  position: fixed;
+  bottom: 88px;
+  right: 24px;
+  width: 300px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.18);
+  overflow: hidden;
+  z-index: 200;
+  display: none;
+}
+.chat-panel.open { display: block; }
+.chat-header {
+  background: var(--brand);
+  color: var(--white);
+  padding: 16px 18px;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-close { background: none; border: none; color: var(--white); cursor: pointer; font-size: 20px; }
+.chat-body { padding: 16px; height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.chat-bubble {
+  background: var(--bg);
+  border-radius: 12px 12px 12px 0;
+  padding: 10px 14px;
+  font-size: 13px;
+  max-width: 85%;
+  line-height: 1.5;
+}
+.chat-demo-label {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  text-align: center;
+  color: #856404;
+}
+.chat-footer { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.chat-footer input { flex: 1; padding: 8px 12px; font-size: 13px; }
+.chat-send { background: var(--brand); color: var(--white); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px; font-weight: 700; }

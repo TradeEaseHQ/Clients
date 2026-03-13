@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ business_name }} — Professional Cleaning Services in {{ city }}, {{ state }}</title>
+  <meta name="description" content="{{ tagline }} Serving {{ city }}, {{ state }} and surrounding areas. Call {{ phone }}.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ── Demo Banner ── -->
+<div class="demo-banner">
+  ⚠️ {{ demo_banner_text }}{% if website_url %} — <a href="{{ website_url }}" target="_blank" rel="noopener">View their current site →</a>{% endif %}
+</div>
+
+<!-- ── Nav ── -->
+<nav class="nav">
+  <span class="nav-logo">{{ business_name }}</span>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Get a Quote</a></li>
+  </ul>
+  <a class="nav-phone" href="tel:{{ phone }}">{{ phone }}</a>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="container">
+    {% if rating and review_count > 0 %}
+    <div class="hero-badge">⭐ {{ rating }} stars · {{ review_count }} reviews on Google</div>
+    {% endif %}
+    <h1>{{ business_name }}</h1>
+    <p class="hero-tagline">{{ tagline }}</p>
+    <div class="hero-phone"><a href="tel:{{ phone }}">{{ phone }}</a></div>
+    <div class="cta-group">
+      <a href="#contact" class="btn btn-primary">Get a Free Quote</a>
+      <a href="{{ booking_url }}" class="btn btn-outline">Book Online</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Trust Bar ── -->
+<div class="trust-bar">
+  <div class="trust-items">
+    {% if rating and review_count > 0 %}
+    <div class="trust-item">
+      <span class="trust-icon">⭐</span>
+      {{ rating }}-Star Rated · {{ review_count }} Google Reviews
+    </div>
+    {% endif %}
+    {% if years_in_business %}
+    <div class="trust-item">
+      <span class="trust-icon">🏆</span>
+      {{ years_in_business }}+ Years in Business
+    </div>
+    {% endif %}
+    <div class="trust-item">
+      <span class="trust-icon">🛡️</span>
+      Bonded &amp; Insured
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">✅</span>
+      Background-Checked Team
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">💯</span>
+      Satisfaction Guarantee
+    </div>
+  </div>
+</div>
+
+<!-- ── Services ── -->
+<section class="section" id="services">
+  <div class="container">
+    <p class="section-label">What We Offer</p>
+    <h2 class="section-title">Cleaning Services in {{ city }}</h2>
+    <p class="section-sub">Professional, reliable cleaning tailored to your home and schedule.</p>
+    <div class="services-grid">
+      {% set service_icons = ["🧹", "✨", "📦", "🔄", "🏗️", "🌿", "🏠", "⏰"] %}
+      {% for service in services_enhanced %}
+      <div class="service-card">
+        <div class="service-icon">{{ service_icons[loop.index0 % service_icons|length] }}</div>
+        <div class="service-name">{{ service.name }}</div>
+        <div class="service-desc">{{ service.description }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ── -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="section-label">Simple Process</p>
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-title">Get a Free Quote</div>
+        <div class="step-desc">Call, text, or fill out our quick form. We'll confirm your details and pricing within a few hours.</div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-title">We Come to You</div>
+        <div class="step-desc">Our background-checked team arrives on time with all supplies — you don't need to lift a finger.</div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-title">Enjoy Your Clean Home</div>
+        <div class="step-desc">Come home to spotless results. If anything isn't right, we'll make it right — guaranteed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── About ── -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-placeholder">🏠</div>
+      <div>
+        <p class="section-label">About Us</p>
+        <h2 class="section-title">{% if owner_name %}Meet {{ owner_name }} & the Team{% else %}About {{ business_name }}{% endif %}</h2>
+        <p class="about-text">{{ about_text }}</p>
+        <p class="about-text" style="font-weight:600;color:#1a1a2e;">{{ trust_statement }}</p>
+        <div class="trust-pills">
+          <span class="trust-pill">✅ Bonded &amp; Insured</span>
+          <span class="trust-pill">✅ Background Checked</span>
+          <span class="trust-pill">✅ Satisfaction Guarantee</span>
+          {% if years_in_business %}<span class="trust-pill">🏆 {{ years_in_business }}+ Years Experience</span>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Reviews ── -->
+<section class="section section-alt" id="reviews">
+  <div class="container">
+    <p class="section-label">What Clients Say</p>
+    <h2 class="section-title">
+      {% if rating and review_count > 0 %}
+      {{ rating }} Stars Across {{ review_count }} Reviews
+      {% else %}
+      Customer Reviews
+      {% endif %}
+    </h2>
+    <div class="reviews-note">
+      ✨ Real reviews from Google will be displayed here on the live site. In this demo, we show sample placeholders.
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Absolutely incredible service. My house has never looked this clean. They paid attention to every detail and were so professional."</div>
+        <div class="review-author">Sarah M. · {{ city }}, {{ state }}</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"I've tried several cleaning services and this is by far the best. Punctual, thorough, and always leave my home spotless."</div>
+        <div class="review-author">James T. · {{ city }}, {{ state }}</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Booked for a move-out clean and they exceeded every expectation. Got my full deposit back. Highly recommend!"</div>
+        <div class="review-author">Linda K. · {{ city }}, {{ state }}</div>
+      </div>
+    </div>
+    {% if review_count > 0 %}
+    <p class="reviews-cta">Based on <strong>{{ review_count }} verified Google reviews</strong> · Average rating: <strong>{{ rating }}/5</strong></p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ── AI Chat Upsell ── -->
+<section class="ai-cta-section">
+  <div class="container">
+    <div class="ai-badge">🤖 AI Feature — Included in Full Package</div>
+    <h2 class="section-title">Your Site Answers Customers 24/7</h2>
+    <p class="section-sub">The full package includes an AI assistant that answers pricing questions, confirms service areas, and directs people to book — even while you sleep.</p>
+    <button class="btn btn-primary" onclick="document.getElementById('chat-panel').classList.add('open')">
+      💬 Try AI Assistant Demo
+    </button>
+    <p style="margin-top:16px;font-size:13px;opacity:.6;">This is a demo of the AI chat feature. Click to see how it works.</p>
+  </div>
+</section>
+
+<!-- ── Service Area ── -->
+<section class="section" id="area">
+  <div class="container">
+    <p class="section-label">Where We Work</p>
+    <h2 class="section-title">Serving {{ city }} &amp; Surrounding Areas</h2>
+    <p class="section-sub">{{ service_area_text }}</p>
+    {% if service_areas %}
+    <div class="area-grid">
+      {% for area in service_areas %}
+      <span class="area-tag">📍 {{ area }}</span>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="area-grid">
+      <span class="area-tag">📍 {{ city }}, {{ state }}</span>
+      <span class="area-tag">📍 Surrounding areas</span>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="section-label">Common Questions</p>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-list" style="max-width:700px;margin-top:32px;">
+      {% for item in faq_items %}
+      <div class="faq-item">
+        <button class="faq-q">
+          {{ item.question }}
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-a">{{ item.answer }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── Contact / Quote Form ── -->
+<section id="contact" style="padding:64px 20px;background:#fff;">
+  <div class="container">
+    <div style="max-width:640px;margin:0 auto;">
+      <p class="section-label">Get Started</p>
+      <h2 class="section-title">Get Your Free Quote</h2>
+      <p class="section-sub">Fill out the form and we'll get back to you within a few hours. No obligation.</p>
+      <form id="quote-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="f-name">Your Name</label>
+            <input type="text" id="f-name" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" placeholder="jane@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="f-phone">Phone</label>
+            <input type="tel" id="f-phone" placeholder="(512) 555-0101">
+          </div>
+          <div class="form-group">
+            <label for="f-service">Service Type</label>
+            <select id="f-service">
+              <option value="">Select a service…</option>
+              {% for service in services_enhanced %}
+              <option>{{ service.name }}</option>
+              {% endfor %}
+              <option>Not sure — tell me more</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="f-message">Message (optional)</label>
+            <textarea id="f-message" placeholder="Tell us about your home, frequency, any special requests…"></textarea>
+          </div>
+          <div class="form-submit">
+            <button type="submit" class="btn btn-brand" style="width:100%;justify-content:center;">
+              Get My Free Quote →
+            </button>
+            <p style="text-align:center;font-size:12px;color:#5a6070;margin-top:10px;">We respond within a few hours. No spam, ever.</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-name">{{ business_name }}</div>
+  <div class="footer-phone"><a href="tel:{{ phone }}">{{ phone }}</a></div>
+  {% if address %}<div style="font-size:14px;margin-bottom:4px;">{{ address }}</div>{% endif %}
+  <div style="font-size:13px;">{{ city }}, {{ state }}</div>
+  <div class="footer-copy">
+    © {{ business_name }}. Demo site created by <a href="https://tradeeasehq.com" style="color:rgba(255,255,255,.5);">Trade Ease</a>.
+    This is a demo — not the live website.
+  </div>
+</footer>
+
+<!-- ── AI Chat Widget (Mockup) ── -->
+<button class="chat-widget-btn" id="chat-btn">💬 AI Assistant</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <span>{% if owner_name %}{{ owner_name }}'s{% else %}{{ business_name }}{% endif %} Assistant</span>
+    <button class="chat-close" id="chat-close">✕</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-demo-label">🧪 AI Assistant Demo — This is a preview of the live feature</div>
+    <div class="chat-bubble">Hi! I'm the AI assistant for {{ business_name }}. I can answer questions about services, pricing, and availability. What can I help you with?</div>
+  </div>
+  <div class="chat-footer">
+    <input type="text" id="chat-input" placeholder="Ask about services, pricing…">
+    <button class="chat-send" id="chat-send">Send</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
