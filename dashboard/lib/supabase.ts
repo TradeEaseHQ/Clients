@@ -1,7 +1,7 @@
-import { createBrowserClient, createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 
-// Browser client — used in Client Components
+// Browser client — used in Client Components (anon key, public)
 export function createSupabaseBrowser() {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,27 +9,12 @@ export function createSupabaseBrowser() {
   );
 }
 
-// Server client — used in Server Components and Route Handlers
+// Server client — uses service role key to bypass RLS
+// Only ever called in Server Components and Route Handlers (never sent to browser)
 export async function createSupabaseServer() {
-  const cookieStore = await cookies();
-  return createServerClient(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // Called from a Server Component — safe to ignore
-          }
-        },
-      },
-    }
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
   );
 }

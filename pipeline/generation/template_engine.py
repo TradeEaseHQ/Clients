@@ -48,6 +48,7 @@ def render(template_id: str, data: dict[str, Any]) -> str:
     try:
         template = env.get_template("index.html")
         html = template.render(**data)
+        html = _inline_assets(html, template_dir)
         logger.info(f"[template_engine] Rendered {template_id} ({len(html):,} chars)")
         return html
     except UndefinedError as e:
@@ -63,6 +64,51 @@ def _validate_required_fields(spec: dict, data: dict, template_id: str) -> None:
             missing.append(field_name)
     if missing:
         raise ValueError(f"Template {template_id} missing required fields: {missing}")
+
+
+def _inline_assets(html: str, template_dir: Path) -> str:
+    """
+    Replace <link rel="stylesheet" href="styles.css"> and <script src="script.js">
+    with inline <style> and <script> tags so the HTML is fully self-contained.
+    This is required because only index.html is uploaded to Supabase Storage.
+    """
+    import re
+
+    # Inline CSS files
+    def replace_css(match: re.Match) -> str:
+        href = match.group(1)
+        css_path = template_dir / href
+        if css_path.exists():
+            css = css_path.read_text(encoding="utf-8")
+            return f"<style>\n{css}\n</style>"
+        return match.group(0)  # leave unchanged if file not found
+
+    html = re.sub(
+        r'<link[^>]+rel=["\']stylesheet["\'][^>]+href=["\']([^"\']+)["\'][^>]*>',
+        replace_css,
+        html,
+    )
+    # Also handle href before rel
+    html = re.sub(
+        r'<link[^>]+href=["\']([^"\']+\.css)["\'][^>]*>',
+        replace_css,
+        html,
+    )
+
+    # Inline JS files (only local ones, not CDN URLs)
+    def replace_js(match: re.Match) -> str:
+        src = match.group(1)
+        if src.startswith("http"):
+            return match.group(0)  # leave CDN scripts alone
+        js_path = template_dir / src
+        if js_path.exists():
+            js = js_path.read_text(encoding="utf-8")
+            return f"<script>\n{js}\n</script>"
+        return match.group(0)
+
+    html = re.sub(r'<script[^>]+src=["\']([^"\']+)["\'][^>]*></script>', replace_js, html)
+
+    return html
 
 
 def _apply_fallbacks(spec: dict, data: dict) -> dict:
