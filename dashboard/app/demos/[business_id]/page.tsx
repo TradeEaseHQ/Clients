@@ -45,7 +45,7 @@ export default async function DemoDetailPage({
               demo.status === "ready" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
             }`}>{demo.status}</span>
             {demo.preview_url && (
-              <a href={demo.preview_url} target="_blank" rel="noopener noreferrer"
+              <a href={`/api/demo/${business_id}`} target="_blank" rel="noopener noreferrer"
                 className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">
                 Open Demo →
               </a>
@@ -64,7 +64,7 @@ export default async function DemoDetailPage({
         <div className="mb-6">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Demo Preview</p>
           <div className="rounded-xl border border-gray-200 overflow-hidden" style={{ height: "600px" }}>
-            <iframe src={demo.preview_url} className="w-full h-full" title="Demo preview" />
+            <iframe src={`/api/demo/${business_id}`} className="w-full h-full" title="Demo preview" />
           </div>
         </div>
       )}
