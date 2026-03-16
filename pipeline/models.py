@@ -52,6 +52,7 @@ class ExtractedContent(BaseModel):
     unique_selling_points: list[str] = []
     owner_name: Optional[str] = None
     tone: str = "professional"  # friendly | professional | formal | family_run
+    brand_color: Optional[str] = None  # hex color extracted from website CSS, e.g. "#1a73e8"
 
 
 class ScoringResult(BaseModel):

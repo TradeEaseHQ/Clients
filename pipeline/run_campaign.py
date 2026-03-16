@@ -196,16 +196,29 @@ def cli(
             logger.error(f"No active template found for niche={niche}")
             sys.exit(1)
 
-        for biz in businesses:
+        # Alternate between v2 (bright) and v3 (dark premium) for variety
+        TEMPLATE_ROTATION = ["housekeeping-v2", "housekeeping-v3"]
+
+        for idx, biz in enumerate(businesses):
             biz_id = biz["id"]
             logger.info(f"Generating demo for: {biz['name']}")
             try:
                 from pipeline.models import ExtractedContent
+                from pipeline.generation.color_scheme import scheme_for_v2, scheme_for_v3
                 extracted = ExtractedContent(**(biz.get("extracted_content") or {}))
                 upgraded = upgrader.upgrade(biz, extracted)
 
-                injection_data = _build_injection_data(biz, upgraded)
-                html = render(template["template_path"], injection_data)
+                # Pick template (alternating) and generate matching color scheme
+                template_id = TEMPLATE_ROTATION[idx % len(TEMPLATE_ROTATION)]
+                brand_color = extracted.brand_color
+                if brand_color:
+                    brand_css_vars = scheme_for_v2(brand_color) if template_id == "housekeeping-v2" else scheme_for_v3(brand_color)
+                    logger.info(f"[color] Using {brand_color} on {template_id}")
+                else:
+                    brand_css_vars = None
+
+                injection_data = _build_injection_data(biz, upgraded, brand_css_vars)
+                html = render(template_id, injection_data)
                 preview_url = upload_demo(biz_id, html)
 
                 save_demo_site({
@@ -289,7 +302,7 @@ def _get_adapter(source: str):
         raise ValueError(f"Unknown lead source: {source}")
 
 
-def _build_injection_data(biz: dict, upgraded) -> dict:
+def _build_injection_data(biz: dict, upgraded, brand_css_vars: str | None = None) -> dict:
     from pipeline.models import ExtractedContent
     extracted = ExtractedContent(**(biz.get("extracted_content") or {}))
     return {
@@ -312,6 +325,7 @@ def _build_injection_data(biz: dict, upgraded) -> dict:
         "service_areas": extracted.service_areas,
         "booking_url": "#contact",
         "demo_banner_text": f"Demo site created for {biz['name']} by Trade Ease",
+        "brand_css_vars": brand_css_vars,
     }
 
 

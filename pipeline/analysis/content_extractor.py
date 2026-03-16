@@ -13,6 +13,7 @@ from typing import Optional
 import anthropic
 
 from pipeline.config import settings
+from pipeline.generation.color_scheme import extract_brand_color
 from pipeline.models import ExtractedContent
 
 logger = logging.getLogger(__name__)
@@ -64,6 +65,9 @@ class ContentExtractor:
             logger.warning(f"[extractor] HTML too short for {business_id} — returning empty")
             return ExtractedContent()
 
+        # Extract brand color from raw HTML (before stripping — styles are key)
+        brand_color = extract_brand_color(html[:50_000])
+
         # Strip script/style tags before sending to Claude — waste of tokens
         clean_html = self._strip_noise(html)
         # Use first 20k chars — enough for extraction, keeps cost low
@@ -95,14 +99,15 @@ class ContentExtractor:
                 unique_selling_points=data.get("unique_selling_points", []),
                 owner_name=data.get("owner_name"),
                 tone=data.get("tone", "professional"),
+                brand_color=brand_color,
             )
 
             logger.info(
                 f"[extractor] {business_id}: "
                 f"{len(result.services_offered)} services, "
                 f"{len(result.service_areas)} areas, "
-                f"owner={result.owner_name}, "
-                f"tone={result.tone}"
+                f"owner={result.owner_name}, tone={result.tone}, "
+                f"brand_color={result.brand_color}"
             )
             return result
 

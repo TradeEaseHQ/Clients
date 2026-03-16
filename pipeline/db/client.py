@@ -252,7 +252,7 @@ def upload_file(bucket: str, path: str, content: bytes, content_type: str = "tex
     client.storage.from_(bucket).upload(
         path=path,
         file=content,
-        file_options={"content-type": content_type, "upsert": "true"},
+        file_options={"content_type": content_type, "upsert": "true"},
     )
     url_response = client.storage.from_(bucket).get_public_url(path)
     return url_response
