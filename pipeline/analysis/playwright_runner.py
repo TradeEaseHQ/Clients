@@ -33,6 +33,7 @@ class AnalysisCapture:
     screenshot_desktop_url: Optional[str] = None
     screenshot_mobile_url: Optional[str] = None
     screenshot_desktop_bytes: Optional[bytes] = None  # kept in memory for vision scoring
+    logo_color: Optional[str] = None               # dominant brand color from nav/logo area
     page_html: Optional[str] = None
     emails_found: list[str] = field(default_factory=list)
     phones_found: list[str] = field(default_factory=list)
@@ -86,6 +87,12 @@ class WebsiteAnalyzer:
                 capture.screenshot_desktop_bytes = desktop_png  # keep for vision scoring
                 desktop_url = upload_screenshot(business_id, "desktop", desktop_png)
                 capture.screenshot_desktop_url = desktop_url
+
+                # Extract dominant brand color from nav/logo strip
+                from pipeline.generation.color_scheme import extract_logo_color_from_screenshot
+                capture.logo_color = extract_logo_color_from_screenshot(desktop_png)
+                if capture.logo_color:
+                    logger.info(f"[analyzer] Logo color detected: {capture.logo_color}")
                 logger.debug(f"[analyzer] Desktop screenshot uploaded: {desktop_url}")
 
                 # Mobile screenshot (390x844)

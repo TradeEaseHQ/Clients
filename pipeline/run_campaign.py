@@ -167,6 +167,10 @@ def cli(
                 # Content extraction (only if HTML was captured)
                 if capture.page_html:
                     extracted = extractor.extract(biz_id, capture.page_html)
+                    # Prefer screenshot-based logo color over CSS regex extraction
+                    if capture.logo_color:
+                        extracted = extracted.model_copy(update={"brand_color": capture.logo_color})
+                        logger.info(f"[color] Using screenshot logo color {capture.logo_color} (overrides CSS)")
                     update_business_extracted_content(biz_id, extracted.model_dump())
 
                 update_business_status(biz_id, "scored")

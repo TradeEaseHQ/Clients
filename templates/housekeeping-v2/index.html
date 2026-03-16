@@ -86,7 +86,7 @@
     <div class="services-grid">
       {% for svc in services_enhanced %}
       <div class="service-card">
-        <div class="service-icon-wrap">{{ svc.icon if svc.icon else "🧹" }}</div>
+        <div class="service-icon-wrap">{{ svc.icon | default("🧹") }}</div>
         <div class="service-name">{{ svc.name }}</div>
         <div class="service-desc">{{ svc.description }}</div>
       </div>
@@ -147,11 +147,11 @@
     <span class="section-eyebrow">What Clients Say</span>
     <h2 class="section-title">Trusted by {{ city }} Homeowners</h2>
     {% if rating and review_count > 0 %}
-    <div class="reviews-summary">
-      <div class="reviews-big-score">{{ rating }}</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;">
+      <div style="font-size:56px;font-weight:900;color:var(--text);letter-spacing:-2px;line-height:1;">{{ rating }}</div>
       <div>
-        <div class="reviews-big-stars">★★★★★</div>
-        <div class="reviews-meta">Based on {{ review_count }} verified Google reviews</div>
+        <div style="font-size:24px;color:#f59e0b;letter-spacing:2px;line-height:1.2;">★★★★★</div>
+        <div style="font-size:14px;color:var(--text-muted);font-weight:500;margin-top:4px;">Based on {{ review_count }} verified Google reviews</div>
       </div>
     </div>
     {% endif %}
@@ -208,9 +208,10 @@
 <!-- FAQ -->
 <section class="section section-alt">
   <div class="container">
+    <div style="max-width:720px;">
     <span class="section-eyebrow">Questions</span>
     <h2 class="section-title">Frequently Asked Questions</h2>
-    <div class="faq-list" style="max-width:720px;margin-top:36px;">
+    <div class="faq-list" style="margin-top:36px;">
       {% for item in faq_items %}
       <div class="faq-item">
         <button class="faq-q">
@@ -220,6 +221,7 @@
         <div class="faq-a">{{ item.answer }}</div>
       </div>
       {% endfor %}
+    </div>
     </div>
   </div>
 </section>

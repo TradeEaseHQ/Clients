@@ -1,13 +1,47 @@
 """
 Brand color extraction and complementary scheme generation.
-Extracts the primary color from a website's HTML/CSS using regex (no API call needed),
-then computes a full color palette — brand, dark, light, accent variants.
+Two extraction strategies:
+  1. Screenshot-based: scan nav/logo area of desktop screenshot with Pillow (preferred)
+  2. CSS/HTML-based: regex scan of inline styles and CSS variables (fallback)
+Then computes a full color palette — brand, dark, light, accent variants.
 """
 from __future__ import annotations
 
 import colorsys
+import io
 import re
 from collections import Counter
+
+
+# ─── Screenshot-based extraction ────────────────────────────────────────────
+
+def extract_logo_color_from_screenshot(png_bytes: bytes) -> str | None:
+    """
+    Extract dominant brand color from the top ~150px (nav/logo area) of a
+    desktop screenshot using Pillow color quantization.
+    Returns a hex string like '#1a73e8', or None if nothing useful found.
+    """
+    try:
+        from PIL import Image
+        img = Image.open(io.BytesIO(png_bytes)).convert("RGB")
+        w, h = img.size
+        # Crop to nav/logo strip — top 150px, full width
+        nav = img.crop((0, 0, w, min(150, h)))
+        # Quantize to 16 representative colors
+        quantized = nav.quantize(colors=16)
+        palette = quantized.getpalette()
+        counts = Counter(list(quantized.getdata()))
+        # Return most-common color that isn't near-white/black/gray
+        for idx, _count in counts.most_common():
+            r = palette[idx * 3]
+            g = palette[idx * 3 + 1]
+            b = palette[idx * 3 + 2]
+            hex_color = f"#{r:02x}{g:02x}{b:02x}"
+            if _is_interesting(hex_color):
+                return hex_color
+    except Exception:
+        pass
+    return None
 
 
 # ─── Conversion helpers ────────────────────────────────────────────────────
