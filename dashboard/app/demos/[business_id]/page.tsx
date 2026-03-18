@@ -1,7 +1,10 @@
+export const dynamic = "force-dynamic";
+
 import { createSupabaseServer } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Business, DemoSite } from "@/lib/types";
+import DemoViewportFrame from "@/components/DemoViewportFrame";
 
 export default async function DemoDetailPage({
   params,
@@ -62,10 +65,11 @@ export default async function DemoDetailPage({
 
       {demo?.preview_url && (
         <div className="mb-6">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Demo Preview</p>
-          <div className="rounded-xl border border-gray-200 overflow-hidden" style={{ height: "600px" }}>
-            <iframe src={`/api/demo/${business_id}`} className="w-full h-full" title="Demo preview" />
-          </div>
+          <DemoViewportFrame
+            src={`/api/demo/${business_id}`}
+            height={620}
+            title="Demo preview"
+          />
         </div>
       )}
 

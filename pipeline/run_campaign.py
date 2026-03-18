@@ -221,7 +221,13 @@ def cli(
                 else:
                     brand_css_vars = None
 
-                injection_data = _build_injection_data(biz, upgraded, brand_css_vars)
+                from pipeline.generation.photos import get_demo_photos
+                from pipeline.generation.logo_extractor import extract_logo_url
+                photos = get_demo_photos(seed=biz_id)
+                logo_url = extract_logo_url(biz.get("website_url", ""))
+                if logo_url:
+                    logger.info(f"[logo] Found logo for {biz['name']}: {logo_url[:60]}")
+                injection_data = _build_injection_data(biz, upgraded, brand_css_vars, photos, logo_url)
                 html = render(template_id, injection_data)
                 preview_url = upload_demo(biz_id, html)
 
@@ -306,9 +312,10 @@ def _get_adapter(source: str):
         raise ValueError(f"Unknown lead source: {source}")
 
 
-def _build_injection_data(biz: dict, upgraded, brand_css_vars: str | None = None) -> dict:
+def _build_injection_data(biz: dict, upgraded, brand_css_vars: str | None = None, photos: dict | None = None, logo_url: str | None = None) -> dict:
     from pipeline.models import ExtractedContent
     extracted = ExtractedContent(**(biz.get("extracted_content") or {}))
+    photos = photos or {}
     return {
         "business_name": biz["name"],
         "phone": biz.get("phone", ""),
@@ -330,6 +337,9 @@ def _build_injection_data(biz: dict, upgraded, brand_css_vars: str | None = None
         "booking_url": "#contact",
         "demo_banner_text": f"Demo site created for {biz['name']} by Trade Ease",
         "brand_css_vars": brand_css_vars,
+        "hero_photo_url": photos.get("hero_photo_url"),
+        "about_photo_url": photos.get("about_photo_url"),
+        "logo_url": logo_url,
     }
 
 

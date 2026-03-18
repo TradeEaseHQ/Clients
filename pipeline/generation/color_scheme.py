@@ -122,47 +122,72 @@ def _accent(h: float, s: float) -> str:
 
 def scheme_for_v2(primary_hex: str) -> str:
     """
-    CSS variable overrides for V2 (bright/white template).
-    Brand color must be readable on white → medium-dark lightness.
-    Returns a CSS string (no :root wrapper) ready for <style>:root{...}</style>.
+    CSS variable overrides for V2 (bright/white split-hero template).
+    Full cascade: every hardcoded color in V2 CSS is covered by a variable here.
     """
     h, s, l = _hex_to_hsl(primary_hex)
     s = max(55, min(88, s))
     l_brand = max(28, min(50, l))
 
-    brand      = _hsl_to_hex(h, s, l_brand)
-    brand_dark = _hsl_to_hex(h, s, max(16, l_brand - 12))
+    brand        = _hsl_to_hex(h, s, l_brand)
+    brand_dark   = _hsl_to_hex(h, s, max(16, l_brand - 12))
     brand_light  = _hsl_to_hex(h, s * 0.45, min(92, l_brand + 36))
     brand_xlight = _hsl_to_hex(h, s * 0.25, min(96, l_brand + 47))
-    accent     = _accent(h, s)
+    brand_border = _hsl_to_hex(h, s * 0.55, min(88, l_brand + 28))
+    accent       = _accent(h, s)
+    h_a          = (h + 150) % 360
+    accent_light = _hsl_to_hex(h_a, 60, 95)
+
+    r, g, b = _hex_to_rgb(brand)
+    brand_glow        = f"rgba({r},{g},{b},0.20)"
+    brand_glow_strong = f"rgba({r},{g},{b},0.42)"
 
     return (
         f"--brand:{brand};"
         f"--brand-dark:{brand_dark};"
         f"--brand-light:{brand_light};"
         f"--brand-xlight:{brand_xlight};"
+        f"--brand-border:{brand_border};"
+        f"--brand-glow:{brand_glow};"
+        f"--brand-glow-strong:{brand_glow_strong};"
         f"--accent:{accent};"
+        f"--accent-light:{accent_light};"
     )
 
 
 def scheme_for_v3(primary_hex: str) -> str:
     """
     CSS variable overrides for V3 (dark hero template).
-    --brand is used on dark backgrounds (hero) → needs to be bright/light.
-    --brand-dark is used on white body sections → readable on white.
+    --brand: bright, for use on dark backgrounds.
+    --brand-dark: readable on white body sections.
+    --hero-bg / --checklist-bg: hue-tinted near-blacks (no more hardcoded #070d0a).
     """
     h, s, l = _hex_to_hsl(primary_hex)
     s = max(55, min(88, s))
 
-    brand      = _hsl_to_hex(h, s, max(58, min(72, l + 22)))  # bright for dark bg
-    brand_dark = _hsl_to_hex(h, s, max(33, min(50, l)))        # readable on white
+    brand      = _hsl_to_hex(h, s, max(58, min(72, l + 22)))   # bright for dark bg
+    brand_dark = _hsl_to_hex(h, s, max(33, min(50, l)))         # readable on white
+    brand_mid  = _hsl_to_hex(h, s, max(45, min(58, l + 10)))    # mid tone
     r, g, b    = _hex_to_rgb(brand)
-    brand_dim  = f"rgba({r},{g},{b},0.15)"
+    brand_dim        = f"rgba({r},{g},{b},0.15)"
+    brand_glow       = f"rgba({r},{g},{b},0.10)"
+    brand_glow_strong = f"rgba({r},{g},{b},0.28)"
     accent     = _accent(h, s)
+
+    # Dark backgrounds tinted with brand hue — replaces hardcoded #070d0a / #064e3b
+    hero_bg       = _hsl_to_hex(h, min(25, s * 0.25), 6)
+    checklist_bg  = _hsl_to_hex(h, min(20, s * 0.20), 10)
+    dark_surface  = _hsl_to_hex(h, min(18, s * 0.18), 14)
 
     return (
         f"--brand:{brand};"
         f"--brand-dark:{brand_dark};"
+        f"--brand-mid:{brand_mid};"
         f"--brand-dim:{brand_dim};"
+        f"--brand-glow:{brand_glow};"
+        f"--brand-glow-strong:{brand_glow_strong};"
         f"--accent:{accent};"
+        f"--hero-bg:{hero_bg};"
+        f"--checklist-bg:{checklist_bg};"
+        f"--dark-surface:{dark_surface};"
     )

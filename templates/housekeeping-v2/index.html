@@ -5,136 +5,175 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ business_name }} — Professional Cleaning in {{ city }}, {{ state }}</title>
   <meta name="description" content="{{ tagline }} Serving {{ city }}, {{ state }}. Call {{ phone }}.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="styles.css">
   {% if brand_css_vars %}<style>:root { {{ brand_css_vars | safe }} }</style>{% endif %}
 </head>
 <body>
+<div id="scroll-progress"></div>
 
 <!-- Demo Banner -->
 <div class="demo-banner">
-  ⚡ Demo site for {{ business_name }} by Trade Ease{% if website_url %} — <a href="{{ website_url }}" target="_blank" rel="noopener">View current site →</a>{% endif %}
+  ✦ Demo site for {{ business_name }} by Trade Ease{% if website_url %} — <a href="{{ website_url }}" target="_blank" rel="noopener">View current site →</a>{% endif %}
 </div>
 
 <!-- Nav -->
 <nav class="nav">
-  <span class="nav-logo">{{ business_name }}</span>
-  <ul class="nav-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#reviews">Reviews</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <a href="#contact" class="nav-cta">Get a Quote →</a>
+  <a href="#" class="nav-logo">{% if logo_url %}<img class="nav-brand-logo" src="{{ logo_url }}" alt="{{ business_name }} logo" onerror="this.style.display='none'">{% endif %}{{ business_name }}</a>
+  <div class="nav-section-bar">
+    <button class="nav-section-item active" data-section="services">Services</button>
+    <button class="nav-section-item" data-section="about">About</button>
+    <button class="nav-section-item" data-section="reviews">Reviews</button>
+    <button class="nav-section-item" data-section="contact">Contact</button>
+  </div>
+  <a href="#contact" class="nav-cta">Get a Free Quote</a>
 </nav>
 
-<!-- Hero -->
+<!-- Hero (Split) -->
 <section class="hero">
-  <div class="hero-inner">
+  <div class="hero-left">
     {% if rating and review_count > 0 %}
-    <div class="hero-badge">⭐ {{ rating }}-Star Rated · {{ review_count }} Google Reviews</div>
-    {% endif %}
-    <h1>{{ business_name }}</h1>
-    <p class="hero-tagline">{{ tagline }}</p>
-    {% if rating and review_count > 0 %}
-    <div class="hero-stars">
+    <div class="hero-rating">
       <span class="stars">★★★★★</span>
-      <span class="hero-stars-text">{{ rating }}</span>
-      <span class="hero-stars-count">/ 5.0 · {{ review_count }} reviews</span>
+      <span class="hero-rating-text"><strong>{{ rating }}</strong> · {{ review_count }} Google Reviews</span>
     </div>
     {% endif %}
-    <div class="cta-group">
-      <a href="#contact" class="btn btn-primary">Get a Free Quote</a>
+    <h1>{{ city }}'s<br><em>Cleanest</em><br>Homes Start Here</h1>
+    <p class="hero-tagline">{{ tagline }}</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-primary">Get a Free Quote →</a>
       <a href="tel:{{ phone }}" class="btn btn-outline">📞 {{ phone }}</a>
+    </div>
+    <div class="hero-trust">
+      <span>Fully Insured</span>
+      <span>Background Checked</span>
+      <span>Satisfaction Guaranteed</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-wrap">
+      {% if hero_photo_url %}
+      <img src="{{ hero_photo_url }}" alt="Professionally cleaned home interior" class="hero-photo" loading="eager">
+      {% else %}
+      <div class="hero-photo-placeholder">✨</div>
+      {% endif %}
+      {% if years_in_business %}
+      <div class="hero-badge-card">
+        <div class="hero-badge-num">{{ years_in_business }}+</div>
+        <div class="hero-badge-label">Years Serving {{ city }}</div>
+      </div>
+      {% endif %}
     </div>
   </div>
 </section>
 
-<!-- Stats Bar -->
-<div class="stats-bar">
-  <div class="stats-inner">
-    {% if years_in_business %}
-    <div>
-      <div class="stat-num">{{ years_in_business }}<span>+</span></div>
-      <div class="stat-label">Years in Business</div>
-    </div>
-    {% endif %}
-    {% if rating %}
-    <div>
-      <div class="stat-num">{{ rating }}<span>★</span></div>
-      <div class="stat-label">Average Rating</div>
-    </div>
-    {% endif %}
-    {% if review_count > 0 %}
-    <div>
-      <div class="stat-num">{{ review_count }}</div>
-      <div class="stat-label">Google Reviews</div>
-    </div>
-    {% endif %}
-    <div>
-      <div class="stat-num">100<span>%</span></div>
-      <div class="stat-label">Satisfaction Guaranteed</div>
-    </div>
+<!-- Trust Strip -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="trust-item">Fully Bonded &amp; Insured</div>
+    <div class="trust-item">Background Checked Staff</div>
+    <div class="trust-item">Eco-Friendly Products</div>
+    <div class="trust-item">100% Satisfaction Guarantee</div>
+    {% if years_in_business %}<div class="trust-item">{{ years_in_business }}+ Years Experience</div>{% endif %}
   </div>
 </div>
 
 <!-- Services -->
 <section class="section" id="services">
   <div class="container">
-    <span class="section-eyebrow">What We Offer</span>
-    <h2 class="section-title">Cleaning Services in {{ city }}</h2>
-    <p class="section-sub">Professional, reliable cleaning tailored to your home and schedule.</p>
-    <div class="services-grid">
+    <div class="section-header">
+      <div class="eyebrow">What We Offer</div>
+      <h2 class="section-title">Professional Cleaning Services</h2>
+      <p class="section-sub">Every clean delivered by trained, background-checked professionals using eco-friendly products.</p>
+    </div>
+    <div class="services-grid{% if services_enhanced | length == 1 %} services-solo{% endif %}">
       {% for svc in services_enhanced %}
-      <div class="service-card">
+      <div class="service-card animate-in">
         <div class="service-icon-wrap">{{ svc.icon | default("🧹") }}</div>
-        <div class="service-name">{{ svc.name }}</div>
-        <div class="service-desc">{{ svc.description }}</div>
+        <h3 class="service-name">{{ svc.name }}</h3>
+        <p class="service-desc">{{ svc.description }}</p>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<!-- How It Works -->
+<!-- What We Clean -->
 <section class="section section-alt">
   <div class="container">
-    <span class="section-eyebrow">Simple Process</span>
-    <h2 class="section-title">How It Works</h2>
+    <div class="rooms-split">
+      <div>
+        <div class="eyebrow">Room by Room</div>
+        <h2 class="section-title">We Clean Every Corner</h2>
+        <p style="font-size:16px;color:var(--text-muted);line-height:1.7;margin-bottom:0;">Every room in your home gets the full treatment — nothing is overlooked, nothing is rushed.</p>
+        <div class="rooms-check-grid">
+          <div class="rooms-check-item">Kitchen</div>
+          <div class="rooms-check-item">Bathrooms</div>
+          <div class="rooms-check-item">Bedrooms</div>
+          <div class="rooms-check-item">Living Room</div>
+          <div class="rooms-check-item">Windows &amp; Sills</div>
+          <div class="rooms-check-item">Laundry Room</div>
+          <div class="rooms-check-item">Entryways</div>
+          <div class="rooms-check-item">Common Areas</div>
+        </div>
+      </div>
+      <div class="rooms-img-col">
+        {% if hero_photo_url %}
+        <img src="{{ hero_photo_url }}" alt="Clean, beautifully maintained home interior" class="rooms-img">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Simple Process</div>
+      <h2 class="section-title">From Quote to Clean in 3 Steps</h2>
+    </div>
     <div class="steps">
-      <div class="step">
+      <div class="step animate-in">
         <div class="step-num">1</div>
-        <div class="step-title">Get a Free Quote</div>
-        <div class="step-desc">Call, text, or fill out our quick form. We'll confirm your details and pricing fast.</div>
+        <h3 class="step-title">Get a Free Quote</h3>
+        <p class="step-desc">Fill out our quick form or give us a call. We'll get back to you within hours with a clear, no-pressure quote.</p>
       </div>
-      <div class="step">
+      <div class="step animate-in">
         <div class="step-num">2</div>
-        <div class="step-title">We Come to You</div>
-        <div class="step-desc">Our background-checked team arrives on time with all supplies — you don't lift a finger.</div>
+        <h3 class="step-title">We Show Up &amp; Get to Work</h3>
+        <p class="step-desc">Our team arrives on time, fully equipped. You don't have to lift a finger — we handle it all.</p>
       </div>
-      <div class="step">
+      <div class="step animate-in">
         <div class="step-num">3</div>
-        <div class="step-title">Enjoy a Spotless Home</div>
-        <div class="step-desc">Come home to perfect results. If anything isn't right, we make it right — guaranteed.</div>
+        <h3 class="step-title">Walk Into a Spotless Home</h3>
+        <p class="step-desc">Come home to a deeply clean space. Not 100% happy? We come back and make it right — free of charge.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- About -->
-<section class="section" id="about">
+<section class="section section-alt" id="about">
   <div class="container">
     <div class="about-wrap">
-      <div class="about-visual">🏠</div>
+      <div class="about-photo-col">
+        {% if about_photo_url %}
+        <img src="{{ about_photo_url }}" alt="{{ business_name }} professional cleaning team" class="about-photo">
+        {% else %}
+        <div class="about-photo-placeholder">🧹</div>
+        {% endif %}
+      </div>
       <div>
-        <span class="section-eyebrow">About Us</span>
+        <div class="eyebrow">About Us</div>
         <h2 class="section-title">{{ business_name }}</h2>
-        <blockquote>{{ trust_statement }}</blockquote>
+        <p class="about-quote">{{ trust_statement }}</p>
         <p class="about-body">{{ about_text }}</p>
         <div class="pill-row">
-          <span class="pill">✅ Bonded & Insured</span>
-          <span class="pill">✅ Background Checked</span>
-          <span class="pill">✅ Satisfaction Guarantee</span>
-          {% if years_in_business %}<span class="pill">🏆 {{ years_in_business }}+ Years Experience</span>{% endif %}
+          <span class="pill">Fully Bonded &amp; Insured</span>
+          <span class="pill">Background Checked</span>
+          <span class="pill">Satisfaction Guarantee</span>
+          {% if years_in_business %}<span class="pill">{{ years_in_business }}+ Years Experience</span>{% endif %}
         </div>
       </div>
     </div>
@@ -142,63 +181,74 @@
 </section>
 
 <!-- Reviews -->
-<section class="section section-alt" id="reviews">
+<section class="section" id="reviews">
   <div class="container">
-    <span class="section-eyebrow">What Clients Say</span>
-    <h2 class="section-title">Trusted by {{ city }} Homeowners</h2>
-    {% if rating and review_count > 0 %}
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;">
-      <div style="font-size:56px;font-weight:900;color:var(--text);letter-spacing:-2px;line-height:1;">{{ rating }}</div>
-      <div>
-        <div style="font-size:24px;color:#f59e0b;letter-spacing:2px;line-height:1.2;">★★★★★</div>
-        <div style="font-size:14px;color:var(--text-muted);font-weight:500;margin-top:4px;">Based on {{ review_count }} verified Google reviews</div>
-      </div>
+    <div class="section-header">
+      <div class="eyebrow">What Clients Say</div>
+      <h2 class="section-title">Loved Across {{ city }}</h2>
     </div>
+    {% if rating and review_count > 0 %}
+    <div class="reviews-summary">
+      <div class="reviews-score-wrap">
+        <div class="reviews-big-num">{{ rating }}</div>
+        <div>
+          <div class="reviews-big-stars">★★★★★</div>
+          <div class="reviews-meta">{{ review_count }} Google Reviews</div>
+        </div>
+      </div>
+      <div class="reviews-note">✨ Real reviews from Google will appear on the live site. These are sample placeholders to show how your review section will look.</div>
+    </div>
+    {% else %}
+    <div class="reviews-note" style="margin-bottom:32px;">✨ Real reviews from Google will appear on the live site.</div>
     {% endif %}
-    <div class="review-note">✨ Real reviews from Google will appear on the live site. Sample placeholders shown here.</div>
     <div class="reviews-grid">
-      <div class="review-card">
+      <div class="review-card animate-in">
+        <div class="review-avatar">S</div>
         <div class="review-stars">★★★★★</div>
-        <div class="review-text">"Absolutely incredible — my home has never looked this clean. They pay attention to every single detail."</div>
+        <p class="review-text">"The most thorough cleaning I've ever had. My house genuinely sparkles — I'll be booking every single month."</p>
         <div class="review-author">Sarah M. · {{ city }}, {{ state }}</div>
       </div>
-      <div class="review-card">
+      <div class="review-card animate-in">
+        <div class="review-avatar">J</div>
         <div class="review-stars">★★★★★</div>
-        <div class="review-text">"Punctual, thorough, and always consistent. Best cleaning service I've used in {{ city }} by far."</div>
+        <p class="review-text">"Reliable, professional, and genuinely wonderful people. They show up on time and always go above and beyond."</p>
         <div class="review-author">James T. · {{ city }}, {{ state }}</div>
       </div>
-      <div class="review-card">
+      <div class="review-card animate-in">
+        <div class="review-avatar">L</div>
         <div class="review-stars">★★★★★</div>
-        <div class="review-text">"Used them for a move-out clean — got my full deposit back. Could not recommend them more highly."</div>
+        <p class="review-text">"Booked for a move-out clean and got my full deposit back. No question — these are the best in {{ city }}."</p>
         <div class="review-author">Linda K. · {{ city }}, {{ state }}</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- AI Upsell -->
+<!-- Chat Upsell -->
 <section class="ai-section">
-  <div class="ai-section-inner">
-    <div class="ai-badge">🤖 AI Feature — Full Package</div>
-    <h2 class="section-title">Customers Get Answers 24/7</h2>
-    <p class="section-sub">The complete package includes an AI assistant that answers pricing questions, confirms service areas, and books appointments — even while you sleep.</p>
+  <div class="ai-inner">
+    <div class="ai-badge">✦ Full Package Feature</div>
+    <h2>Never Miss a Customer Inquiry.</h2>
+    <p>The complete package includes a virtual assistant that handles questions about pricing, availability, and services — 24 hours a day, 7 days a week.</p>
     <button class="btn btn-glow" onclick="document.getElementById('chat-panel').classList.add('open')">
-      💬 Try the AI Assistant Demo
+      Chat With Us
     </button>
-    <p style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.35);">Click to see how it works. This is a live preview.</p>
+    <p class="ai-note">Click to interact with a live preview.</p>
   </div>
 </section>
 
 <!-- Service Areas -->
-{% if service_areas %}
-<section class="section" id="area">
+{% if service_areas and service_areas | length > 1 %}
+<section class="section section-alt" id="area">
   <div class="container">
-    <span class="section-eyebrow">Where We Work</span>
-    <h2 class="section-title">Serving {{ city }} & Surrounding Areas</h2>
-    <p class="section-sub">{{ service_area_text }}</p>
+    <div class="section-header">
+      <div class="eyebrow">Where We Work</div>
+      <h2 class="section-title">Serving {{ city }} &amp; Beyond</h2>
+      <p class="section-sub">{{ service_area_text }}</p>
+    </div>
     <div class="area-tags">
       {% for area in service_areas %}
-      <span class="area-tag">📍 {{ area }}</span>
+      <span class="area-tag">{{ area }}</span>
       {% endfor %}
     </div>
   </div>
@@ -206,94 +256,118 @@
 {% endif %}
 
 <!-- FAQ -->
-<section class="section section-alt">
+<section class="section">
   <div class="container">
-    <div style="max-width:720px;">
-    <span class="section-eyebrow">Questions</span>
-    <h2 class="section-title">Frequently Asked Questions</h2>
-    <div class="faq-list" style="margin-top:36px;">
-      {% for item in faq_items %}
-      <div class="faq-item">
-        <button class="faq-q">
-          {{ item.question }}
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">{{ item.answer }}</div>
+    <div class="faq-wrap">
+      <div class="eyebrow">FAQ</div>
+      <h2 class="section-title">Common Questions</h2>
+      <div class="faq-list">
+        {% for item in faq_items %}
+        <div class="faq-item">
+          <button class="faq-q">
+            {{ item.question }}
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">{{ item.answer }}</div>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
     </div>
   </div>
 </section>
 
 <!-- Contact -->
-<section class="section" id="contact">
-  <div class="contact-wrap">
-    <span class="section-eyebrow">Get Started</span>
-    <h2 class="section-title">Get Your Free Quote</h2>
-    <p class="section-sub">Fill out the form and we'll respond within a few hours. No obligation.</p>
-    <form id="quote-form">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Jane Smith" required>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" placeholder="jane@email.com" required>
-        </div>
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" placeholder="(555) 000-0000">
-        </div>
-        <div class="form-group">
-          <label>Service Needed</label>
-          <select>
-            <option value="">Select a service…</option>
-            {% for svc in services_enhanced %}
-            <option>{{ svc.name }}</option>
-            {% endfor %}
-            <option>Not sure — tell me more</option>
-          </select>
-        </div>
-        <div class="form-group span2">
-          <label>Message (optional)</label>
-          <textarea placeholder="Tell us about your home, frequency, any special requests…"></textarea>
-        </div>
-        <div class="form-group span2">
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;font-size:17px;padding:17px;">
-            Get My Free Quote →
-          </button>
-          <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:10px;">We respond within a few hours. No spam, ever.</p>
-        </div>
+<section class="section section-alt" id="contact">
+  <div class="container">
+    <div class="contact-wrap">
+      <div class="section-header">
+        <div class="eyebrow">Get Started</div>
+        <h2 class="section-title">Request Your Free Quote</h2>
+        <p class="section-sub">We'll respond within a few hours. No commitment, no pressure.</p>
       </div>
-    </form>
+      <form id="quote-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" placeholder="jane@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" placeholder="(555) 000-0000">
+          </div>
+          <div class="form-group">
+            <label>Home Size</label>
+            <select>
+              <option value="">Select…</option>
+              <option>Studio / 1 Bedroom</option>
+              <option>2 Bedrooms</option>
+              <option>3 Bedrooms</option>
+              <option>4+ Bedrooms</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Service Needed</label>
+            <select>
+              <option value="">Select…</option>
+              {% for svc in services_enhanced %}
+              <option>{{ svc.name }}</option>
+              {% endfor %}
+              <option>Not sure — let's talk</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>How Often?</label>
+            <select>
+              <option value="">Select…</option>
+              <option>One-time clean</option>
+              <option>Weekly</option>
+              <option>Bi-weekly</option>
+              <option>Monthly</option>
+            </select>
+          </div>
+          <div class="form-group span2">
+            <label>Message (optional)</label>
+            <textarea placeholder="Tell us about your home, any special requests, or questions…"></textarea>
+          </div>
+          <div class="form-group span2">
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;font-size:17px;padding:17px;">
+              Send My Request →
+            </button>
+            <p class="form-note">Typically responds within 2 hours. No spam, ever.</p>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </section>
 
 <!-- Footer -->
 <footer>
   <div class="footer-logo">{{ business_name }}</div>
-  <div style="margin-bottom:6px;"><a href="tel:{{ phone }}" class="footer-phone" style="color:rgba(255,255,255,.7);font-size:16px;font-weight:700;">{{ phone }}</a></div>
+  <div><a href="tel:{{ phone }}" class="footer-phone">{{ phone }}</a></div>
   {% if address %}<div class="footer-address">{{ address }}</div>{% endif %}
-  <div style="font-size:13px;opacity:.5;margin-top:4px;">{{ city }}, {{ state }}</div>
-  <div class="footer-copy">© {{ business_name }}. Demo by <a href="https://tradeeasehq.com" style="color:rgba(255,255,255,.3);">Trade Ease</a>. Not the live site.</div>
+  <div class="footer-address">{{ city }}, {{ state }}</div>
+  <div class="footer-copy">© {{ business_name }}. Demo created by <a href="https://tradeeasehq.com" style="color:rgba(255,255,255,.25);">Trade Ease</a>. Not the live website.</div>
 </footer>
 
-<!-- AI Chat Widget -->
-<button class="chat-btn" id="chat-btn">💬 AI Assistant</button>
+<!-- Chat Widget -->
+<button class="chat-btn" id="chat-btn">Chat With Us</button>
 <div class="chat-panel" id="chat-panel">
   <div class="chat-header">
-    <span>{{ business_name }} Assistant</span>
+    <span>{{ business_name }}</span>
     <button class="chat-close" id="chat-close">✕</button>
   </div>
   <div class="chat-body" id="chat-body">
-    <div class="chat-demo-note">🧪 AI Assistant Demo — preview of live feature</div>
-    <div class="chat-bubble">Hi! I'm the AI assistant for {{ business_name }}. Ask me about services, pricing, or availability!</div>
+    <div class="chat-demo-note">Virtual Assistant — live feature preview</div>
+    <div class="chat-bubble">Hi! I'm the virtual assistant for {{ business_name }}. How can I help you today?</div>
   </div>
   <div class="chat-footer">
-    <input type="text" id="chat-input" placeholder="Ask about services, pricing…">
-    <button class="chat-send" id="chat-send">Send</button>
+    <input type="text" id="chat-input" placeholder="Ask me anything…">
+    <button class="chat-send" id="chat-send">→</button>
   </div>
 </div>
 

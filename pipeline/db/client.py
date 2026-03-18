@@ -248,6 +248,7 @@ def get_active_template(niche: str) -> dict[str, Any] | None:
 
 def upload_file(bucket: str, path: str, content: bytes, content_type: str = "text/html") -> str:
     """Upload bytes to Supabase Storage. Returns the public URL."""
+    import time
     client = get_client()
     client.storage.from_(bucket).upload(
         path=path,
@@ -255,7 +256,8 @@ def upload_file(bucket: str, path: str, content: bytes, content_type: str = "tex
         file_options={"content_type": content_type, "upsert": "true"},
     )
     url_response = client.storage.from_(bucket).get_public_url(path)
-    return url_response
+    # Append cache-buster so CDN serves fresh content on re-uploads
+    return f"{url_response}?v={int(time.time())}"
 
 
 def upload_screenshot(business_id: str, label: str, png_bytes: bytes) -> str:

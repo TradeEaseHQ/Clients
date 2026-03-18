@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { createSupabaseServer } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
@@ -20,7 +22,7 @@ export async function GET(
     return new NextResponse("Demo not found", { status: 404 });
   }
 
-  const res = await fetch(demo.preview_url);
+  const res = await fetch(demo.preview_url, { cache: "no-store" });
   if (!res.ok) {
     return new NextResponse("Failed to fetch demo", { status: 502 });
   }
