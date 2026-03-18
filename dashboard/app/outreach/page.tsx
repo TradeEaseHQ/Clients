@@ -30,8 +30,21 @@ export default async function OutreachPage({
 
   if (params.status) query = query.eq("status", params.status);
 
-  const { data } = await query;
-  const drafts = (data ?? []) as OutreachDraft[];
+  const { data, error } = await query;
+
+  // If the join fails, fall back to a plain select (no joined business/contact names)
+  let drafts: OutreachDraft[] = [];
+  if (error) {
+    console.error("[outreach] query error:", error.message, error.code);
+    const { data: fallback } = await supabase
+      .from("outreach_drafts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    drafts = (fallback ?? []) as OutreachDraft[];
+  } else {
+    drafts = (data ?? []) as OutreachDraft[];
+  }
 
   return (
     <div className="p-8">

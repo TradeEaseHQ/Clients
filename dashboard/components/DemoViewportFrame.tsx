@@ -80,7 +80,7 @@ export default function DemoViewportFrame({
             <div className="text-xs text-gray-500">{headerRight}</div>
           )}
           <a
-            href={newTabBase ? `${newTabBase}${viewport !== "desktop" ? `?v=${viewport}` : ""}` : src}
+            href={newTabBase ? `${newTabBase}/preview${viewport !== "desktop" ? `?v=${viewport}` : ""}` : src}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1"
