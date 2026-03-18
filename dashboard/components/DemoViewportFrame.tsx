@@ -14,7 +14,6 @@ interface Props {
   src: string;
   height?: number;
   title?: string;
-  /** Extra content to render in the header bar (e.g. "Open in new tab" link) */
   headerRight?: React.ReactNode;
 }
 
@@ -70,9 +69,25 @@ export default function DemoViewportFrame({
           ))}
         </div>
 
-        {headerRight && (
-          <div className="text-xs text-gray-500">{headerRight}</div>
-        )}
+        <div className="flex items-center gap-3">
+          {headerRight && (
+            <div className="text-xs text-gray-500">{headerRight}</div>
+          )}
+          <a
+            href={src}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1"
+            title="Open in new tab"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            new tab
+          </a>
+        </div>
       </div>
 
       {/* Frame area */}

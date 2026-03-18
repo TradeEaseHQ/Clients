@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { createSupabaseServer } from "@/lib/supabase";
 import type { OutreachDraft } from "@/lib/types";
 import Link from "next/link";
