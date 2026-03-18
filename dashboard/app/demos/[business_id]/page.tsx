@@ -8,10 +8,14 @@ import DemoViewportFrame from "@/components/DemoViewportFrame";
 
 export default async function DemoDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ business_id: string }>;
+  searchParams: Promise<{ v?: string }>;
 }) {
   const { business_id } = await params;
+  const { v } = await searchParams;
+  const initialViewport = (v === "mobile" || v === "tablet") ? v : "desktop";
   const supabase = await createSupabaseServer();
 
   const [{ data: biz }, { data: demos }] = await Promise.all([
@@ -69,6 +73,8 @@ export default async function DemoDetailPage({
             src={`/api/demo/${business_id}`}
             height={620}
             title="Demo preview"
+            newTabBase={`/demos/${business_id}`}
+            initialViewport={initialViewport}
           />
         </div>
       )}

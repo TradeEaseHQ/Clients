@@ -223,16 +223,7 @@ export default function DraftReviewActions({ draft }: Props) {
               src={`/api/demo/${businessId}`}
               height={500}
               title="Demo site"
-              headerRight={
-                <a
-                  href={`/demos/${businessId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  Open in new tab →
-                </a>
-              }
+              newTabBase={`/demos/${businessId}`}
             />
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 text-sm" style={{ height: "500px" }}>

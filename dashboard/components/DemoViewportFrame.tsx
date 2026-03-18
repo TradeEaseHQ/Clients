@@ -15,6 +15,10 @@ interface Props {
   height?: number;
   title?: string;
   headerRight?: React.ReactNode;
+  /** Base URL for the new-tab link — ?v=mobile|tablet is appended. Defaults to src. */
+  newTabBase?: string;
+  /** Pre-select a viewport on mount (from URL search param) */
+  initialViewport?: Viewport;
 }
 
 export default function DemoViewportFrame({
@@ -22,8 +26,10 @@ export default function DemoViewportFrame({
   height = 560,
   title = "Demo preview",
   headerRight,
+  newTabBase,
+  initialViewport = "desktop",
 }: Props) {
-  const [viewport, setViewport] = useState<Viewport>("desktop");
+  const [viewport, setViewport] = useState<Viewport>(initialViewport);
 
   const activeViewport = VIEWPORTS.find((v) => v.id === viewport)!;
 
@@ -74,7 +80,7 @@ export default function DemoViewportFrame({
             <div className="text-xs text-gray-500">{headerRight}</div>
           )}
           <a
-            href={src}
+            href={newTabBase ? `${newTabBase}${viewport !== "desktop" ? `?v=${viewport}` : ""}` : src}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1"
