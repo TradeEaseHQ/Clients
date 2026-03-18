@@ -225,7 +225,7 @@ export default function DraftReviewActions({ draft }: Props) {
               title="Demo site"
               headerRight={
                 <a
-                  href={demoUrl}
+                  href={`/demos/${businessId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"

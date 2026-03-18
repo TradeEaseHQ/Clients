@@ -49,8 +49,8 @@ export default async function DemoDetailPage({
             }`}>{demo.status}</span>
             {demo.preview_url && (
               <a href={`/api/demo/${business_id}`} target="_blank" rel="noopener noreferrer"
-                className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">
-                Open Demo →
+                className="text-sm text-gray-500 hover:text-gray-700 text-xs underline">
+                Open raw →
               </a>
             )}
           </div>
