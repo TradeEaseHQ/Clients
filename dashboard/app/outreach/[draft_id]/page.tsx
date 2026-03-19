@@ -24,18 +24,27 @@ export default async function DraftReviewPage({
   const { draft_id } = await params;
   const supabase = await createSupabaseServer();
 
-  // Load draft with related data
-  const { data: draftData } = await supabase
+  // Load draft — try with joins, fall back to plain select if join fails
+  const { data: draftData, error: draftErr } = await supabase
     .from("outreach_drafts")
-    .select(
-      "*, businesses(name, city, state, website_url), contacts(name, email)"
-    )
+    .select("*, businesses(name, city, state, website_url), contacts(name, email)")
     .eq("id", draft_id)
     .single();
 
-  if (!draftData) notFound();
+  let rawDraft: any = draftData;
+  if (draftErr || !rawDraft) {
+    console.error("[draft review] join error:", draftErr?.message);
+    const { data: fallback } = await supabase
+      .from("outreach_drafts")
+      .select("*")
+      .eq("id", draft_id)
+      .single();
+    rawDraft = fallback ?? null;
+  }
 
-  const draft = draftData as OutreachDraft & {
+  if (!rawDraft) notFound();
+
+  const draft = rawDraft as OutreachDraft & {
     businesses: Pick<Business, "name" | "city" | "state" | "website_url"> | null;
     contacts: Pick<Contact, "name" | "email"> | null;
   };
