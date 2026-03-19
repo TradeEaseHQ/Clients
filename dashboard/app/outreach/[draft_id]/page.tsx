@@ -45,7 +45,16 @@ export default async function DraftReviewPage({
     rawDraft = fallback?.[0] ?? null;
   }
 
-  if (!rawDraft) notFound();
+  if (!rawDraft) {
+    return (
+      <div className="p-8">
+        <h1 className="text-xl font-bold text-red-600 mb-4">Draft not found</h1>
+        <p className="text-sm text-gray-600 mb-2">Searched for ID: <code className="bg-gray-100 px-1 rounded font-mono">{draft_id}</code></p>
+        <p className="text-sm text-gray-500 mb-1">Join error: {draftErr?.message ?? "none"}</p>
+        <a href="/outreach" className="mt-4 inline-block text-blue-500 hover:underline text-sm">← Back to Outreach</a>
+      </div>
+    );
+  }
 
   const draft = rawDraft as OutreachDraft & {
     businesses: Pick<Business, "name" | "city" | "state" | "website_url"> | null;
