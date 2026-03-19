@@ -24,22 +24,25 @@ export default async function DraftReviewPage({
   const { draft_id } = await params;
   const supabase = await createSupabaseServer();
 
-  // Load draft — try with joins, fall back to plain select if join fails
-  const { data: draftData, error: draftErr } = await supabase
+  // Use limit(1) instead of single() to avoid PGRST116 errors on valid data
+  const { data: rows, error: draftErr } = await supabase
     .from("outreach_drafts")
     .select("*, businesses(name, city, state, website_url), contacts(name, email)")
     .eq("id", draft_id)
-    .single();
+    .limit(1);
 
-  let rawDraft: any = draftData;
+  let rawDraft: any = rows?.[0] ?? null;
+
+  // If join failed, fall back to plain select
   if (draftErr || !rawDraft) {
-    console.error("[draft review] join error:", draftErr?.message);
-    const { data: fallback } = await supabase
+    console.error("[draft review] join error:", draftErr?.message, "| draft_id:", draft_id);
+    const { data: fallback, error: fallbackErr } = await supabase
       .from("outreach_drafts")
       .select("*")
       .eq("id", draft_id)
-      .single();
-    rawDraft = fallback ?? null;
+      .limit(1);
+    console.error("[draft review] fallback error:", fallbackErr?.message, "| rows:", fallback?.length);
+    rawDraft = fallback?.[0] ?? null;
   }
 
   if (!rawDraft) notFound();
