@@ -69,57 +69,44 @@ def _build_prompt(
 
     if priority_tier == "candidate":
         angle = (
-            "Their site is actually decent (scored 50–74/100) but is missing key conversion features. "
-            "Frame this as: 'your site is good but missing X' — compliment what's working, "
-            "then show what adding the missing piece could do."
+            "Their site is decent but missing something specific. "
+            "Mention what's working, then point out the one gap. Don't oversell it."
         )
     else:
-        # high_priority or no_site
         angle = (
-            "Their site needs significant work (scored below 50/100) or doesn't exist. "
-            "Frame this as: 'we built something that could help' — don't criticise harshly, "
-            "just show the opportunity."
+            "Their site has real problems or doesn't exist. "
+            "Don't pile on — just say you built something and let them look."
         )
 
     weakness_list = "\n".join(f"- {w}" for w in weaknesses) if weaknesses else "- Improvement areas identified"
 
-    return f"""You are writing a cold outreach email on behalf of Ben from Trade Ease (tradeeasehq.com).
-Trade Ease builds complete online presence packages for local service businesses:
-website + AI chat + review automation + booking. Priced at ~$149–199/mo.
+    return f"""Write a cold email from Ben to the owner of {name}, a cleaning business in {city}.
 
-BUSINESS DETAILS:
-- Business name: {name}
-- City: {city}
-- Current website: {website_url}
-- Website score: {total_score}/100
-- Priority tier: {priority_tier}
+Ben built them a free demo site. He's not a marketer. He's one person who noticed something about their site and took an hour to fix it.
 
-TOP 3 OBSERVED WEAKNESSES:
+WHAT BEN NOTICED:
 {weakness_list}
 
-LINKS TO INCLUDE:
-- Demo site (built specifically for them): {demo_url}
-- Before/after comparison page: {comparison_url}
+LINKS:
+- Demo: {demo_url}
+- Before/after: {comparison_url}
 
-EMAIL ANGLE:
-{angle}
+ANGLE: {angle}
 
-STRICT REQUIREMENTS:
-1. Greeting: "{greeting}," (use owner name if known, otherwise "Hi there,")
-2. Subject: Non-generic, references {name} specifically, 8 words MAX
-3. Body: 130–160 words ONLY — count carefully
-4. Lead with ONE specific weakness from the list above (top_3_weaknesses[0])
-5. Show the demo link prominently (make it a clickable link in HTML)
-6. Soft CTA: "happy to answer any questions" — NEVER pushy or salesy
-7. Sign off as: "Ben\\nTrade Ease\\ntradeeasehq.com"
-8. Written person-to-person — NOT an agency blast tone
-9. HTML body: proper email HTML with inline styles, looks clean in Gmail
-   - Max width 600px, centered, clean sans-serif font
-   - Demo link should be a styled button or prominent text link
-   - Keep it simple — no heavy design, just clean and readable
-10. Plain text: same content, no HTML
+RULES — read these carefully:
+- Start with: "{greeting},"
+- Subject line: specific to {name}, max 8 words, sounds like a real person wrote it (NOT "I noticed your website" or "Quick question")
+- Body: 100–130 words. Short. Punchy. No fluff.
+- Mention ONE specific thing you noticed about their site (use the weaknesses list)
+- Link to the demo naturally — don't hype it, just say you built it
+- End with something low-pressure like "no pitch, just wanted to show you" or "worth a look if you're curious"
+- Sign off: "Ben\\ntradeeasehq.com"
+- DO NOT use: "I hope this finds you", "I wanted to reach out", "I came across your business", "leverage", "seamlessly", "game-changer", "take your business to the next level", or any phrase that screams marketing email
+- Write like a person, not a funnel. Short sentences. Real words.
+- HTML version: clean, max 600px, inline styles, demo link as a plain text hyperlink or simple button — nothing flashy
+- Plain text version: same content, no HTML tags
 
-Call the draft_email tool with your result.
+Call the draft_email tool.
 """
 
 
