@@ -5,12 +5,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { ClientSite } from "@/lib/types";
 import ClientDetailActions from "./ClientDetailActions";
-
-const HOSTING_STATUS_COLORS: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-700",
-  live: "bg-green-100 text-green-700",
-  suspended: "bg-red-100 text-red-600",
-};
+import { HOSTING_STATUS_COLORS } from "../_constants";
 
 export default async function ClientDetailPage({
   params,
@@ -28,18 +23,11 @@ export default async function ClientDetailPage({
 
   const client = (rows?.[0] ?? null) as ClientSite | null;
 
-  if (!client) {
-    return (
-      <div className="p-8">
-        <h1 className="text-xl font-bold text-red-600 mb-4">Client not found</h1>
-        <p className="text-sm text-gray-500 mb-1">ID: <code className="bg-gray-100 px-1 rounded font-mono">{id}</code></p>
-        {error && <p className="text-sm text-gray-400">Error: {error.message}</p>}
-        <Link href="/clients" className="mt-4 inline-block text-blue-500 hover:underline text-sm">
-          ← Back to Clients
-        </Link>
-      </div>
-    );
+  if (error) {
+    console.error("[clients/[id]] fetch error:", error.message);
+    notFound();
   }
+  if (!client) notFound();
 
   const biz = client.businesses;
   const changeRequests = Array.isArray(client.change_requests) ? client.change_requests : [];

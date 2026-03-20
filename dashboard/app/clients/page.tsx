@@ -3,12 +3,7 @@ export const dynamic = "force-dynamic";
 import { createSupabaseServer } from "@/lib/supabase";
 import type { ClientSite } from "@/lib/types";
 import Link from "next/link";
-
-const HOSTING_STATUS_COLORS: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-700",
-  live: "bg-green-100 text-green-700",
-  suspended: "bg-red-100 text-red-600",
-};
+import { HOSTING_STATUS_COLORS } from "./_constants";
 
 export default async function ClientsPage() {
   const supabase = await createSupabaseServer();

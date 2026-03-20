@@ -26,7 +26,7 @@ export default function ClientDetailActions({ client }: Props) {
   const [configMessage, setConfigMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Deploy state
-  const [isDeploying, setIsDeploying] = useState(false);
+  const [deployingAction, setDeployingAction] = useState<"finalize" | "redeploy" | null>(null);
   const [deployMessage, setDeployMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [deployedUrl, setDeployedUrl] = useState<string | null>(client.vercel_deployment_url ?? null);
 
@@ -61,8 +61,8 @@ export default function ClientDetailActions({ client }: Props) {
     }
   }
 
-  async function handleDeploy() {
-    setIsDeploying(true);
+  async function handleDeploy(action: "finalize" | "redeploy") {
+    setDeployingAction(action);
     setDeployMessage(null);
     try {
       const res = await fetch(`/api/clients/${client.id}/deploy`, { method: "POST" });
@@ -75,7 +75,7 @@ export default function ClientDetailActions({ client }: Props) {
     } catch (e: any) {
       setDeployMessage({ type: "error", text: e.message || "Deploy failed." });
     } finally {
-      setIsDeploying(false);
+      setDeployingAction(null);
     }
   }
 
@@ -228,18 +228,20 @@ export default function ClientDetailActions({ client }: Props) {
 
           <div className="flex gap-3">
             <button
-              onClick={handleDeploy}
-              disabled={isDeploying}
+              onClick={() => handleDeploy("finalize")}
+              disabled={deployingAction !== null}
+              title="Finalize configuration and deploy this client site to Vercel"
               className="text-sm bg-blue-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors"
             >
-              {isDeploying ? "Deploying…" : "Finalize & Deploy"}
+              {deployingAction === "finalize" ? "Deploying…" : "Finalize & Deploy"}
             </button>
             <button
-              onClick={handleDeploy}
-              disabled={isDeploying}
+              onClick={() => handleDeploy("redeploy")}
+              disabled={deployingAction !== null}
+              title="Redeploy the site with the latest configuration"
               className="text-sm bg-gray-100 text-gray-700 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-200 disabled:opacity-50 transition-colors"
             >
-              {isDeploying ? "Deploying…" : "Redeploy"}
+              {deployingAction === "redeploy" ? "Deploying…" : "Redeploy"}
             </button>
           </div>
         </div>
