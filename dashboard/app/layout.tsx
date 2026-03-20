@@ -36,7 +36,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <div className="flex h-screen bg-gray-50">
           {isLoggedIn && (
-            <aside className="w-56 bg-gray-900 text-white flex flex-col shrink-0">
+            <aside className="hidden md:flex w-56 bg-gray-900 text-white flex-col shrink-0">
               <div className="px-6 py-5 border-b border-gray-700">
                 <span className="text-lg font-bold tracking-tight">Trade Ease</span>
                 <p className="text-xs text-gray-400 mt-0.5">Admin Dashboard</p>
@@ -58,9 +58,24 @@ export default async function RootLayout({
             </aside>
           )}
 
-          <main className="flex-1 overflow-auto">
-            {children}
-          </main>
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            {isLoggedIn && (
+              <nav className="md:hidden bg-gray-900 text-white flex items-center gap-1 px-3 py-2 overflow-x-auto shrink-0">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="px-3 py-1.5 rounded text-xs text-gray-300 hover:bg-gray-700 hover:text-white whitespace-nowrap transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
+            <main className="flex-1 overflow-auto">
+              {children}
+            </main>
+          </div>
         </div>
       </body>
     </html>

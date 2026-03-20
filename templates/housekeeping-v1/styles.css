@@ -59,7 +59,7 @@ a:hover { text-decoration: underline; }
   justify-content: space-between;
   height: 64px;
   position: sticky;
-  top: 40px;
+  top: 40px; /* overridden by JS to match actual banner height */
   z-index: 90;
   box-shadow: var(--shadow-sm);
 }
@@ -486,7 +486,6 @@ footer {
   /* Nav — hide phone (it's in hero + footer), keep logo readable */
   .nav {
     height: 56px;
-    top: 36px; /* matches smaller banner */
     padding: 0 16px;
   }
   .nav-logo { font-size: 15px; }
@@ -564,7 +563,7 @@ footer {
    ============================================================ */
 @media (min-width: 541px) and (max-width: 767px) {
 
-  .nav { top: 40px; }
+  /* .nav top is set by JS */
   .nav-logo { font-size: 16px; }
   /* Hide nav phone — still in hero */
   .nav-phone { display: none; }

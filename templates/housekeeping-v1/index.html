@@ -24,7 +24,7 @@
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#reviews">Reviews</a></li>
-    <li><a href="#contact">Get a Quote</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
   <a class="nav-phone" href="tel:{{ phone }}">{{ phone }}</a>
 </nav>
@@ -184,7 +184,7 @@
     <h2 class="section-title">Your Site Answers Customers 24/7</h2>
     <p class="section-sub">The full package includes an AI assistant that answers pricing questions, confirms service areas, and directs people to book — even while you sleep.</p>
     <button class="btn btn-primary" onclick="document.getElementById('chat-panel').classList.add('open')">
-      💬 Try AI Assistant Demo
+      Try AI Assistant Demo
     </button>
     <p style="margin-top:16px;font-size:13px;opacity:.6;">This is a demo of the AI chat feature. Click to see how it works.</p>
   </div>
@@ -290,7 +290,7 @@
 </footer>
 
 <!-- ── AI Chat Widget (Mockup) ── -->
-<button class="chat-widget-btn" id="chat-btn">💬 AI Assistant</button>
+<button class="chat-widget-btn" id="chat-btn">AI Assistant</button>
 <div class="chat-panel" id="chat-panel">
   <div class="chat-header">
     <span>{% if owner_name %}{{ owner_name }}'s{% else %}{{ business_name }}{% endif %} Assistant</span>
@@ -307,5 +307,17 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  // Set nav top dynamically based on actual banner height (avoids overlap on mobile)
+  function updateNavTop() {
+    var banner = document.querySelector('.demo-banner');
+    var nav = document.querySelector('.nav');
+    if (banner && nav) {
+      nav.style.top = banner.offsetHeight + 'px';
+    }
+  }
+  updateNavTop();
+  window.addEventListener('resize', updateNavTop);
+</script>
 </body>
 </html>
