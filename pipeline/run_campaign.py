@@ -283,7 +283,12 @@ def cli(
 
                 comparison_url = build_comparison(biz, analysis, demo["preview_url"])
 
-                draft = drafter.draft(biz, analysis, demo["preview_url"], comparison_url)
+                # Use proxy URLs so email links render HTML instead of downloading raw files
+                app_url = settings.next_public_app_url.rstrip("/")
+                demo_email_url = f"{app_url}/api/demo/{biz_id}"
+                comparison_email_url = f"{app_url}/api/comparison/{biz_id}"
+
+                draft = drafter.draft(biz, analysis, demo_email_url, comparison_email_url)
                 save_outreach_draft({
                     "business_id": biz_id,
                     "contact_id": contact_row["id"],

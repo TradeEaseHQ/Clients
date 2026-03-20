@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pipeline.db.client import get_client
 from pipeline.outreach.email_drafter import EmailDrafter
+from pipeline.config import settings
 
 
 def redraft(city: str | None, state: str | None, statuses: list[str], draft_id: str | None) -> None:
@@ -65,12 +66,14 @@ def redraft(city: str | None, state: str | None, statuses: list[str], draft_id: 
 
         demo_sites = biz.get("demo_sites") or []
         demo = demo_sites[0] if demo_sites else {}
-        demo_url = demo.get("preview_url")
-        comparison_url = row.get("comparison_url") or ""
-
-        if not demo_url:
+        if not demo.get("preview_url"):
             print(f"  SKIP {biz_name} — no demo URL")
             continue
+
+        biz_id = biz.get("id") or row.get("business_id")
+        app_url = settings.next_public_app_url.rstrip("/")
+        demo_url = f"{app_url}/api/demo/{biz_id}"
+        comparison_url = f"{app_url}/api/comparison/{biz_id}"
 
         print(f"  Re-drafting: {biz_name}")
         try:
