@@ -42,7 +42,7 @@
     <p class="hero-tagline">{{ tagline }}</p>
     <div class="hero-ctas">
       <a href="#contact" class="btn btn-primary">Get a Free Quote →</a>
-      <a href="tel:{{ phone }}" class="btn btn-outline">📞 {{ phone }}</a>
+      <a href="tel:{{ phone }}" class="btn btn-outline">{{ phone }}</a>
     </div>
     <div class="hero-trust">
       <span>Fully Insured</span>
@@ -372,5 +372,14 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  function updateNavTop() {
+    var banner = document.querySelector('.demo-banner');
+    var nav = document.querySelector('.nav');
+    if (banner && nav) nav.style.top = banner.offsetHeight + 'px';
+  }
+  updateNavTop();
+  window.addEventListener('resize', updateNavTop);
+</script>
 </body>
 </html>

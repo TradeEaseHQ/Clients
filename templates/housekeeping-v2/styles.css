@@ -764,3 +764,44 @@ footer {
 }
 .services-solo .service-name { font-size: 24px; margin-bottom: 16px; }
 .services-solo .service-desc { font-size: 16px; line-height: 1.8; }
+
+/* ============================================================
+   MOBILE POLISH — max-width: 540px
+   ============================================================ */
+@media (max-width: 540px) {
+  .demo-banner { font-size: 12px; padding: 8px 12px; line-height: 1.4; }
+  .nav { height: 56px; padding: 0 16px; }
+  .nav-cta { display: none; }
+  .nav-logo { font-size: 15px; }
+  .hero { padding: 40px 16px 48px; gap: 32px; }
+  .hero h1 { font-size: clamp(28px, 8vw, 42px); letter-spacing: -1px; }
+  .hero-tagline { font-size: 15px; margin-bottom: 24px; }
+  .hero-ctas { flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .hero-ctas .btn { width: 100%; justify-content: center; padding: 14px 20px; }
+  .hero-trust { font-size: 12px; gap: 8px 14px; }
+  .hero-rating { padding: 6px 12px; margin-bottom: 20px; }
+  .trust-inner { gap: 8px 24px; }
+  .trust-item { font-size: 12px; }
+  .section { padding: 48px 16px; }
+  .section-title { font-size: clamp(22px, 6vw, 32px); }
+  .section-sub { font-size: 15px; }
+  .section-header { margin-bottom: 32px; }
+  .rooms-split { gap: 32px; }
+  .about-wrap { gap: 32px; }
+  .about-photo-placeholder { height: 260px; font-size: 56px; }
+  .pill { min-width: auto; font-size: 12px; padding: 6px 12px; }
+  .ai-section { padding: 56px 16px; }
+  .ai-section .btn { width: 100%; justify-content: center; }
+  .chat-btn { padding: 12px 18px; font-size: 14px; bottom: 16px; right: 16px; }
+  .chat-panel { right: 8px; left: 8px; width: auto; bottom: 72px; }
+}
+
+/* ============================================================
+   TABLET POLISH — 541px–767px
+   ============================================================ */
+@media (min-width: 541px) and (max-width: 767px) {
+  .nav-cta { display: none; }
+  .hero { padding: 48px 24px 56px; }
+  .section { padding: 56px 24px; }
+  .chat-panel { width: 280px; }
+}
