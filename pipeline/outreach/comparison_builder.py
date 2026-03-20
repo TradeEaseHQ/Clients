@@ -35,7 +35,7 @@ def build_comparison(
     screenshot_proxy_url = f"{app_url}/api/screenshot/{business_id}" if has_screenshot else ""
     demo_view_url = f"{app_url}/demo/{business_id}"
 
-    weaknesses: list[str] = analysis.get("top_3_weaknesses") or []
+    weaknesses: list[str] = [_strip_scores(w) for w in (analysis.get("top_3_weaknesses") or [])]
 
     # Weakness bullets for left column
     weakness_html = "\n".join(
@@ -50,12 +50,12 @@ def build_comparison(
         for b in added_bullets
     )
 
-    # Screenshot section — onerror fallback if proxy fails
+    # Screenshot section — fallback div hidden by default, shown only on error
     if screenshot_proxy_url:
         screenshot_section = (
             f'<img src="{_esc(screenshot_proxy_url)}" alt="Current site screenshot" class="screenshot-img" '
             f'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" />'
-            f'<div class="screenshot-fallback">Screenshot unavailable</div>'
+            f'<div class="screenshot-fallback" style="display:none;">Screenshot unavailable</div>'
         )
     else:
         screenshot_section = '<div class="screenshot-fallback">Screenshot not available</div>'
@@ -182,6 +182,8 @@ def build_comparison(
     .col {{
       background: var(--surface);
       padding: 32px;
+      display: flex;
+      flex-direction: column;
     }}
     .col-before {{ background: var(--surface); }}
     .col-after {{ background: var(--surface-2); }}
@@ -309,7 +311,8 @@ def build_comparison(
 
     .demo-frame {{
       width: 100%;
-      height: 460px;
+      flex: 1;
+      min-height: 300px;
       border: none;
       border-radius: 10px;
       border: 1px solid var(--border-bright);
@@ -479,21 +482,21 @@ def build_comparison(
         Your Demo
       </div>
       <div class="col-heading">Built for you</div>
-      <div class="demo-badge">
-        <span class="demo-badge-dot"></span>
-        Ready to go live
-      </div>
-      <div style="margin-bottom:12px;">
-        <a href="{_esc(demo_view_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link">
-          Open in full screen ↗
-        </a>
-      </div>
       <iframe
         src="{_esc(demo_url)}"
         class="demo-frame"
         title="Demo site for {_esc(business_name)}"
         loading="lazy"
       ></iframe>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-shrink:0;">
+        <div class="demo-badge">
+          <span class="demo-badge-dot"></span>
+          Ready to go live
+        </div>
+        <a href="{_esc(demo_view_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link" style="margin-bottom:0;">
+          Open in full screen ↗
+        </a>
+      </div>
     </div>
   </div>
 
@@ -570,6 +573,20 @@ def _what_we_added_bullets(weaknesses: list[str]) -> list[str]:
             selected.append(default)
 
     return selected[:5]
+
+
+def _strip_scores(text: str) -> str:
+    """Remove numeric score references (e.g. '23/100', '(45)', 'score: 12') from weakness text."""
+    import re
+    # Remove patterns like "45/100", "score of 23", "(23)", "scoring 45"
+    text = re.sub(r'\b\d{1,3}/100\b', '', text)
+    text = re.sub(r'\bscor(?:e|ing|ed)\s+(?:of\s+)?\d+\b', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\(\d+\)', '', text)
+    text = re.sub(r'\bscore[:\s]+\d+\b', '', text, flags=re.IGNORECASE)
+    # Clean up leftover punctuation/spaces
+    text = re.sub(r'\s{2,}', ' ', text)
+    text = re.sub(r'\s([,.])', r'\1', text)
+    return text.strip(' ,.')
 
 
 def _esc(text: str) -> str:
