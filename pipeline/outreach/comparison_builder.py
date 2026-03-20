@@ -7,6 +7,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from pipeline.config import settings
 from pipeline.db.client import upload_comparison_html
 
 logger = logging.getLogger(__name__)
@@ -28,7 +29,12 @@ def build_comparison(
     state = business.get("state", "")
     location = f"{city}, {state}".strip(", ") if city or state else ""
 
-    screenshot_url = analysis.get("screenshot_desktop_url") or ""
+    app_url = settings.next_public_app_url.rstrip("/")
+    # Use proxy URLs — raw Supabase Storage URLs may be private/return 400
+    has_screenshot = bool(analysis.get("screenshot_desktop_url"))
+    screenshot_proxy_url = f"{app_url}/api/screenshot/{business_id}" if has_screenshot else ""
+    demo_view_url = f"{app_url}/demo/{business_id}"
+
     weaknesses: list[str] = analysis.get("top_3_weaknesses") or []
 
     # Weakness bullets for left column
@@ -44,10 +50,10 @@ def build_comparison(
         for b in added_bullets
     )
 
-    # Screenshot section — onerror fallback if URL fails to load
-    if screenshot_url:
+    # Screenshot section — onerror fallback if proxy fails
+    if screenshot_proxy_url:
         screenshot_section = (
-            f'<img src="{_esc(screenshot_url)}" alt="Current site screenshot" class="screenshot-img" '
+            f'<img src="{_esc(screenshot_proxy_url)}" alt="Current site screenshot" class="screenshot-img" '
             f'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" />'
             f'<div class="screenshot-fallback">Screenshot unavailable</div>'
         )
@@ -349,9 +355,10 @@ def build_comparison(
     }}
 
     .features-grid {{
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
     }}
 
     .feature-item {{
@@ -398,6 +405,7 @@ def build_comparison(
       font-size: 13px;
       color: var(--text-secondary);
       line-height: 1.4;
+      flex: 0 1 260px;
     }}
     .features-grid li .check-icon {{ margin-top: 1px; }}
 
@@ -476,7 +484,7 @@ def build_comparison(
         Ready to go live
       </div>
       <div style="margin-bottom:12px;">
-        <a href="{_esc(demo_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link">
+        <a href="{_esc(demo_view_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link">
           Open in full screen ↗
         </a>
       </div>
@@ -528,11 +536,11 @@ def _what_we_added_bullets(weaknesses: list[str]) -> list[str]:
     defaults = [
         "One-click booking button — customers can schedule instantly",
         "Mobile-friendly design — looks great on any device",
-        "Fast loading — under 2 seconds on mobile",
         "Trust signals — reviews, credentials, and social proof front and centre",
         "Clear calls-to-action on every page — no guessing what to do next",
         "AI chat widget mockup — answers questions 24/7",
         "Service area map — shows exactly where you operate",
+        "SEO-ready structure — built to show up in local searches",
     ]
 
     # Try to map weaknesses to relevant bullets
@@ -542,7 +550,6 @@ def _what_we_added_bullets(weaknesses: list[str]) -> list[str]:
     mapping = [
         (["booking", "quote", "schedule", "appointment", "form"], "One-click booking button — customers can request a quote in seconds"),
         (["mobile", "responsive", "phone"], "Mobile-friendly design — optimised for every screen size"),
-        (["slow", "speed", "loading", "fast"], "Fast page loading — under 2 seconds on mobile"),
         (["trust", "review", "testimonial", "credential", "license"], "Trust signals front and centre — reviews, licences, and years of experience"),
         (["cta", "call to action", "contact", "button", "clear"], "Clear calls-to-action — visitors know exactly what to do next"),
         (["chat", "ai", "automated", "response"], "AI chat mockup — shows how questions get answered automatically"),
