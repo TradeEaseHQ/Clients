@@ -272,15 +272,24 @@ def build_comparison(
     .demo-open-link {{
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--accent);
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0e0e10;
+      background: #e8a020;
       text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
       margin-bottom: 14px;
-      opacity: 0.85;
-      transition: opacity 0.15s;
+      box-shadow: 0 2px 12px rgba(232,160,32,0.3);
+      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+      flex-shrink: 0;
     }}
-    .demo-open-link:hover {{ opacity: 1; }}
+    .demo-open-link:hover {{
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(232,160,32,0.4);
+    }}
 
     .demo-frame {{
       width: 100%;
@@ -456,8 +465,8 @@ def build_comparison(
       </div>
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;">
         <div class="col-heading" style="margin-bottom:0;">Built for you</div>
-        <a href="{_esc(demo_view_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link" style="margin-bottom:0;flex-shrink:0;">
-          Open in full screen ↗
+        <a href="{_esc(demo_view_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link" style="margin-bottom:0;">
+          Open full demo ↗
         </a>
       </div>
       <iframe
