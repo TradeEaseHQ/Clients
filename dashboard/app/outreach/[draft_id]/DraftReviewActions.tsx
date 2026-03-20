@@ -166,9 +166,9 @@ export default function DraftReviewActions({ draft }: Props) {
           )}
 
           {/* Comparison link */}
-          {comparisonUrl && (
+          {businessId && (
             <a
-              href={comparisonUrl}
+              href={`/api/comparison/${businessId}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline"

@@ -18,6 +18,7 @@ const navLinks = [
   { href: "/scores", label: "Scores" },
   { href: "/demos", label: "Demos" },
   { href: "/outreach", label: "Outreach" },
+  { href: "/outreach/approved", label: "Send Queue" },
 ];
 
 export default function RootLayout({
