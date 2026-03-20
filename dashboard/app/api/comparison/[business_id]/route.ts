@@ -10,24 +10,15 @@ export async function GET(
   const { business_id } = await params;
   const supabase = await createSupabaseServer();
 
-  const { data: draft } = await supabase
-    .from("outreach_drafts")
-    .select("comparison_url")
-    .eq("business_id", business_id)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single();
+  const { data, error } = await supabase.storage
+    .from("comparisons")
+    .download(`${business_id}/index.html`);
 
-  if (!draft?.comparison_url) {
+  if (error || !data) {
     return new NextResponse("Comparison not found", { status: 404 });
   }
 
-  const res = await fetch(draft.comparison_url, { cache: "no-store" });
-  if (!res.ok) {
-    return new NextResponse("Failed to fetch comparison", { status: 502 });
-  }
-
-  const html = await res.text();
+  const html = await data.text();
   return new NextResponse(html, {
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });

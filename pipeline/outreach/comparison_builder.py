@@ -33,209 +33,451 @@ def build_comparison(
 
     # Weakness bullets for left column
     weakness_html = "\n".join(
-        f'<li style="margin-bottom:8px;padding-left:4px">{_esc(w)}</li>'
+        f'<li><span class="x-icon">✕</span>{_esc(w)}</li>'
         for w in weaknesses
-    ) if weaknesses else '<li>Multiple improvement opportunities identified</li>'
+    ) if weaknesses else '<li><span class="x-icon">✕</span>Multiple improvement opportunities identified</li>'
 
     # "What We Added" bullets — tailored to weaknesses
     added_bullets = _what_we_added_bullets(weaknesses)
     added_html = "\n".join(
-        f'<li style="margin-bottom:10px">{_esc(b)}</li>'
+        f'<li><span class="check-icon">✓</span>{_esc(b)}</li>'
         for b in added_bullets
     )
 
     # Screenshot section — onerror fallback if URL fails to load
     if screenshot_url:
         screenshot_section = (
-            f'<img src="{_esc(screenshot_url)}" alt="Current site screenshot" '
-            f'style="width:100%;border-radius:8px;border:1px solid #334155;display:block;" '
+            f'<img src="{_esc(screenshot_url)}" alt="Current site screenshot" class="screenshot-img" '
             f'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" />'
-            f'<div style="display:none;width:100%;height:220px;background:#1e293b;border-radius:8px;'
-            f'border:1px solid #334155;align-items:center;justify-content:center;color:#64748b;font-size:14px;">'
-            f'Screenshot unavailable</div>'
+            f'<div class="screenshot-fallback">Screenshot unavailable</div>'
         )
     else:
-        screenshot_section = '<div style="width:100%;height:220px;background:#1e293b;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:14px;">Screenshot not available</div>'
+        screenshot_section = '<div class="screenshot-fallback">Screenshot not available</div>'
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{_esc(business_name)} — Current Site vs. Demo</title>
+  <title>{_esc(business_name)} — Site Comparison</title>
   <style>
     *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+
+    :root {{
+      --bg: #080c14;
+      --surface: #0f1623;
+      --surface-2: #161f30;
+      --border: #1e2d45;
+      --border-bright: #2a3f5f;
+      --text-primary: #f0f4ff;
+      --text-secondary: #8a9bbf;
+      --text-muted: #4a5878;
+      --red: #ff5a5a;
+      --red-dim: #3d1a1a;
+      --green: #3ddc84;
+      --green-dim: #0e2e1c;
+      --blue: #4d9fff;
+      --blue-dim: #0d1e38;
+      --accent: #4d9fff;
+    }}
+
     body {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }}
-    a {{ color: #60a5fa; }}
-    .header {{
-      background: #1e293b;
-      border-bottom: 1px solid #334155;
-      padding: 24px 32px;
-      text-align: center;
+
+    /* ── TOP BAR ── */
+    .topbar {{
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }}
-    .header h1 {{
-      font-size: 22px;
-      font-weight: 700;
-      color: #f1f5f9;
-      line-height: 1.3;
-    }}
-    .header p {{
-      font-size: 14px;
-      color: #94a3b8;
-      margin-top: 6px;
-    }}
-    .columns {{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      padding: 32px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }}
-    @media (max-width: 768px) {{
-      .columns {{ grid-template-columns: 1fr; padding: 16px; }}
-    }}
-    .col-label {{
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }}
-    .col-label.current {{ color: #f87171; }}
-    .col-label.demo {{ color: #4ade80; }}
-    .col-heading {{
-      font-size: 18px;
-      font-weight: 700;
-      color: #f1f5f9;
-      margin-bottom: 16px;
-    }}
-    .score-badge {{
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 99px;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }}
-    .built-badge {{
-      display: inline-block;
-      background: #166534;
-      color: #86efac;
-      padding: 4px 12px;
-      border-radius: 99px;
+    .topbar-brand {{
       font-size: 13px;
       font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }}
+    .topbar-brand span {{
+      color: var(--accent);
+    }}
+    .topbar-tag {{
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }}
+
+    /* ── HERO ── */
+    .hero {{
+      padding: 60px 40px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+      text-align: center;
+    }}
+    .hero-eyebrow {{
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
       margin-bottom: 16px;
     }}
+    .hero-title {{
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }}
+    .hero-subtitle {{
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 560px;
+      margin: 0 auto;
+    }}
+
+    /* ── DIVIDER ── */
+    .divider {{
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+      margin: 0 40px;
+    }}
+
+    /* ── COMPARISON GRID ── */
+    .comparison {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+      margin: 40px 40px 0;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }}
+    @media (max-width: 720px) {{
+      .comparison {{ grid-template-columns: 1fr; margin: 24px 16px 0; }}
+      .hero {{ padding: 40px 20px 32px; }}
+      .topbar {{ padding: 0 20px; }}
+      .divider {{ margin: 0 20px; }}
+    }}
+
+    .col {{
+      background: var(--surface);
+      padding: 32px;
+    }}
+    .col-before {{ background: var(--surface); }}
+    .col-after {{ background: var(--surface-2); }}
+
+    .col-label {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }}
+    .col-label-dot {{
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }}
+    .label-before {{ color: var(--red); }}
+    .label-before .col-label-dot {{ background: var(--red); }}
+    .label-after {{ color: var(--green); }}
+    .label-after .col-label-dot {{ background: var(--green); }}
+
+    .col-heading {{
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }}
+
+    /* Screenshot */
+    .screenshot-img {{
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border-bright);
+      display: block;
+    }}
+    .screenshot-fallback {{
+      display: flex;
+      width: 100%;
+      height: 200px;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }}
+
+    /* Weaknesses */
     .weakness-list {{
       list-style: none;
       padding: 0;
-      margin: 16px 0 0;
-    }}
-    .weakness-list li::before {{
-      content: "✗ ";
-      color: #f87171;
-      font-weight: 700;
+      margin-top: 20px;
     }}
     .weakness-list li {{
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
       font-size: 14px;
-      color: #cbd5e1;
+      color: var(--text-secondary);
       line-height: 1.5;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
     }}
-    .demo-frame {{
-      width: 100%;
-      height: 500px;
-      border: none;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background: #1e293b;
+    .weakness-list li:last-child {{ border-bottom: none; }}
+    .x-icon {{
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--red-dim);
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
     }}
-    .added-section {{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 32px 32px;
-    }}
-    @media (max-width: 768px) {{
-      .added-section {{ padding: 0 16px 24px; }}
-    }}
-    .added-box {{
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 28px 32px;
-    }}
-    .added-box h2 {{
-      font-size: 18px;
+
+    /* Demo column */
+    .demo-badge {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-dim);
+      color: var(--green);
+      border: 1px solid rgba(61,220,132,0.2);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 11px;
       font-weight: 700;
-      color: #f1f5f9;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       margin-bottom: 16px;
     }}
-    .added-list {{
-      list-style: none;
-      padding: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 8px 24px;
+    .demo-badge-dot {{
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
     }}
-    .added-list li::before {{
-      content: "✓ ";
-      color: #4ade80;
-      font-weight: 700;
+    @keyframes pulse {{
+      0%, 100% {{ opacity: 1; }}
+      50% {{ opacity: 0.4; }}
     }}
-    .added-list li {{
-      font-size: 14px;
-      color: #cbd5e1;
-      line-height: 1.5;
+
+    .demo-open-link {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 14px;
+      opacity: 0.85;
+      transition: opacity 0.15s;
     }}
-    .cta-section {{
-      text-align: center;
-      padding: 24px 32px 40px;
+    .demo-open-link:hover {{ opacity: 1; }}
+
+    .demo-frame {{
+      width: 100%;
+      height: 460px;
+      border: none;
+      border-radius: 10px;
+      border: 1px solid var(--border-bright);
+      background: var(--bg);
+      display: block;
     }}
-    .cta-section p {{
+
+    /* ── FEATURES SECTION ── */
+    .features-wrap {{
+      max-width: none;
+      margin: 2px 40px 0;
+      background: var(--border);
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+    }}
+    @media (max-width: 720px) {{
+      .features-wrap {{ margin: 2px 16px 0; }}
+    }}
+
+    .features {{
+      background: var(--surface-2);
+      padding: 36px 40px;
+    }}
+    @media (max-width: 720px) {{
+      .features {{ padding: 28px 24px; }}
+    }}
+
+    .features-header {{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }}
+    .features-title {{
       font-size: 16px;
-      color: #94a3b8;
+      font-weight: 700;
+      color: var(--text-primary);
     }}
-    .footer {{
+    .features-line {{
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }}
+
+    .features-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 4px;
+    }}
+
+    .feature-item {{
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }}
+    .check-icon {{
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--green-dim);
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }}
+    .feature-item span:last-child {{
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }}
+
+    /* Make weakness/feature list items work as flex containers */
+    .weakness-list li, .features-grid li {{
+      list-style: none;
+    }}
+    .features-grid li {{
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }}
+    .features-grid li .check-icon {{ margin-top: 1px; }}
+
+    /* ── CTA ── */
+    .cta {{
       text-align: center;
-      padding: 16px;
-      font-size: 11px;
-      color: #475569;
-      border-top: 1px solid #1e293b;
+      padding: 48px 40px;
     }}
-    .footer a {{ color: #475569; }}
+    .cta-text {{
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }}
+    .cta-subtext {{
+      font-size: 13px;
+      color: var(--text-muted);
+    }}
+
+    /* ── FOOTER ── */
+    .footer {{
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }}
+    .footer a {{
+      color: var(--text-muted);
+      text-decoration: none;
+    }}
+    .footer a:hover {{ color: var(--text-secondary); }}
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <h1>{_esc(business_name)} — Your Current Site vs. What It Could Be</h1>
-    {f'<p>{_esc(location)}</p>' if location else ''}
+  <div class="topbar">
+    <div class="topbar-brand">Trade<span>Ease</span></div>
+    <div class="topbar-tag">Confidential Preview</div>
   </div>
 
-  <div class="columns">
+  <div class="hero">
+    <div class="hero-eyebrow">Website Comparison Report</div>
+    <h1 class="hero-title">{_esc(business_name)}</h1>
+    <p class="hero-subtitle">
+      We built a custom demo to show what your online presence could look like.
+      {f'Based in {_esc(location)}.' if location else ''}
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="comparison">
     <!-- LEFT: Current site -->
-    <div>
-      <div class="col-label current">Current Site</div>
+    <div class="col col-before">
+      <div class="col-label label-before">
+        <span class="col-label-dot"></span>
+        Current Site
+      </div>
       <div class="col-heading">Where things stand today</div>
       {screenshot_section}
-      {f'<ul class="weakness-list" style="margin-top:16px">{weakness_html}</ul>' if weaknesses else ''}
+      {f'<ul class="weakness-list" style="margin-top:20px">{weakness_html}</ul>' if weaknesses else ''}
     </div>
 
     <!-- RIGHT: Demo -->
-    <div>
-      <div class="col-label demo">Your Demo</div>
+    <div class="col col-after">
+      <div class="col-label label-after">
+        <span class="col-label-dot"></span>
+        Your Demo
+      </div>
       <div class="col-heading">Built for you</div>
-      <span class="built-badge">Ready to go live</span>
-      <div style="margin-bottom:8px;">
-        <a href="{_esc(demo_url)}" target="_blank" rel="noopener noreferrer"
-           style="font-size:13px;color:#60a5fa;text-decoration:none;">
-          Open demo in full screen →
+      <div class="demo-badge">
+        <span class="demo-badge-dot"></span>
+        Ready to go live
+      </div>
+      <div style="margin-bottom:12px;">
+        <a href="{_esc(demo_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link">
+          Open in full screen ↗
         </a>
       </div>
       <iframe
@@ -247,21 +489,27 @@ def build_comparison(
     </div>
   </div>
 
-  <div class="added-section">
-    <div class="added-box">
-      <h2>What We Added</h2>
-      <ul class="added-list">
+  <div class="features-wrap">
+    <div class="features">
+      <div class="features-header">
+        <div class="features-title">What we added</div>
+        <div class="features-line"></div>
+      </div>
+      <ul class="features-grid">
         {added_html}
       </ul>
     </div>
   </div>
 
-  <div class="cta-section">
-    <p>Interested? Reply to our email — happy to answer any questions.</p>
+  <div class="cta">
+    <p class="cta-text">Questions? Just reply to the email.</p>
+    <p class="cta-subtext">No commitment required — happy to walk you through it.</p>
   </div>
 
   <div class="footer">
-    Demo created by <a href="https://tradeeasehq.com" target="_blank">Trade Ease</a> | tradeeasehq.com
+    <span>Prepared by</span>
+    <a href="https://tradeeasehq.com" target="_blank" rel="noopener noreferrer">Trade Ease</a>
+    <span>&middot; tradeeasehq.com</span>
   </div>
 
 </body>
