@@ -11,10 +11,17 @@ export function createSupabaseBrowser() {
 
 // Server client — uses service role key to bypass RLS
 // Only ever called in Server Components and Route Handlers (never sent to browser)
+// Explicit cache: 'no-store' on every fetch ensures Next.js Data Cache never serves stale rows.
 export async function createSupabaseServer() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
+    {
+      auth: { persistSession: false },
+      global: {
+        fetch: (url: RequestInfo | URL, init?: RequestInit) =>
+          fetch(url, { ...init, cache: "no-store" }),
+      },
+    }
   );
 }
