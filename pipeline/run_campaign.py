@@ -116,7 +116,8 @@ def cli(
         from pipeline.analysis.pagespeed import get_mobile_score
         from pipeline.analysis.scorer import WebsiteScorer
         from pipeline.analysis.content_extractor import ContentExtractor
-        from pipeline.db.client import get_businesses_for_analysis, update_business_status, save_website_analysis, update_business_extracted_content
+        from pipeline.analysis.seo_checker import check_seo_gaps
+        from pipeline.db.client import get_businesses_for_analysis, update_business_status, save_website_analysis, update_analysis_raw_scores, update_business_extracted_content
 
         businesses = get_businesses_for_analysis()
         logger.info(f"Found {len(businesses)} businesses to analyze")
@@ -134,15 +135,15 @@ def cli(
                 update_business_status(biz_id, "analyzing")
                 capture = analyzer.analyze(biz_id, url)
 
-                psi_score = 0
+                psi_score = None
                 if url:
                     try:
                         psi_score = get_mobile_score(url)
                     except Exception:
-                        logger.warning(f"PageSpeed failed for {url} — using 0")
+                        logger.warning(f"PageSpeed failed for {url} — score will be None")
 
                 result = scorer.score(capture, psi_score)
-                save_website_analysis({
+                analysis_record = save_website_analysis({
                     "business_id": biz_id,
                     "analyzed_url": url,
                     "screenshot_desktop_url": capture.screenshot_desktop_url,
@@ -163,6 +164,13 @@ def cli(
                     "ai_analysis_notes": result.ai_analysis_notes,
                     "top_3_weaknesses": result.top_3_weaknesses,
                 })
+
+                # SEO gap analysis — runs on raw HTML, no external API
+                seo_data = check_seo_gaps(capture.page_html or "", psi_score)
+                raw_scores = (analysis_record.get("raw_scores_json") or {}).copy()
+                raw_scores["seo_gaps"] = seo_data
+                update_analysis_raw_scores(analysis_record["id"], raw_scores)
+                logger.info(f"SEO gaps for {biz['name']}: checks_passed={seo_data['checks_passed']}/5, missing={seo_data['gaps']}")
 
                 # Content extraction (only if HTML was captured)
                 if capture.page_html:
