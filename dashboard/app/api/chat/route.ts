@@ -5,6 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 // TODO: Install @upstash/ratelimit and @upstash/redis to enable rate limiting.
 // Once installed, uncomment the block below and the rate-limit check in the handler.
+// Required limits to implement:
+//   - 10 messages per 60 seconds per IP (sliding window)
+//   - 50 messages per hour per IP
+//   - Minimum 1-second interval between messages from same IP
 //
 // import { Ratelimit } from "@upstash/ratelimit";
 // import { Redis } from "@upstash/redis";
@@ -53,11 +57,27 @@ Instructions:
 
 export async function POST(req: NextRequest) {
   try {
+    // Origin allowlist — block requests from untrusted origins to protect API credits
+    const origin = req.headers.get("origin") ?? "";
+    const allowedOrigins = [
+      process.env.NEXT_PUBLIC_APP_URL ?? "",
+      // Allow Supabase storage origins for demo sites
+    ];
+    const isAllowed =
+      !origin || // same-origin requests (no Origin header)
+      origin.endsWith(".supabase.co") ||
+      origin.endsWith(".vercel.app") ||
+      allowedOrigins.some((o) => o && origin.startsWith(o));
+
+    if (!isAllowed) {
+      return NextResponse.json({ reply: "Unauthorized" }, { status: 403 });
+    }
+
     const body = await req.json();
-    const { business_id, message, history = [], _hp } = body as {
+    const { business_id, message, history, _hp } = body as {
       business_id?: string;
       message?: string;
-      history?: ChatMessage[];
+      history?: unknown;
       _hp?: unknown;
     };
 
@@ -81,6 +101,19 @@ export async function POST(req: NextRequest) {
     //   }
     // }
 
+    // Validate history — only accept "user"/"assistant" roles, cap content at 500 chars,
+    // keep last 10 turns. Rejects any injected "system" roles or malformed entries.
+    const validatedHistory = (Array.isArray(history) ? history : [])
+      .filter(
+        (h): h is ChatMessage =>
+          typeof h === "object" &&
+          h !== null &&
+          (h.role === "user" || h.role === "assistant") &&
+          typeof h.content === "string"
+      )
+      .map((h) => ({ role: h.role, content: h.content.slice(0, 500) }))
+      .slice(-10);
+
     // Fetch business config — prefer client_sites.ai_agent_config, fall back to businesses table
     let config: BusinessConfig = {};
 
@@ -88,21 +121,25 @@ export async function POST(req: NextRequest) {
       const supabase = await createSupabaseServer();
 
       // Try client_sites first (live site config)
-      const { data: clientSite } = await supabase
+      const { data: clientSite, error: siteErr } = await supabase
         .from("client_sites")
         .select("ai_agent_config")
         .eq("business_id", business_id)
         .maybeSingle();
 
+      if (siteErr) console.error("[chat] client_sites query:", siteErr.message);
+
       if (clientSite?.ai_agent_config) {
         config = clientSite.ai_agent_config as BusinessConfig;
       } else {
         // Fall back to businesses table for demo mode
-        const { data: business } = await supabase
+        const { data: business, error: bizErr } = await supabase
           .from("businesses")
           .select("name, city, state, phone, website")
           .eq("id", business_id)
           .maybeSingle();
+
+        if (bizErr) console.error("[chat] businesses query:", bizErr.message);
 
         if (business) {
           config = {
@@ -117,9 +154,9 @@ export async function POST(req: NextRequest) {
 
     const systemPrompt = buildSystemPrompt(config);
 
-    // Build messages array for Claude — include prior history then the new user message
+    // Build messages array for Claude — include validated history then the new user message
     const messages: ChatMessage[] = [
-      ...history.slice(-10), // cap history to last 10 turns to avoid bloat
+      ...validatedHistory,
       { role: "user", content: message.trim() },
     ];
 
@@ -157,7 +194,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const anthropicData = await anthropicRes.json() as {
+    const anthropicData = (await anthropicRes.json()) as {
       content?: Array<{ type: string; text?: string }>;
     };
 
