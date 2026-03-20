@@ -148,6 +148,40 @@ export interface Campaign {
   created_at: string;
 }
 
+export type HostingStatus = "pending" | "live" | "suspended";
+
+export type ClientPlan = "basic" | "pro" | "ai_agent";
+
+export interface AiAgentConfig {
+  business_name?: string;
+  phone?: string;
+  city?: string;
+  services?: string;
+  service_areas?: string;
+  hours?: string;
+  pricing_range?: string;
+  escalation_trigger?: string;
+}
+
+export interface ClientSite {
+  id: string;
+  business_id: string;
+  domain: string | null;
+  plan: ClientPlan;
+  monthly_fee: number | null;
+  hosting_status: HostingStatus;
+  live_at: string | null;
+  ai_agent_config: AiAgentConfig | null;
+  onboarding_data: Record<string, unknown> | null;
+  change_requests: unknown[];
+  vercel_project_id: string | null;
+  vercel_deployment_url: string | null;
+  notes: string | null;
+  created_at: string;
+  // Joined field
+  businesses?: Pick<Business, "name" | "city" | "state" | "phone" | "website_url"> | null;
+}
+
 // ============================================================
 // Dashboard stat types
 // ============================================================
