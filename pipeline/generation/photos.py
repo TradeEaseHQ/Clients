@@ -6,6 +6,7 @@ Photos verified as housekeeping/home-cleaning appropriate via vision audit.
 from __future__ import annotations
 
 import random
+from urllib.parse import quote_plus
 
 _BASE = "https://images.unsplash.com/photo-"
 _HERO = "?w=1400&h=900&fit=crop&q=85&auto=format"
@@ -36,17 +37,57 @@ ABOUT_PHOTOS = [
     f"{_BASE}1556909172-54557c7e4fb7{_ABOUT}",     # small clean kitchen scene
 ]
 
+NICHE_HERO_QUERIES = {
+    "housekeeping": "clean modern home interior bright",
+    "landscaping": "beautiful garden lawn professional",
+    "plumbing": "modern bathroom renovation clean",
+}
 
-def get_demo_photos(seed: str | None = None) -> dict:
+NICHE_ABOUT_QUERIES = {
+    "housekeeping": "professional cleaning service team",
+    "landscaping": "landscaper garden professional team",
+    "plumbing": "professional plumber at work",
+}
+
+
+def get_unsplash_photo(query: str, width: int, height: int, seed: str) -> str:
+    """
+    Return an Unsplash Source URL for a featured photo matching the query.
+    No API key required. Seed ensures deterministic selection per business.
+    """
+    encoded_query = quote_plus(query)
+    return f"https://source.unsplash.com/featured/{width}x{height}?{encoded_query}&sig={seed}"
+
+
+def get_demo_photos(seed: str | None = None, niche: str = "housekeeping",
+                    provided_hero: str | None = None, provided_about: str | None = None) -> dict:
     """
     Return photo URLs for hero and about sections.
     Pass seed (e.g. business_id) for deterministic, reproducible selection —
     same business always gets same photos, different businesses get different ones.
+
+    For housekeeping, uses the curated Unsplash library by default.
+    For other niches, falls back to Unsplash Source with niche-specific queries.
+    provided_hero / provided_about override everything.
     """
     rng = random.Random(seed)
-    hero = rng.choice(HERO_PHOTOS)
-    about = rng.choice(ABOUT_PHOTOS)
-    return {
-        "hero_photo_url": hero,
-        "about_photo_url": about,
-    }
+
+    # Hero photo
+    if provided_hero:
+        hero = provided_hero
+    elif niche == "housekeeping" and HERO_PHOTOS:
+        hero = rng.choice(HERO_PHOTOS)
+    else:
+        query = NICHE_HERO_QUERIES.get(niche, "clean home interior professional service")
+        hero = get_unsplash_photo(query, 1400, 900, seed or "")
+
+    # About photo
+    if provided_about:
+        about = provided_about
+    elif niche == "housekeeping" and ABOUT_PHOTOS:
+        about = rng.choice(ABOUT_PHOTOS)
+    else:
+        query = NICHE_ABOUT_QUERIES.get(niche, "professional service team at work")
+        about = get_unsplash_photo(query, 800, 1000, (seed or "") + "_about")
+
+    return {"hero_photo_url": hero, "about_photo_url": about}
