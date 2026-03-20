@@ -17,9 +17,11 @@
     "@context": "https://schema.org",
     "@type": "HouseCleaning",
     "name": "{{ business_name }}",
-    "telephone": "{{ phone }}"{% if address %},
-    "address": { "@type": "PostalAddress", "addressLocality": "{{ city }}", "addressRegion": "{{ state }}" }{% endif %}{% if rating and review_count > 0 %},
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "{{ rating }}", "reviewCount": "{{ review_count }}" }{% endif %}
+    "telephone": "{{ phone }}",
+    "areaServed": "{{ city }}, {{ state }}"{% if address %},
+    "address": { "@type": "PostalAddress", "streetAddress": "{{ address }}", "addressLocality": "{{ city }}", "addressRegion": "{{ state }}" }{% endif %}{% if rating and review_count > 0 %},
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "{{ rating }}", "reviewCount": "{{ review_count }}" }{% endif %}{% if website_url %},
+    "url": "{{ website_url }}"{% endif %}
   }
   </script>
 </head>
@@ -53,7 +55,6 @@
 
 <!-- Hero -->
 <section class="hero" {% if hero_photo_url %}style="--hero-photo: url('{{ hero_photo_url }}')"{% endif %}>
-  <div class="hero-overlay"></div>
   <div class="hero-content container">
     {% if rating and review_count > 0 %}
     <div class="hero-stars">★★★★★ <strong>{{ rating }}</strong> · {{ review_count }} reviews</div>
@@ -110,6 +111,33 @@
         <p>{{ svc.description }}</p>
       </div>
       {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Why {{ city }} Trusts Us</span>
+      <h2>What Makes Us Different</h2>
+    </div>
+    <div class="usp-grid">
+      <div class="usp-item animate-in">
+        <div class="usp-icon">🛡️</div>
+        <h3>Fully Insured &amp; Bonded</h3>
+        <p>Every cleaner is background-checked, bonded, and covered. You're protected — no exceptions.</p>
+      </div>
+      <div class="usp-item animate-in">
+        <div class="usp-icon">⭐</div>
+        <h3>Satisfaction Guaranteed</h3>
+        <p>Not 100% happy? We come back within 24 hours and make it right — completely free of charge.</p>
+      </div>
+      <div class="usp-item animate-in">
+        <div class="usp-icon">🌿</div>
+        <h3>Eco-Friendly Products</h3>
+        <p>We use safe, green-certified cleaning products that are effective for your home and kind to your family.</p>
+      </div>
     </div>
   </div>
 </section>

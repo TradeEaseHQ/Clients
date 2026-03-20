@@ -333,6 +333,31 @@ a { color: inherit; }
   line-height: 1.6;
 }
 
+/* ── USP Grid ── */
+.usp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+.usp-item {
+  text-align: center;
+  padding: 32px 24px;
+}
+.usp-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+.usp-item h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.usp-item p {
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
 /* ── Split Layout ── */
 .split-layout {
   display: flex;
@@ -884,6 +909,9 @@ a { color: inherit; }
 ══════════════════════════════════════ */
 @media (min-width: 768px) {
   .nav-logo img { max-height: 44px; }
+  .nav-hamburger { display: none; }
+  .nav-links { display: flex; align-items: center; gap: 24px; }
+  .nav-cta { display: none; } /* CTA still hidden at tablet */
 
   .hero h1 { font-size: 64px; }
 
@@ -902,7 +930,12 @@ a { color: inherit; }
   }
   .step { flex: 1; }
 
+  .split-layout { flex-direction: row; gap: 40px; align-items: center; }
   .split-layout.reverse { flex-direction: row-reverse; }
+  .split-text { flex: 1; }
+  .split-img { flex: 1; }
+
+  .usp-grid { grid-template-columns: repeat(3, 1fr); gap: 32px; }
 }
 
 /* ══════════════════════════════════════
