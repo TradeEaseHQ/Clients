@@ -24,6 +24,20 @@ def build_comparison(
     Returns the public URL of the uploaded page.
     """
     business_id = business["id"]
+    html = _build_comparison_html(business, analysis, demo_url)
+    business_name = business.get("name", "Your Business")
+    public_url = upload_comparison_html(business_id, html)
+    logger.info(f"[comparison_builder] Uploaded comparison for {business_name}: {public_url}")
+    return public_url
+
+
+def _build_comparison_html(
+    business: dict[str, Any],
+    analysis: dict[str, Any],
+    demo_url: str,
+) -> str:
+    """Build and return the comparison page HTML (without uploading)."""
+    business_id = business.get("id", "")
     business_name = business.get("name", "Your Business")
     city = business.get("city", "")
     state = business.get("state", "")
@@ -59,6 +73,9 @@ def build_comparison(
         )
     else:
         screenshot_section = '<div class="screenshot-fallback">Screenshot not available</div>'
+
+    # SEO checklist section
+    seo_section = _seo_checklist_html(analysis, _esc)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -490,6 +507,8 @@ def build_comparison(
     </div>
   </div>
 
+  {seo_section}
+
   <div class="cta">
     <p class="cta-text">Questions? Just reply to the email.</p>
     <p class="cta-subtext">No commitment required — happy to walk you through it.</p>
@@ -504,9 +523,64 @@ def build_comparison(
 </body>
 </html>"""
 
-    public_url = upload_comparison_html(business_id, html)
-    logger.info(f"[comparison_builder] Uploaded comparison for {business_name}: {public_url}")
-    return public_url
+    return html
+
+
+def _seo_checklist_html(analysis: dict, esc) -> str:
+    """Generate an SEO before/after checklist table from seo_gaps in raw_scores_json."""
+    raw = analysis.get("raw_scores_json") or {}
+    seo = raw.get("seo_gaps", {})
+    if not seo:
+        return ""  # No SEO data, skip the section
+
+    checks = [
+        ("meta_description", "Meta description"),
+        ("schema_org",       "Schema.org markup"),
+        ("open_graph",       "Open Graph tags"),
+        ("viewport_meta",    "Mobile viewport"),
+        ("h1_exists",        "Page heading (H1)"),
+    ]
+
+    their_count = seo.get("checks_passed", 0)
+    our_count = len(checks)  # v4 has all of these
+    pagespeed = seo.get("pagespeed_mobile")
+
+    rows = ""
+    for key, label in checks:
+        has_it = seo.get(key, False)
+        their_icon = "✓" if has_it else "✗"
+        their_color = "#22c55e" if has_it else "#ef4444"
+        rows += f"""
+        <tr>
+          <td style="padding:10px 16px;border-bottom:1px solid #f0f0f0;">{esc(label)}</td>
+          <td style="padding:10px 16px;border-bottom:1px solid #f0f0f0;text-align:center;color:{their_color};font-weight:600;">{their_icon}</td>
+          <td style="padding:10px 16px;border-bottom:1px solid #f0f0f0;text-align:center;color:#22c55e;font-weight:600;">✓</td>
+        </tr>"""
+
+    if pagespeed is not None:
+        speed_color = "#22c55e" if pagespeed >= 75 else "#ef4444"
+        rows += f"""
+        <tr>
+          <td style="padding:10px 16px;">Google PageSpeed (mobile)</td>
+          <td style="padding:10px 16px;text-align:center;color:{speed_color};font-weight:600;">{pagespeed}</td>
+          <td style="padding:10px 16px;text-align:center;color:#22c55e;font-weight:600;">90+</td>
+        </tr>"""
+
+    return f"""
+    <div style="margin:48px auto;max-width:700px;">
+      <h3 style="text-align:center;font-size:22px;margin-bottom:8px;">SEO &amp; Technical Checklist</h3>
+      <p style="text-align:center;color:#666;margin-bottom:24px;">Their current site: <strong>{their_count}/{len(checks)}</strong> basics covered &nbsp;·&nbsp; New site: <strong>{our_count}/{len(checks)}</strong></p>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+        <thead>
+          <tr style="background:#f8f8f8;">
+            <th style="padding:12px 16px;text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#666;">Item</th>
+            <th style="padding:12px 16px;text-align:center;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#666;">Current Site</th>
+            <th style="padding:12px 16px;text-align:center;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#666;">New Site</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    </div>"""
 
 
 def _what_we_added_bullets(weaknesses: list[str]) -> list[str]:
