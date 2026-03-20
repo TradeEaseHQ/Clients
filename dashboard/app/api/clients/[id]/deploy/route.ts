@@ -3,6 +3,9 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServer } from "@/lib/supabase";
 
+// TODO: Add auth guard before production — this route deploys to Vercel and
+// must be restricted to authenticated admin users only.
+
 const VERCEL_TOKEN = process.env.VERCEL_API_TOKEN;
 const VERCEL_TEAM = process.env.VERCEL_TEAM_ID; // optional
 
@@ -51,7 +54,8 @@ export async function POST(
     }
 
     // 4. Build Vercel project name (slugified business name)
-    const businessName = (clientSite.businesses as { name: string }).name;
+    const biz = clientSite.businesses;
+    const businessName = Array.isArray(biz) ? biz[0]?.name ?? "client" : (biz as { name: string })?.name ?? "client";
     const projectName = `tradeease-${businessName
       .toLowerCase()
       .replace(/[^a-z0-9]/g, "-")
@@ -93,6 +97,10 @@ export async function POST(
     }
 
     const deployment = await deployRes.json();
+
+    if (!deployment.url) {
+      return NextResponse.json({ error: "Vercel deployment returned no URL" }, { status: 500 });
+    }
     const deploymentUrl = `https://${deployment.url}`;
 
     // 6. Attach custom domain (if provided)
@@ -120,7 +128,7 @@ export async function POST(
     }
 
     // 7. Update client_sites record
-    await supabase
+    const { error: updateErr } = await supabase
       .from("client_sites")
       .update({
         hosting_status: "live",
@@ -129,6 +137,7 @@ export async function POST(
         live_at: new Date().toISOString(),
       })
       .eq("id", id);
+    if (updateErr) console.error("[deploy] DB update failed:", updateErr.message);
 
     return NextResponse.json({
       ok: true,
