@@ -201,7 +201,7 @@ def cli(
             sys.exit(1)
 
         # Alternate between v2 (bright) and v3 (dark premium) for variety
-        TEMPLATE_ROTATION = ["housekeeping-v2", "housekeeping-v3"]
+        TEMPLATE_ROTATION = ["housekeeping-v4"]
 
         for idx, biz in enumerate(businesses):
             biz_id = biz["id"]
@@ -340,6 +340,8 @@ def _build_injection_data(biz: dict, upgraded, brand_css_vars: str | None = None
         "years_in_business": extracted.years_in_business,
         "service_areas": extracted.service_areas,
         "booking_url": "#contact",
+        "business_id": str(biz.get("id", "")),
+        "chat_api_url": os.getenv("DASHBOARD_URL", "") + "/api/chat",
         "demo_banner_text": f"Demo site created for {biz['name']} by Trade Ease",
         "brand_css_vars": brand_css_vars,
         "hero_photo_url": photos.get("hero_photo_url"),
