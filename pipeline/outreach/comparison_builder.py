@@ -269,33 +269,6 @@ def build_comparison(
     }}
 
     /* Demo column */
-    .demo-badge {{
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--green-dim);
-      color: var(--green);
-      border: 1px solid rgba(61,220,132,0.2);
-      padding: 4px 12px;
-      border-radius: 99px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }}
-    .demo-badge-dot {{
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s infinite;
-    }}
-    @keyframes pulse {{
-      0%, 100% {{ opacity: 1; }}
-      50% {{ opacity: 0.4; }}
-    }}
-
     .demo-open-link {{
       display: inline-flex;
       align-items: center;
@@ -479,24 +452,20 @@ def build_comparison(
     <div class="col col-after">
       <div class="col-label label-after">
         <span class="col-label-dot"></span>
-        Your Demo
+        Your Demo — Ready to Go Live
       </div>
-      <div class="col-heading">Built for you</div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;">
+        <div class="col-heading" style="margin-bottom:0;">Built for you</div>
+        <a href="{_esc(demo_view_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link" style="margin-bottom:0;flex-shrink:0;">
+          Open in full screen ↗
+        </a>
+      </div>
       <iframe
         src="{_esc(demo_url)}"
         class="demo-frame"
         title="Demo site for {_esc(business_name)}"
         loading="lazy"
       ></iframe>
-      <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-shrink:0;">
-        <div class="demo-badge">
-          <span class="demo-badge-dot"></span>
-          Ready to go live
-        </div>
-        <a href="{_esc(demo_view_url)}" target="_blank" rel="noopener noreferrer" class="demo-open-link" style="margin-bottom:0;">
-          Open in full screen ↗
-        </a>
-      </div>
     </div>
   </div>
 
