@@ -173,6 +173,11 @@ CREATE TABLE IF NOT EXISTS client_sites (
   monthly_fee         DECIMAL(8,2),
   ai_agent_enabled    BOOL DEFAULT FALSE,
   ai_agent_config     JSONB,
+  onboarding_data     JSONB,                        -- Tally form responses from client
+  change_requests     JSONB DEFAULT '[]'::jsonb,    -- log of change requests
+  vercel_project_id   TEXT,                         -- Vercel project ID after first deploy
+  vercel_deployment_url TEXT,                       -- URL of latest Vercel deployment
+  notes               TEXT,                         -- internal notes
   live_at             TIMESTAMPTZ,
   created_at          TIMESTAMPTZ DEFAULT NOW()
 );
@@ -203,6 +208,16 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER businesses_updated_at
   BEFORE UPDATE ON businesses
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================
+-- MIGRATIONS — client_sites post-sale workflow columns
+-- Safe to re-run (IF NOT EXISTS guard)
+-- ============================================================
+ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS onboarding_data JSONB;
+ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS change_requests JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS vercel_project_id TEXT;
+ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS vercel_deployment_url TEXT;
+ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS notes TEXT;
 
 -- ============================================================
 -- Storage buckets (run separately in Supabase dashboard or via API)
