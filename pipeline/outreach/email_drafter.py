@@ -80,30 +80,39 @@ def _build_prompt(
 
     weakness_list = "\n".join(f"- {w}" for w in weaknesses) if weaknesses else "- Improvement areas identified"
 
-    return f"""Write a cold email from Ben to the owner of {name}, a cleaning business in {city}.
+    return f"""Write a cold outreach email from Ben to the owner of {name}, a cleaning business in {city}.
 
-Ben built them a free demo site. He's not a marketer. He's one person who noticed something about their site and took an hour to fix it.
+Ben noticed a specific problem with their site and put together a free demo showing how it could be fixed.
 
-WHAT BEN NOTICED:
+WHAT BEN NOTICED (pick the most impactful one):
 {weakness_list}
 
-LINKS:
-- Demo: {demo_url}
+LINKS TO INCLUDE:
 - Before/after: {comparison_url}
+- Demo: {demo_url}
 
 ANGLE: {angle}
 
-RULES — read these carefully:
-- Start with: "{greeting},"
-- Subject line: specific to {name}, max 8 words, sounds like a real person wrote it (NOT "I noticed your website" or "Quick question")
-- Body: 100–130 words. Short. Punchy. No fluff.
-- Mention ONE specific thing you noticed about their site (use the weaknesses list)
-- Link to the demo naturally — don't hype it, just say you built it
-- End with something low-pressure like "no pitch, just wanted to show you" or "worth a look if you're curious"
-- Sign off: "Ben\\ntradeeasehq.com"
-- DO NOT use: "I hope this finds you", "I wanted to reach out", "I came across your business", "leverage", "seamlessly", "game-changer", "take your business to the next level", or any phrase that screams marketing email
-- Write like a person, not a funnel. Short sentences. Real words.
-- HTML version: clean, max 600px, inline styles, demo link as a plain text hyperlink or simple button — nothing flashy
+EMAIL STRUCTURE — follow this closely:
+1. Open: "Hi [owner name if known, otherwise skip]," then 1 sentence saying you came across {name} and noticed something specific
+2. Middle: Name the ONE problem you found (use plain language, not technical terms) and connect it to lost business — missed calls, people leaving before requesting a quote, etc. Most people searching for a cleaner are on their phone. Make that real.
+3. Say you put together a quick demo showing how it could look and feel better.
+4. List both links on their own lines:
+   Before/after: {comparison_url}
+   Demo: {demo_url}
+5. One line about what you do: help cleaning businesses make their site better at turning visitors into calls and quote requests.
+6. End CTA: "Worth sending over a couple quick ideas for your site?" — nothing else after this.
+7. Sign off: "Ben\\ntradeeasehq.com"
+
+RULES:
+- Subject line: specific to {name}, max 8 words, written like a real person (not "Quick question" or "I noticed your website")
+- Body: 110–140 words total. Short sentences. No fluff.
+- Business impact language only — not website diagnostics. "Cost you real leads" not "slow load time"
+- Do NOT say "no pitch" — it IS a pitch
+- Do NOT say "I spent an hour" or imply you built it for free as a favour — frame it as a demo
+- Do NOT use: "I hope this finds you", "leverage", "seamlessly", "game-changer", "take your business to the next level", "I wanted to reach out and", or anything that reads like a template
+- Write like a real person. Short sentences. Real words.
+- HTML version: clean, max 600px, inline styles, links as plain hyperlinks — no flashy buttons
 - Plain text version: same content, no HTML tags
 
 Call the draft_email tool.
