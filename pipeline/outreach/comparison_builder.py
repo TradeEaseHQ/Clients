@@ -537,12 +537,13 @@ def _seo_checklist_html(analysis: dict, esc) -> str:
         ("meta_description", "Meta description"),
         ("schema_org",       "Schema.org markup"),
         ("open_graph",       "Open Graph tags"),
-        ("viewport_meta",    "Mobile viewport"),
+        ("viewport_meta",    "Mobile viewport tag"),
         ("h1_exists",        "Page heading (H1)"),
     ]
 
     their_count = seo.get("checks_passed", 0)
     our_count = len(checks)  # v4 has all of these
+    # TODO: If v4 template ever drops an SEO item, update this count
     pagespeed = seo.get("pagespeed_mobile")
 
     rows = ""
@@ -552,30 +553,30 @@ def _seo_checklist_html(analysis: dict, esc) -> str:
         their_color = "#22c55e" if has_it else "#ef4444"
         rows += f"""
         <tr>
-          <td style="padding:10px 16px;border-bottom:1px solid #f0f0f0;">{esc(label)}</td>
-          <td style="padding:10px 16px;border-bottom:1px solid #f0f0f0;text-align:center;color:{their_color};font-weight:600;">{their_icon}</td>
-          <td style="padding:10px 16px;border-bottom:1px solid #f0f0f0;text-align:center;color:#22c55e;font-weight:600;">✓</td>
+          <td style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);color:#cbd5e1;">{esc(label)}</td>
+          <td style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:center;color:{their_color};font-weight:600;">{their_icon}</td>
+          <td style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:center;color:#22c55e;font-weight:600;">✓</td>
         </tr>"""
 
     if pagespeed is not None:
         speed_color = "#22c55e" if pagespeed >= 75 else "#ef4444"
         rows += f"""
         <tr>
-          <td style="padding:10px 16px;">Google PageSpeed (mobile)</td>
-          <td style="padding:10px 16px;text-align:center;color:{speed_color};font-weight:600;">{pagespeed}</td>
-          <td style="padding:10px 16px;text-align:center;color:#22c55e;font-weight:600;">90+</td>
+          <td style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);color:#cbd5e1;">Google PageSpeed (mobile)</td>
+          <td style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:center;color:{speed_color};font-weight:600;">{pagespeed}</td>
+          <td style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:center;color:#22c55e;font-weight:600;">90+</td>
         </tr>"""
 
     return f"""
     <div style="margin:48px auto;max-width:700px;">
-      <h3 style="text-align:center;font-size:22px;margin-bottom:8px;">SEO &amp; Technical Checklist</h3>
-      <p style="text-align:center;color:#666;margin-bottom:24px;">Their current site: <strong>{their_count}/{len(checks)}</strong> basics covered &nbsp;·&nbsp; New site: <strong>{our_count}/{len(checks)}</strong></p>
-      <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+      <h3 style="text-align:center;font-size:22px;margin-bottom:8px;color:#f0f4ff;">SEO &amp; Technical Checklist</h3>
+      <p style="text-align:center;color:#94a3b8;margin-bottom:24px;">Their current site: <strong style="color:#cbd5e1;">{their_count}/{len(checks)}</strong> basics covered &nbsp;·&nbsp; New site: <strong style="color:#cbd5e1;">{our_count}/{len(checks)}</strong></p>
+      <table style="width:100%;border-collapse:collapse;background:#0f1623;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.4);border:1px solid #1e2d45;">
         <thead>
-          <tr style="background:#f8f8f8;">
-            <th style="padding:12px 16px;text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#666;">Item</th>
-            <th style="padding:12px 16px;text-align:center;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#666;">Current Site</th>
-            <th style="padding:12px 16px;text-align:center;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#666;">New Site</th>
+          <tr style="background:#080c14;">
+            <th style="padding:12px 16px;text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;">Item</th>
+            <th style="padding:12px 16px;text-align:center;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;">Current Site</th>
+            <th style="padding:12px 16px;text-align:center;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;">New Site</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
