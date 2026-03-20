@@ -29,17 +29,7 @@ def build_comparison(
     location = f"{city}, {state}".strip(", ") if city or state else ""
 
     screenshot_url = analysis.get("screenshot_desktop_url") or ""
-    total_score: int = analysis.get("total_score") or 0
     weaknesses: list[str] = analysis.get("top_3_weaknesses") or []
-    priority_tier: str = analysis.get("priority_tier") or "high_priority"
-
-    # Score badge colour
-    if total_score >= 75:
-        score_colour = "#16a34a"  # green
-    elif total_score >= 50:
-        score_colour = "#d97706"  # amber
-    else:
-        score_colour = "#dc2626"  # red
 
     # Weakness bullets for left column
     weakness_html = "\n".join(
@@ -54,11 +44,18 @@ def build_comparison(
         for b in added_bullets
     )
 
-    # Screenshot section
+    # Screenshot section — onerror fallback if URL fails to load
     if screenshot_url:
-        screenshot_section = f'<img src="{_esc(screenshot_url)}" alt="Current site screenshot" style="width:100%;border-radius:8px;border:1px solid #334155;display:block;" />'
+        screenshot_section = (
+            f'<img src="{_esc(screenshot_url)}" alt="Current site screenshot" '
+            f'style="width:100%;border-radius:8px;border:1px solid #334155;display:block;" '
+            f'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" />'
+            f'<div style="display:none;width:100%;height:220px;background:#1e293b;border-radius:8px;'
+            f'border:1px solid #334155;align-items:center;justify-content:center;color:#64748b;font-size:14px;">'
+            f'Screenshot unavailable</div>'
+        )
     else:
-        screenshot_section = '<div style="width:100%;height:300px;background:#1e293b;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:14px;">Screenshot not available</div>'
+        screenshot_section = '<div style="width:100%;height:220px;background:#1e293b;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:14px;">Screenshot not available</div>'
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -226,18 +223,21 @@ def build_comparison(
     <div>
       <div class="col-label current">Current Site</div>
       <div class="col-heading">Where things stand today</div>
-      <span class="score-badge" style="background:{score_colour}22;color:{score_colour};border:1px solid {score_colour}44;">
-        Score: {total_score}/100
-      </span>
       {screenshot_section}
-      {f'<ul class="weakness-list">{weakness_html}</ul>' if weaknesses else ''}
+      {f'<ul class="weakness-list" style="margin-top:16px">{weakness_html}</ul>' if weaknesses else ''}
     </div>
 
     <!-- RIGHT: Demo -->
     <div>
       <div class="col-label demo">Your Demo</div>
-      <div class="col-heading">Built for you — in under an hour</div>
-      <span class="built-badge">Built for you in 1 hour</span>
+      <div class="col-heading">Built for you</div>
+      <span class="built-badge">Ready to go live</span>
+      <div style="margin-bottom:8px;">
+        <a href="{_esc(demo_url)}" target="_blank" rel="noopener noreferrer"
+           style="font-size:13px;color:#60a5fa;text-decoration:none;">
+          Open demo in full screen →
+        </a>
+      </div>
       <iframe
         src="{_esc(demo_url)}"
         class="demo-frame"

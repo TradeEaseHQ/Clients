@@ -97,9 +97,9 @@ EMAIL STRUCTURE — follow this closely:
 1. Open: "Hi [owner name if known, otherwise skip]," then 1 sentence saying you came across {name} and noticed something specific
 2. Middle: Name the ONE problem you found (use plain language, not technical terms) and connect it to lost business — missed calls, people leaving before requesting a quote, etc. Most people searching for a cleaner are on their phone. Make that real.
 3. Say you put together a quick demo showing how it could look and feel better.
-4. List both links on their own lines:
-   Before/after: {comparison_url}
-   Demo: {demo_url}
+4. List both links on their own lines with descriptive anchor text:
+   HTML version: <a href="{comparison_url}">View before/after →</a> and <a href="{demo_url}">View demo →</a> — NEVER show the raw URL
+   Plain text version: "Before/after: {comparison_url}" and "Demo: {demo_url}"
 5. One line about what you do: help cleaning businesses make their site better at turning visitors into calls and quote requests.
 6. End CTA: "Worth sending over a couple quick ideas for your site?" — nothing else after this.
 7. Sign off: "Ben\\ntradeeasehq.com"
@@ -112,8 +112,8 @@ RULES:
 - Do NOT say "I spent an hour" or imply you built it for free as a favour — frame it as a demo
 - Do NOT use: "I hope this finds you", "leverage", "seamlessly", "game-changer", "take your business to the next level", "I wanted to reach out and", or anything that reads like a template
 - Write like a real person. Short sentences. Real words.
-- HTML version: clean, max 600px, inline styles, links as plain hyperlinks — no flashy buttons
-- Plain text version: same content, no HTML tags
+- HTML version: clean, max 600px, inline styles — no raw URLs visible, no flashy buttons
+- Plain text version: same content but with raw URLs written out, no HTML tags
 
 Call the draft_email tool.
 """
