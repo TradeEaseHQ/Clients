@@ -7,7 +7,7 @@ sites, drafts outreach emails. Human reviews and manually sends. Starting niche:
 
 ## Active Campaign
 - City: Austin, TX | Niche: housekeeping | Template: housekeeping-v4
-- Pipeline status: ingest + scoring + demo gen + outreach drafting complete. v4 template, SEO checker, AI chat, clients dashboard are planned/in-progress.
+- Pipeline status: ingest + scoring + demo gen + outreach drafting complete. v4 template active. SEO checker, AI chat, and clients dashboard are built.
 
 ## Load-Bearing Files
 | Area | File |
@@ -16,19 +16,18 @@ sites, drafts outreach emails. Human reviews and manually sends. Starting niche:
 | Template renderer | pipeline/generation/template_engine.py |
 | Photo selection | pipeline/generation/photos.py |
 | Content AI upgrader | pipeline/generation/content_upgrader.py |
-| SEO gap checker *(planned — not yet built)* | pipeline/analysis/seo_checker.py |
+| SEO gap checker | pipeline/analysis/seo_checker.py |
 | Comparison page | pipeline/outreach/comparison_builder.py |
 | DB schema (source of truth) | pipeline/db/schema.sql |
 | DB helpers (always use these) | pipeline/db/client.py |
 | Dashboard root layout + nav | dashboard/app/layout.tsx |
 | Outreach send route *(use as API route pattern)* | dashboard/app/api/outreach/[id]/send/route.ts |
-| Chat API *(planned — not yet built)* | dashboard/app/api/chat/route.ts |
-| Clients dashboard *(planned — not yet built)* | dashboard/app/clients/ |
+| Chat API | dashboard/app/api/chat/route.ts |
+| Clients dashboard | dashboard/app/clients/ |
 
 ## Active Templates
-- **housekeeping-v3** — currently active (being replaced)
-- **housekeeping-v4** — in progress, will be new default when built
-- v1/v2 — deprecated, do not edit
+- **housekeeping-v4** — current default (premium full-bleed, 12 sections, AI chat, SEO built in)
+- v1/v2/v3 — deprecated, do not edit
 
 ## Critical Rules
 - NEVER auto-send email — always human approval via dashboard
@@ -37,7 +36,7 @@ sites, drafts outreach emails. Human reviews and manually sends. Starting niche:
   in a deployed demo has no effect. Edit the template source files, then re-render.
 - template_engine.render() just needs the template directory to exist — no DB registration needed
 - Always use pipeline/db/client.py helpers for Supabase — never raw calls
-- Lead quality threshold: only build demos for lead_quality_score >= 40 *(scorer not yet implemented — planned in pipeline/analysis/scorer.py)*
+- Lead quality threshold: only build demos for lead_quality_score >= 40 (implemented in pipeline/analysis/lead_qualifier.py)
 - Franchise signals (Molly Maid, Merry Maids, etc.) are hard-disqualified — never target
 
 ## Env Vars (set in .env and Vercel)

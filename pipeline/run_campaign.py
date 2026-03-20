@@ -9,6 +9,7 @@ Each step is gated — run ingestion only, or the full pipeline, via --steps fla
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from typing import Optional
 
