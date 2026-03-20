@@ -189,7 +189,8 @@ def cli(
         from pipeline.generation.content_upgrader import ContentUpgrader
         from pipeline.generation.template_engine import render
         from pipeline.generation.storage_deploy import upload_demo
-        from pipeline.db.client import get_businesses_for_demo, save_demo_site, update_business_status, get_active_template
+        from pipeline.db.client import get_businesses_for_demo, save_demo_site, update_business_status, get_active_template, get_analysis_for_business, update_analysis_raw_scores, update_business_extracted_content
+        from pipeline.analysis.lead_qualifier import compute_lead_quality
 
         businesses = get_businesses_for_demo()
         logger.info(f"Found {len(businesses)} businesses eligible for demo generation")
@@ -207,6 +208,30 @@ def cli(
             biz_id = biz["id"]
             logger.info(f"Generating demo for: {biz['name']}")
             try:
+                # ── Lead quality gate ────────────────────────────────────────
+                analysis = get_analysis_for_business(biz_id)
+                lq = compute_lead_quality(biz, analysis or {})
+
+                # Persist lead_quality into raw_scores_json on the analysis row
+                if analysis:
+                    raw = analysis.get("raw_scores_json") or {}
+                    raw["lead_quality"] = lq
+                    update_analysis_raw_scores(analysis["id"], raw)
+
+                if lq["disqualified"] or lq["score"] < 40:
+                    logger.info(
+                        f"[qualify] Skipping {biz.get('name', '')}: "
+                        f"{lq['reason'] or f'quality score {lq[\"score\"]} < 40'}"
+                    )
+                    continue
+
+                # Store pitch_tier in extracted_content for use by email drafter
+                extracted_content = biz.get("extracted_content") or {}
+                extracted_content["pitch_tier"] = lq["pitch_tier"]
+                update_business_extracted_content(biz_id, extracted_content)
+                biz["extracted_content"] = extracted_content
+                # ── End lead quality gate ────────────────────────────────────
+
                 from pipeline.models import ExtractedContent
                 from pipeline.generation.color_scheme import scheme_for_v2, scheme_for_v3
                 extracted = ExtractedContent(**(biz.get("extracted_content") or {}))

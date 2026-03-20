@@ -129,6 +129,11 @@ def get_analysis_for_business(business_id: str) -> dict[str, Any] | None:
     return result.data[0] if result.data else None
 
 
+def update_analysis_raw_scores(analysis_id: str, raw_scores_json: dict[str, Any]) -> None:
+    """Overwrite raw_scores_json on a website_analyses row."""
+    get_client().table("website_analyses").update({"raw_scores_json": raw_scores_json}).eq("id", analysis_id).execute()
+
+
 # ============================================================
 # Demo Sites
 # ============================================================
