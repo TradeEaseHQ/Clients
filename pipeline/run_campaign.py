@@ -211,7 +211,7 @@ def cli(
             sys.exit(1)
 
         # Alternate between v2 (bright) and v3 (dark premium) for variety
-        TEMPLATE_ROTATION = ["housekeeping-v4"]
+        TEMPLATE_ROTATION = ["housekeeping-v5"]
 
         for idx, biz in enumerate(businesses):
             biz_id = biz["id"]
@@ -228,10 +228,8 @@ def cli(
                     update_analysis_raw_scores(analysis["id"], raw)
 
                 if lq["disqualified"] or lq["score"] < 40:
-                    logger.info(
-                        f"[qualify] Skipping {biz.get('name', '')}: "
-                        f"{lq['reason'] or f'quality score {lq[\"score\"]} < 40'}"
-                    )
+                    skip_reason = lq["reason"] or f"quality score {lq['score']} < 40"
+                    logger.info(f"[qualify] Skipping {biz.get('name', '')}: {skip_reason}")
                     continue
 
                 # Store pitch_tier in extracted_content for use by email drafter
