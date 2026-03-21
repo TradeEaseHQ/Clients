@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ business_name }} — Professional House Cleaning in {{ city }}, {{ state }}</title>
+  <meta name="description" content="{{ tagline }} Serving {{ city }}, {{ state }}. Call {{ phone }}.">
+  <meta property="og:title" content="{{ business_name }} — House Cleaning in {{ city }}, {{ state }}">
+  <meta property="og:description" content="{{ tagline }}">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  {% if brand_css_vars %}<style>:root { {{ brand_css_vars | safe }} }</style>{% endif %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HouseCleaning",
+    "name": "{{ business_name }}",
+    "telephone": "{{ phone }}",
+    "areaServed": "{{ city }}, {{ state }}"{% if address %},
+    "address": { "@type": "PostalAddress", "streetAddress": "{{ address }}", "addressLocality": "{{ city }}", "addressRegion": "{{ state }}" }{% endif %}{% if rating and review_count > 0 %},
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "{{ rating }}", "reviewCount": "{{ review_count }}" }{% endif %}{% if website_url %},
+    "url": "{{ website_url }}"{% endif %}
+  }
+  </script>
+</head>
+<body data-business-id="{{ business_id }}" data-chat-api="{{ chat_api_url }}">
+<div id="scroll-progress"></div>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  Demo site for {{ business_name }} by Trade Ease{% if website_url %} &mdash; <a href="{{ website_url }}" target="_blank" rel="noopener">View current site</a>{% endif %}
+</div>
+
+<!-- Nav -->
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      {% if logo_url %}<img src="{{ logo_url }}" alt="{{ business_name }} logo" onerror="this.style.display='none'">{% endif %}
+      <span class="nav-brand-name">{{ business_name }}</span>
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#reviews" class="nav-link">Reviews</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+    <a href="#contact" class="btn btn-primary nav-cta">Get a Free Quote</a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero — full-width grid, NOT inside .container -->
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-eyebrow">{{ city }}, {{ state }}</span>
+    <div class="reveal-wrap"><h1 class="reveal-text">Spotless Homes,<br><em>Every Time</em></h1></div>
+    <p class="hero-sub">{{ tagline }}</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn btn-primary btn-lg">Get a Free Quote &#8594;</a>
+      <a href="tel:{{ phone }}" class="btn btn-ghost btn-lg">{{ phone }}</a>
+    </div>
+    <div class="hero-trust-row">
+      <span>&#10003; Fully Insured</span>
+      <span>&#10003; Background Checked</span>
+      <span>&#10003; Satisfaction Guaranteed</span>
+    </div>
+  </div>
+  <div class="hero-photo">
+    {% if hero_photo_url %}
+    <img src="{{ hero_photo_url }}" alt="Clean home interior" loading="eager">
+    {% else %}
+    <div class="hero-photo-placeholder"></div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Proof Bar -->
+<div class="proof-bar">
+  <div class="proof-inner">
+    {% if rating and review_count > 0 %}
+    <div class="proof-item"><strong>{{ rating }} &#9733;</strong> on Google</div>
+    <div class="proof-divider"></div>
+    <div class="proof-item"><strong>{{ review_count }}+</strong> Five-Star Reviews</div>
+    <div class="proof-divider"></div>
+    {% endif %}
+    {% if years_in_business %}
+    <div class="proof-item"><strong>{{ years_in_business }}+</strong> Years Serving {{ city }}</div>
+    <div class="proof-divider"></div>
+    {% endif %}
+    <div class="proof-item">Fully Bonded &amp; Insured</div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">Eco-Friendly Products</div>
+  </div>
+</div>
+
+<!-- Services -->
+<section class="section" id="services">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">What We Offer</span>
+      <div class="reveal-wrap"><h2 class="reveal-text">Professional Cleaning Services</h2></div>
+    </div>
+    <div class="services-grid stagger">
+      {% for svc in services_enhanced %}
+      <div class="service-card">
+        <div class="service-card-text">
+          <h3>{{ svc.name }}</h3>
+          <p>{{ svc.description }}</p>
+        </div>
+        <div class="service-num">0{{ loop.index }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="split">
+      <div class="split-text">
+        <span class="eyebrow">About Us</span>
+        <div class="reveal-wrap"><h2 class="reveal-text">{{ business_name }}</h2></div>
+        <p class="about-quote">{{ trust_statement }}</p>
+        <p>{{ about_text }}</p>
+        <div class="pill-row">
+          <span class="pill">Fully Bonded &amp; Insured</span>
+          <span class="pill">Background Checked</span>
+          <span class="pill">Satisfaction Guaranteed</span>
+          {% if years_in_business %}<span class="pill">{{ years_in_business }}+ Years</span>{% endif %}
+        </div>
+      </div>
+      <div class="split-img fade-up">
+        {% if about_photo_url %}
+        <img src="{{ about_photo_url }}" alt="{{ business_name }} team" loading="lazy">
+        {% else %}
+        <img src="{{ hero_photo_url }}" alt="Clean home" loading="lazy">
+        {% endif %}
+        <div class="img-mask"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- What We Clean -->
+<section class="section" style="background:#fafafa;" id="rooms">
+  <div class="container">
+    <div class="split reverse">
+      <div class="split-text">
+        <span class="eyebrow">Room by Room</span>
+        <div class="reveal-wrap"><h2 class="reveal-text">Every Corner,<br><em>Every Time</em></h2></div>
+        <p>Nothing overlooked, nothing rushed. Every room receives a thorough, detailed clean from top to bottom.</p>
+        <div class="rooms-grid">
+          <span class="room-tag">Kitchen</span>
+          <span class="room-tag">Bathrooms</span>
+          <span class="room-tag">Bedrooms</span>
+          <span class="room-tag">Living Room</span>
+          <span class="room-tag">Windows &amp; Sills</span>
+          <span class="room-tag">Laundry Room</span>
+          <span class="room-tag">Entryways</span>
+          <span class="room-tag">Common Areas</span>
+        </div>
+      </div>
+      <div class="split-img fade-up">
+        {% if hero_photo_url %}
+        <img src="{{ hero_photo_url }}" alt="Immaculate home interior" loading="lazy">
+        {% else %}
+        <div class="hero-photo-placeholder" style="height:100%;"></div>
+        {% endif %}
+        <div class="img-mask"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reviews -->
+<section class="section" id="reviews">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">What Clients Say</span>
+      {% if rating and review_count > 0 %}
+      <div class="reviews-headline">
+        <div class="reviews-big-num">{{ rating }}</div>
+        <div class="reviews-meta-col">
+          <div class="reviews-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="reviews-meta">{{ review_count }} Google Reviews</div>
+        </div>
+      </div>
+      {% else %}
+      <div class="reveal-wrap"><h2 class="reveal-text">Loved Across {{ city }}</h2></div>
+      {% endif %}
+    </div>
+    <div class="reviews-grid stagger">
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="review-text">"The most thorough clean I have ever had. My home genuinely sparkles &mdash; I will be booking every month without question."</p>
+        <div class="review-author">Sarah M. &mdash; {{ city }}, {{ state }}</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="review-text">"Reliable, professional, and genuinely wonderful. They show up on time and always go above and beyond what I expect."</p>
+        <div class="review-author">James T. &mdash; {{ city }}, {{ state }}</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="review-text">"Booked a move-out clean and received my full deposit back. The best cleaning service in {{ city }} &mdash; nothing comes close."</p>
+        <div class="review-author">Linda K. &mdash; {{ city }}, {{ state }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" style="background:#fafafa;">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Simple Process</span>
+      <div class="reveal-wrap"><h2 class="reveal-text">From Quote to Clean<br><em>in Three Steps</em></h2></div>
+    </div>
+    <div class="steps stagger">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Request a Free Quote</h3>
+          <p>Fill out our quick form or call us directly. You will hear back within hours with a clear, no-pressure quote tailored to your home.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>We Arrive Ready</h3>
+          <p>Our team shows up on time with everything needed. You do not lift a finger &mdash; we handle every detail from start to finish.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Walk In to Spotless</h3>
+          <p>Come home to a deeply cleaned space. Not completely satisfied? We return and make it right &mdash; at no additional charge.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Service Areas -->
+{% if service_areas and service_areas | length > 1 %}
+<section class="section" id="area">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Where We Work</span>
+      <div class="reveal-wrap"><h2 class="reveal-text">Serving {{ city }}<br>&amp; Surrounding Areas</h2></div>
+      {% if service_area_text %}<p class="section-sub">{{ service_area_text }}</p>{% endif %}
+    </div>
+    <div class="area-tags">
+      {% for area in service_areas %}<span class="area-tag">{{ area }}</span>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-header" style="max-width:700px;">
+      <span class="eyebrow">Questions</span>
+      <div class="reveal-wrap"><h2 class="reveal-text">Common Questions</h2></div>
+    </div>
+    <div class="faq-list" style="max-width:700px;">
+      {% for item in faq_items %}
+      <div class="faq-item">
+        <button class="faq-q">{{ item.question }}<span class="faq-icon">+</span></button>
+        <div class="faq-a-wrap">
+          <div class="faq-a-inner">
+            <div class="faq-a">{{ item.answer }}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Quote Form -->
+<section class="section" id="contact" style="background:#fafafa;">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Get Started</span>
+      <div class="reveal-wrap"><h2 class="reveal-text">Request Your Free Quote</h2></div>
+      <p class="section-sub">We respond within a few hours. No commitment, no pressure.</p>
+    </div>
+    <div class="form-wrap">
+      <form id="quote-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" placeholder="jane@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" placeholder="(555) 000-0000">
+          </div>
+          <div class="form-group">
+            <label>Home Size</label>
+            <select>
+              <option value="">Select...</option>
+              <option>Studio / 1 Bedroom</option>
+              <option>2 Bedrooms</option>
+              <option>3 Bedrooms</option>
+              <option>4+ Bedrooms</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Service Needed</label>
+            <select>
+              <option value="">Select...</option>
+              {% for svc in services_enhanced %}<option>{{ svc.name }}</option>{% endfor %}
+              <option>Not sure — let's talk</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>How Often?</label>
+            <select>
+              <option value="">Select...</option>
+              <option>One-time clean</option>
+              <option>Weekly</option>
+              <option>Bi-weekly</option>
+              <option>Monthly</option>
+            </select>
+          </div>
+          <div class="form-group span2">
+            <label>Message (optional)</label>
+            <textarea placeholder="Tell us about your home or any special requests..."></textarea>
+          </div>
+          <div class="form-group span2">
+            <button type="submit" class="btn btn-primary btn-full btn-lg">Send My Request &#8594;</button>
+            <p class="form-note">Typically responds within 2 hours. Your information is never shared.</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-name">{{ business_name }}</div>
+    <div class="footer-details">
+      <a href="tel:{{ phone }}">{{ phone }}</a>
+      {% if address %}<span>{{ address }}, {{ city }}, {{ state }}</span>{% else %}<span>{{ city }}, {{ state }}</span>{% endif %}
+    </div>
+    <div class="footer-copy">&copy; {{ business_name }}. Demo site created by <a href="https://tradeeasehq.com" target="_blank" rel="noopener">Trade Ease</a>. This is not the live website.</div>
+  </div>
+</footer>
+
+<!-- Chat Widget -->
+<button class="chat-btn" id="chat-btn">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  Chat With Us
+</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <span>{{ business_name }}</span>
+    <button class="chat-close" id="chat-close" aria-label="Close chat">&#215;</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-note">Virtual assistant &mdash; live feature preview</div>
+    <div class="chat-bubble bot">Hi! How can I help you today?</div>
+  </div>
+  <div class="chat-footer">
+    <input type="text" id="chat-input" placeholder="Ask a question..." autocomplete="off">
+    <button class="chat-send" id="chat-send" aria-label="Send">&#8594;</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Dynamic nav top offset for demo banner
+  (function() {
+    var banner = document.querySelector('.demo-banner');
+    var nav = document.getElementById('main-nav');
+    var bar = document.getElementById('scroll-progress');
+    function update() {
+      var h = banner ? banner.offsetHeight : 0;
+      if (nav) nav.style.top = h + 'px';
+      if (bar) bar.style.top = h + 'px';
+    }
+    update();
+    window.addEventListener('resize', update);
+  })();
+</script>
+</body>
+</html>
