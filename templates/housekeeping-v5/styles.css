@@ -669,3 +669,164 @@ a { color: inherit; text-decoration: none; }
   transition: background 0.2s;
 }
 .chat-send:hover { background: var(--brand-dark); }
+
+/* ════════════════════════════════════════
+   ANIMATION SYSTEM
+   ════════════════════════════════════════ */
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* 1. Text Wipe Reveal
+   Usage: wrap the element in <div class="reveal-wrap"> and add class="reveal-text" to the element.
+   JS adds .is-revealed to the .reveal-wrap container; stagger via --delay CSS var */
+.reveal-wrap { overflow: hidden; display: block; }
+.reveal-text {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 0.75s var(--ease-out-expo);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal-wrap.is-revealed .reveal-text { transform: translateY(0); }
+
+/* 2. Image Mask Reveal — handled by .img-mask within .split-img (defined above) */
+
+/* 3. Card Stagger
+   Usage: add class="stagger" to the grid container. JS adds .is-revealed.
+   Cards automatically get delay based on nth-child (up to 6). */
+.stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s var(--ease-out-expo), transform 0.55s var(--ease-out-expo);
+}
+.stagger.is-revealed > *:nth-child(1) { transition-delay: 0ms; }
+.stagger.is-revealed > *:nth-child(2) { transition-delay: 80ms; }
+.stagger.is-revealed > *:nth-child(3) { transition-delay: 160ms; }
+.stagger.is-revealed > *:nth-child(4) { transition-delay: 240ms; }
+.stagger.is-revealed > *:nth-child(5) { transition-delay: 320ms; }
+.stagger.is-revealed > *:nth-child(6) { transition-delay: 400ms; }
+.stagger.is-revealed > * { opacity: 1; transform: translateY(0); }
+
+/* 4. Fade-up (single elements, not staggered) */
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
+  transition-delay: var(--delay, 0ms);
+}
+.fade-up.is-revealed { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ════════════════════════════════════════ */
+
+/* ── Tablet (768px+) ── */
+@media (min-width: 768px) {
+  /* Nav */
+  .nav-links { display: flex; }
+  .nav-hamburger { display: none; }
+  .nav-cta { display: none; } /* CTA only on desktop */
+
+  /* Hero stays stacked on tablet, but photo is shown */
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-photo { min-height: 50vh; }
+  .hero-text { padding: 80px 60px; }
+  .hero h1 { font-size: clamp(44px, 6vw, 64px); }
+
+  /* Services 2-col on tablet */
+  .services-grid { grid-template-columns: 1fr 1fr; border-left: 1px solid var(--border); }
+  .service-card { border-left: none; border-right: none; grid-template-columns: 1fr; }
+
+  /* Split sections — side by side */
+  .split { grid-template-columns: 1fr 1fr; }
+  .split.reverse .split-img { order: -1; }
+
+  /* Reviews 2-col */
+  .reviews-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Steps horizontal */
+  .steps { flex-direction: row; gap: 0; border-top: none; border-left: 1px solid var(--border); }
+  .step {
+    flex: 1;
+    grid-template-columns: 1fr;
+    padding: 48px 36px;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+  }
+  .step:last-child { border-right: none; }
+  .step-num { margin-bottom: 12px; }
+
+  /* Form */
+  .form-wrap { max-width: 600px; }
+
+  /* Container padding */
+  .container { padding: 0 60px; }
+  .proof-inner { padding: 0 60px; }
+  .footer-inner { padding: 0 60px; }
+  .nav-inner { padding: 0 60px; }
+}
+
+/* ── Desktop (1024px+) ── */
+@media (min-width: 1024px) {
+  /* Nav */
+  .nav-cta { display: inline-flex; }
+  .nav-inner { padding: 0 80px; }
+
+  /* Hero — 55/45 split, photo bleeds right */
+  .hero { grid-template-columns: 55% 45%; min-height: calc(100vh - var(--nav-h)); }
+  .hero-text { padding: 100px 80px 100px 80px; }
+  .hero-photo { min-height: unset; }
+  .hero h1 { font-size: clamp(52px, 4.5vw, 80px); }
+
+  /* Services 3-col */
+  .services-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Split sections — image bleeds to viewport edge */
+  .split { gap: 0; }
+  /* When image is on the right: text has right padding, image bleeds right */
+  .split:not(.reverse) .split-text { padding-right: 80px; }
+  .split:not(.reverse) .split-img {
+    margin-right: calc(-1 * ((100vw - 1280px) / 2) - 40px);
+    border-radius: 0;
+  }
+  /* When image is on the left (reverse): image bleeds left */
+  .split.reverse .split-img {
+    order: -1;
+    margin-left: calc(-1 * ((100vw - 1280px) / 2) - 40px);
+  }
+  .split.reverse .split-text { padding-left: 80px; }
+
+  /* Reviews 3-col */
+  .reviews-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Form 2-col grid */
+  .form-wrap { max-width: 800px; }
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .span2 { grid-column: 1 / -1; }
+
+  /* Container */
+  .container { padding: 0 80px; }
+  .proof-inner { padding: 0 80px; }
+  .footer-inner { padding: 0 80px; }
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 767px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-text { padding: 60px 20px; order: 1; }
+  .hero-photo { min-height: 55vw; order: 2; }
+  .hero h1 { font-size: 40px; }
+  .section { padding: 64px 0; }
+  .section-header h2 { font-size: 30px; }
+  .container { padding: 0 20px; }
+  .proof-inner { padding: 0 20px; }
+  .footer-inner { padding: 0 20px; }
+  .nav-inner { padding: 0 20px; }
+  .step { grid-template-columns: 60px 1fr; gap: 16px; padding: 32px 0; }
+  .step-num { font-size: 48px; }
+  .reviews-big-num { font-size: 52px; }
+  .chat-panel { right: 16px; left: 16px; width: auto; bottom: 80px; }
+  .chat-btn { right: 16px; bottom: 20px; }
+}
