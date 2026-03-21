@@ -1,0 +1,32 @@
+{
+  "template_id": "housekeeping-v5",
+  "niche": "housekeeping",
+  "version": "1.0",
+  "description": "Luxury editorial v5 — cinematic animations, edge-bleeding photography, DM Serif Display, zero rounded corners",
+  "fields": {
+    "business_name":    { "required": true,  "type": "string",  "source": "businesses.name" },
+    "phone":            { "required": true,  "type": "string",  "source": "businesses.phone" },
+    "city":             { "required": true,  "type": "string",  "source": "businesses.city" },
+    "state":            { "required": true,  "type": "string",  "source": "businesses.state" },
+    "tagline":          { "required": false, "type": "string",  "source": "ai_generated",    "fallback": "Professional cleaning you can trust." },
+    "about_text":       { "required": false, "type": "text",    "source": "ai_generated",    "fallback": "We take pride in delivering exceptional results every visit." },
+    "trust_statement":  { "required": false, "type": "string",  "source": "ai_generated",    "fallback": "Your home deserves the best care." },
+    "service_area_text":{ "required": false, "type": "string",  "source": "ai_generated",    "fallback": "" },
+    "services_enhanced":{ "required": false, "type": "list",    "source": "ai_generated",    "fallback": [{"name": "Standard Cleaning", "description": "Top-to-bottom clean for every room."}, {"name": "Deep Cleaning", "description": "Detailed clean of every surface and corner."}, {"name": "Move-In/Out Cleaning", "description": "Thorough clean for moves and transitions."}] },
+    "faq_items":        { "required": false, "type": "list",    "source": "ai_generated",    "fallback": [{"question": "How do I get a quote?", "answer": "Fill out our quick form and we'll respond within 2 hours."}, {"question": "Are you insured?", "answer": "Yes — fully bonded and insured for your peace of mind."}] },
+    "service_areas":    { "required": false, "type": "list",    "source": "extracted_content.service_areas", "fallback": [] },
+    "rating":           { "required": false, "type": "decimal", "source": "businesses.rating" },
+    "review_count":     { "required": false, "type": "integer", "source": "businesses.review_count", "fallback": 0 },
+    "years_in_business":{ "required": false, "type": "integer", "source": "extracted_content.years_in_business" },
+    "owner_name":       { "required": false, "type": "string",  "source": "extracted_content.owner_name" },
+    "address":          { "required": false, "type": "string",  "source": "businesses.address" },
+    "logo_url":         { "required": false, "type": "string",  "source": "generated" },
+    "hero_photo_url":   { "required": false, "type": "string",  "source": "generated",       "fallback": "" },
+    "about_photo_url":  { "required": false, "type": "string",  "source": "generated",       "fallback": "" },
+    "brand_css_vars":   { "required": false, "type": "string",  "source": "generated",       "fallback": "" },
+    "website_url":      { "required": false, "type": "string",  "source": "businesses.website_url" },
+    "booking_url":      { "required": false, "type": "string",  "source": "static",          "fallback": "#contact" },
+    "business_id":      { "required": false, "type": "string",  "source": "businesses.id",   "fallback": "" },
+    "chat_api_url":     { "required": false, "type": "string",  "source": "static",          "fallback": "/api/chat" }
+  }
+}
