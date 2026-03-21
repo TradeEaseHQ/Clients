@@ -1,0 +1,287 @@
+/* ── Google Fonts import handled in HTML ── */
+
+/* ── Custom Properties ── */
+:root {
+  --brand: #1a6b4a;
+  --brand-dark: #14543a;
+  --text: #111111;
+  --text-muted: #555555;
+  --bg: #ffffff;
+  --dark: #0d0d0d;
+  --border: #e8e8e8;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --nav-h: 68px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-slide: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Demo Banner ── */
+.demo-banner {
+  background: var(--dark);
+  color: rgba(255,255,255,0.75);
+  text-align: center;
+  font-size: 12px;
+  padding: 9px 20px;
+  position: relative;
+  z-index: 300;
+  letter-spacing: 0.02em;
+}
+.demo-banner a { color: rgba(255,255,255,0.9); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── Scroll Progress ── */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--brand);
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ── Nav ── */
+.nav {
+  position: sticky;
+  top: 0;
+  height: var(--nav-h);
+  background: var(--bg);
+  z-index: 200;
+  transition: box-shadow 0.3s ease;
+}
+.nav.scrolled { box-shadow: 0 1px 0 var(--border); }
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.nav-logo img { max-height: 40px; width: auto; object-fit: contain; }
+.nav-brand-name { font-weight: 600; font-size: 15px; color: var(--text); white-space: nowrap; }
+.nav-links { display: none; gap: 36px; }
+.nav-link { font-size: 13px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.01em; transition: color 0.2s; }
+.nav-link:hover { color: var(--text); }
+.nav-cta { display: none; }
+
+/* ── Nav Hamburger ── */
+.nav-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px; height: 36px;
+  background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0;
+}
+.nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: 0.2s; }
+
+/* ── Mobile nav menu ── */
+.nav-links.open {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: var(--nav-h);
+  left: 0; right: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 199;
+}
+.nav-links.open .nav-link {
+  display: block;
+  width: 100%;
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+.nav-links.open .nav-link:last-child { border-bottom: none; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 28px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  border-radius: 0;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--brand); color: #ffffff; }
+.btn-primary:hover { background: var(--brand-dark); }
+.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--text); }
+.btn-lg { padding: 16px 36px; font-size: 15px; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ── Section defaults ── */
+.section { padding: 100px 0; }
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ── Section Header ── */
+.section-header { margin-bottom: 56px; }
+.section-header.centered { text-align: center; }
+.eyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--brand);
+  margin-bottom: 14px;
+}
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.7;
+}
+.section-header.centered .section-sub { margin: 0 auto; }
+
+/* ── HERO ── */
+.hero {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  min-height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+}
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 80px 80px 40px;
+  position: relative;
+}
+.hero-photo {
+  position: relative;
+  overflow: hidden;
+  /* Bleeds to viewport right edge — no right padding needed since .hero is full-width */
+}
+.hero-photo img,
+.hero-photo-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: kenburns 10s ease-out forwards;
+}
+.hero-photo-placeholder {
+  background: linear-gradient(135deg, #e8f5ef 0%, #c8e6d8 100%);
+  animation: none;
+}
+
+@keyframes kenburns {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1.0); }
+}
+
+.hero-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--brand);
+  margin-bottom: 16px;
+  display: block;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 5vw, 80px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+.hero h1 em { font-style: italic; }
+.hero-sub {
+  font-size: 17px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 460px;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.hero-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.hero-trust-row span { display: flex; align-items: center; gap: 6px; }
+
+/* ── Proof Bar ── */
+.proof-bar {
+  background: var(--dark);
+  color: rgba(255,255,255,0.8);
+  padding: 18px 0;
+}
+.proof-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.proof-item {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  padding: 0 28px;
+}
+.proof-item strong { color: #ffffff; font-weight: 600; }
+.proof-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
