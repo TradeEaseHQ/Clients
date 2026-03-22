@@ -103,7 +103,7 @@ BUSINESS DATA:
 Generate the following copy and return ONLY valid JSON:
 {{
   "tagline": "<10-14 word benefit-focused tagline using their real USPs — no generic fluff>",
-  "about_text": "<120-150 word about section. Warm, personal. Reference their actual services, areas, USPs. If owner name known, use it naturally. Do NOT mention Trade Ease.>",
+  "about_text": "<75-100 words. Traditional warm marketing prose — full flowing sentences, not punchy fragments. DO NOT mention the owner's name or any individual person. Open with 'As your trusted local cleaning service' or a similar warm positioning line. If years_in_business is known, include a sentence like 'With over X years of experience, our dedicated team...'. Mention their specific services and any unique guarantees (e.g. 'an exclusive 7-day satisfaction guarantee'). If review_count >= 1000, include 'backed by thousands of 5-star reviews'; if review_count >= 100, include 'backed by hundreds of 5-star reviews'. Close with 'experience the [Business Name] difference today!' Do NOT mention Trade Ease.>",
   "services_enhanced": [
     {{"name": "<their service name>", "description": "<2-sentence benefit-focused description>"}}
   ],
