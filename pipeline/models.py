@@ -24,6 +24,7 @@ class BusinessRaw(BaseModel):
     category: Optional[str] = None
     niche: str = "housekeeping"
     source: str = "google_places"  # google_places | self_scrape | manual
+    hours: Optional[str] = None  # raw weekday hours from Google Places API
 
     @field_validator("rating")
     @classmethod
@@ -40,7 +41,11 @@ class BusinessRaw(BaseModel):
         return v
 
     def to_db_dict(self) -> dict:
-        return self.model_dump(exclude_none=False)
+        data = self.model_dump(exclude={"hours"}, exclude_none=False)
+        # Store hours in extracted_content JSONB so it survives into demo generation
+        if self.hours:
+            data["extracted_content"] = {"hours": self.hours}
+        return data
 
 
 class ExtractedContent(BaseModel):
@@ -53,6 +58,9 @@ class ExtractedContent(BaseModel):
     owner_name: Optional[str] = None
     tone: str = "professional"  # friendly | professional | formal | family_run
     brand_color: Optional[str] = None  # hex color extracted from website CSS, e.g. "#1a73e8"
+    hours: Optional[str] = None          # e.g. "Mon–Sat 8am–6pm"
+    facebook_url: Optional[str] = None   # full URL if found on their site
+    instagram_url: Optional[str] = None  # full URL if found on their site
 
 
 class ScoringResult(BaseModel):

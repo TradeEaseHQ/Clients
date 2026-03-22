@@ -20,6 +20,27 @@ logger = logging.getLogger(__name__)
 
 _client: Optional[anthropic.Anthropic] = None
 
+
+def _extract_social_links(html: str) -> tuple[Optional[str], Optional[str]]:
+    """Extract Facebook and Instagram URLs from HTML via regex. No LLM needed."""
+    facebook = None
+    instagram = None
+
+    fb_match = re.search(r'https?://(?:www\.)?facebook\.com/[a-zA-Z0-9._/-]+', html)
+    if fb_match:
+        url = fb_match.group(0).rstrip('/"\'')
+        # Skip generic facebook.com/share links
+        if 'facebook.com/share' not in url and 'facebook.com/sharer' not in url:
+            facebook = url
+
+    ig_match = re.search(r'https?://(?:www\.)?instagram\.com/[a-zA-Z0-9._/-]+', html)
+    if ig_match:
+        url = ig_match.group(0).rstrip('/"\'')
+        if 'instagram.com/p/' not in url:  # skip post links
+            instagram = url
+
+    return facebook, instagram
+
 EXTRACTION_PROMPT = """
 You are extracting structured business information from a local service company's website HTML.
 Extract ONLY information that is explicitly present in the HTML — do NOT invent or guess.
@@ -68,6 +89,9 @@ class ContentExtractor:
         # Extract brand color from raw HTML (before stripping — styles are key)
         brand_color = extract_brand_color(html[:50_000])
 
+        # Extract social links via regex (no LLM needed)
+        facebook_url, instagram_url = _extract_social_links(html[:50_000])
+
         # Strip script/style tags before sending to Claude — waste of tokens
         clean_html = self._strip_noise(html)
         # Use first 20k chars — enough for extraction, keeps cost low
@@ -100,6 +124,8 @@ class ContentExtractor:
                 owner_name=data.get("owner_name"),
                 tone=data.get("tone", "professional"),
                 brand_color=brand_color,
+                facebook_url=facebook_url,
+                instagram_url=instagram_url,
             )
 
             logger.info(
@@ -107,7 +133,9 @@ class ContentExtractor:
                 f"{len(result.services_offered)} services, "
                 f"{len(result.service_areas)} areas, "
                 f"owner={result.owner_name}, tone={result.tone}, "
-                f"brand_color={result.brand_color}"
+                f"brand_color={result.brand_color}, "
+                f"facebook={result.facebook_url is not None}, "
+                f"instagram={result.instagram_url is not None}"
             )
             return result
 

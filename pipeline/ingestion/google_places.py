@@ -29,6 +29,7 @@ FIELD_MASK = ",".join([
     "places.userRatingCount",
     "places.primaryTypeDisplayName",
     "places.addressComponents",
+    "places.regularOpeningHours",
 ])
 
 
@@ -110,6 +111,15 @@ class GooglePlacesSource(LeadSourceAdapter):
                 elif "postal_code" in types:
                     parsed_zip = component.get("longText")
 
+            # Parse opening hours from Google Places response
+            hours_str = None
+            opening = place.get("regularOpeningHours") or place.get("currentOpeningHours") or {}
+            weekday_descs = opening.get("weekdayDescriptions", [])
+            if weekday_descs:
+                # Compact the array into a short string: "Mon–Sat 8am–6pm" style
+                # Just store the raw array as newline-joined string for now
+                hours_str = "\n".join(weekday_descs)
+
             return BusinessRaw(
                 google_place_id=place.get("id"),
                 name=name,
@@ -124,6 +134,7 @@ class GooglePlacesSource(LeadSourceAdapter):
                 category=place.get("primaryTypeDisplayName", {}).get("text"),
                 niche=self._query_to_niche(query),
                 source="google_places",
+                hours=hours_str,
             )
         except Exception as e:
             logger.warning(f"[google_places] Failed to parse place: {e}")

@@ -367,10 +367,27 @@
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-name">{{ business_name }}</div>
-    <div class="footer-details">
-      <a href="tel:{{ phone }}">{{ phone }}</a>
-      {% if address %}<span>{{ address }}, {{ city }}, {{ state }}</span>{% else %}<span>{{ city }}, {{ state }}</span>{% endif %}
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-name">{{ business_name }}</div>
+        <a href="tel:{{ phone }}" class="footer-phone">{{ phone }}</a>
+        {% if address %}<div class="footer-addr">{{ address }}</div>{% endif %}
+        <div class="footer-addr">{{ city }}, {{ state }}</div>
+      </div>
+      {% if hours %}
+      <div class="footer-col">
+        <div class="footer-col-heading">Hours</div>
+        <div class="footer-hours">{{ hours | replace("\n", "<br>") | safe }}</div>
+      </div>
+      {% endif %}
+      <div class="footer-col">
+        <div class="footer-col-heading">Follow Us</div>
+        <div class="footer-socials">
+          {% if facebook_url %}<a href="{{ facebook_url }}" target="_blank" rel="noopener" class="footer-social-link">Facebook</a>{% endif %}
+          {% if instagram_url %}<a href="{{ instagram_url }}" target="_blank" rel="noopener" class="footer-social-link">Instagram</a>{% endif %}
+          {% if not facebook_url and not instagram_url %}<span class="footer-social-na">—</span>{% endif %}
+        </div>
+      </div>
     </div>
     <div class="footer-copy">&copy; {{ business_name }}. Demo site created by <a href="https://tradeeasehq.com" target="_blank" rel="noopener">Trade Ease</a>. This is not the live website.</div>
   </div>

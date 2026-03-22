@@ -180,7 +180,11 @@ def cli(
                     if capture.logo_color:
                         extracted = extracted.model_copy(update={"brand_color": capture.logo_color})
                         logger.info(f"[color] Using screenshot logo color {capture.logo_color} (overrides CSS)")
-                    update_business_extracted_content(biz_id, extracted.model_dump())
+                    # Merge: preserve any fields already set (e.g. hours from Google Places)
+                    # that the content extractor doesn't explicitly populate.
+                    existing = biz.get("extracted_content") or {}
+                    merged = {**existing, **{k: v for k, v in extracted.model_dump().items() if v is not None}}
+                    update_business_extracted_content(biz_id, merged)
 
                 update_business_status(biz_id, "scored")
 
@@ -380,6 +384,9 @@ def _build_injection_data(biz: dict, upgraded, brand_css_vars: str | None = None
         "rooms_photo_url": photos.get("rooms_photo_url"),
         "about_photo_url": photos.get("about_photo_url"),
         "logo_url": logo_url,
+        "hours": (extracted.hours if extracted else None) or "",
+        "facebook_url": (extracted.facebook_url if extracted else None) or "",
+        "instagram_url": (extracted.instagram_url if extracted else None) or "",
     }
 
 
