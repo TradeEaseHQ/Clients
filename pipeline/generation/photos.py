@@ -32,7 +32,6 @@ HERO_PHOTOS = [
 ABOUT_PHOTOS = [
     f"{_BASE}1581578731548-c64695cc6952{_ABOUT}",  # woman cleaning window shutters
     f"{_BASE}1628177142898-93e36e4e3a50{_ABOUT}",  # gloved hand spraying disinfectant
-    f"{_BASE}1563453392212-326f5e854473{_ABOUT}",  # hand holding yellow spray bottle
     f"{_BASE}1585421514738-01798e348b17{_ABOUT}",  # blue gloves, professional cleaning
     f"{_BASE}1556909172-54557c7e4fb7{_ABOUT}",     # small clean kitchen scene
 ]

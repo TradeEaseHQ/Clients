@@ -54,47 +54,63 @@
   </div>
 </nav>
 
-<!-- Hero — full-width grid, NOT inside .container -->
+<!-- Hero — full-viewport image with text overlaid, dark gradient for readability -->
 <section class="hero">
-  <div class="hero-text">
-    <span class="hero-eyebrow">{{ city }}, {{ state }}</span>
-    <div class="reveal-wrap"><h1 class="reveal-text">Spotless Homes,<br><em>Every Time</em></h1></div>
-    <p class="hero-sub">{{ tagline }}</p>
-    <div class="hero-actions">
-      <a href="#contact" class="btn btn-primary btn-lg">Get a Free Quote &#8594;</a>
-      <a href="tel:{{ phone }}" class="btn btn-ghost btn-lg">{{ phone }}</a>
-    </div>
-    <div class="hero-trust-row">
-      <span>&#10003; Fully Insured</span>
-      <span>&#10003; Background Checked</span>
-      <span>&#10003; Satisfaction Guaranteed</span>
-    </div>
-  </div>
-  <div class="hero-photo">
+  <div class="hero-image">
     {% if hero_photo_url %}
     <img src="{{ hero_photo_url }}" alt="Clean home interior" loading="eager">
     {% else %}
     <div class="hero-photo-placeholder"></div>
     {% endif %}
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-eyebrow">{{ city }}, {{ state }}</span>
+      {% if rating and review_count > 0 %}
+      <div class="hero-rating">
+        <span class="hero-rating-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span class="hero-rating-text">{{ rating }} &nbsp;&mdash;&nbsp; {{ review_count }} verified reviews</span>
+      </div>
+      {% endif %}
+      <div class="reveal-wrap"><h1 class="reveal-text">Spotless Homes,<br><em>Every Time</em></h1></div>
+      <p class="hero-sub">{{ business_name }} &mdash; {{ tagline }}</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-primary btn-lg">Get a Free Quote &#8594;</a>
+        <a href="tel:{{ phone }}" class="btn btn-ghost btn-lg">{{ phone }}</a>
+      </div>
+      <div class="hero-trust-row">
+        <span>&#10003; Fully Insured</span>
+        <span>&#10003; Background Checked</span>
+        <span>&#10003; Satisfaction Guaranteed</span>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- Proof Bar -->
+<!-- Proof Bar (ticker — JS duplicates content for seamless loop) -->
 <div class="proof-bar">
-  <div class="proof-inner">
-    {% if rating and review_count > 0 %}
-    <div class="proof-item"><strong>{{ rating }} &#9733;</strong> on Google</div>
-    <div class="proof-divider"></div>
-    <div class="proof-item"><strong>{{ review_count }}+</strong> Five-Star Reviews</div>
-    <div class="proof-divider"></div>
-    {% endif %}
-    {% if years_in_business %}
-    <div class="proof-item"><strong>{{ years_in_business }}+</strong> Years Serving {{ city }}</div>
-    <div class="proof-divider"></div>
-    {% endif %}
-    <div class="proof-item">Fully Bonded &amp; Insured</div>
-    <div class="proof-divider"></div>
-    <div class="proof-item">Eco-Friendly Products</div>
+  <div class="proof-track" id="proof-track">
+    <div class="proof-inner">
+      {% if rating and review_count > 0 %}
+      <div class="proof-item"><strong>{{ rating }} &#9733;</strong> on Google</div>
+      <div class="proof-divider"></div>
+      <div class="proof-item"><strong>{{ review_count }}+</strong> Five-Star Reviews</div>
+      <div class="proof-divider"></div>
+      {% endif %}
+      {% if years_in_business %}
+      <div class="proof-item"><strong>{{ years_in_business }}+</strong> Years Serving {{ city }}</div>
+      <div class="proof-divider"></div>
+      {% endif %}
+      <div class="proof-item">Fully Bonded &amp; Insured</div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">Eco-Friendly Products</div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">Background-Checked Professionals</div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">Satisfaction Guarantee</div>
+      <div class="proof-divider"></div>
+    </div>
   </div>
 </div>
 
@@ -108,11 +124,11 @@
     <div class="services-grid stagger">
       {% for svc in services_enhanced %}
       <div class="service-card">
-        <div class="service-card-text">
+        <div class="service-card-header">
+          <span class="service-num">0{{ loop.index }}</span>
           <h3>{{ svc.name }}</h3>
-          <p>{{ svc.description }}</p>
         </div>
-        <div class="service-num">0{{ loop.index }}</div>
+        <p class="service-desc">{{ svc.description }}</p>
       </div>
       {% endfor %}
     </div>
@@ -120,7 +136,7 @@
 </section>
 
 <!-- About -->
-<section class="section" id="about">
+<section class="section section--flush" id="about">
   <div class="container">
     <div class="split">
       <div class="split-text">
@@ -128,34 +144,33 @@
         <div class="reveal-wrap"><h2 class="reveal-text">{{ business_name }}</h2></div>
         <p class="about-quote">{{ trust_statement }}</p>
         <p>{{ about_text }}</p>
-        <div class="pill-row">
+        <div class="pill-row pill-stagger">
           <span class="pill">Fully Bonded &amp; Insured</span>
           <span class="pill">Background Checked</span>
           <span class="pill">Satisfaction Guaranteed</span>
           {% if years_in_business %}<span class="pill">{{ years_in_business }}+ Years</span>{% endif %}
         </div>
       </div>
-      <div class="split-img fade-up">
+      <div class="split-img">
         {% if about_photo_url %}
         <img src="{{ about_photo_url }}" alt="{{ business_name }} team" loading="lazy">
         {% else %}
         <img src="{{ hero_photo_url }}" alt="Clean home" loading="lazy">
         {% endif %}
-        <div class="img-mask"></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- What We Clean -->
-<section class="section" style="background:#fafafa;" id="rooms">
+<section class="section section--flush" style="background:#fafafa;" id="rooms">
   <div class="container">
     <div class="split reverse">
       <div class="split-text">
         <span class="eyebrow">Room by Room</span>
         <div class="reveal-wrap"><h2 class="reveal-text">Every Corner,<br><em>Every Time</em></h2></div>
         <p>Nothing overlooked, nothing rushed. Every room receives a thorough, detailed clean from top to bottom.</p>
-        <div class="rooms-grid">
+        <div class="rooms-grid pill-stagger">
           <span class="room-tag">Kitchen</span>
           <span class="room-tag">Bathrooms</span>
           <span class="room-tag">Bedrooms</span>
@@ -166,13 +181,12 @@
           <span class="room-tag">Common Areas</span>
         </div>
       </div>
-      <div class="split-img fade-up">
+      <div class="split-img">
         {% if hero_photo_url %}
         <img src="{{ hero_photo_url }}" alt="Immaculate home interior" loading="lazy">
         {% else %}
         <div class="hero-photo-placeholder" style="height:100%;"></div>
         {% endif %}
-        <div class="img-mask"></div>
       </div>
     </div>
   </div>
@@ -257,7 +271,7 @@
       <div class="reveal-wrap"><h2 class="reveal-text">Serving {{ city }}<br>&amp; Surrounding Areas</h2></div>
       {% if service_area_text %}<p class="section-sub">{{ service_area_text }}</p>{% endif %}
     </div>
-    <div class="area-tags">
+    <div class="area-tags pill-stagger">
       {% for area in service_areas %}<span class="area-tag">{{ area }}</span>{% endfor %}
     </div>
   </div>
@@ -385,15 +399,12 @@
 
 <script src="script.js"></script>
 <script>
-  // Dynamic nav top offset for demo banner
+  // Keep nav sticky right below the sticky demo banner
   (function() {
     var banner = document.querySelector('.demo-banner');
-    var nav = document.getElementById('main-nav');
-    var bar = document.getElementById('scroll-progress');
     function update() {
       var h = banner ? banner.offsetHeight : 0;
-      if (nav) nav.style.top = h + 'px';
-      if (bar) bar.style.top = h + 'px';
+      document.documentElement.style.setProperty('--banner-h', h + 'px');
     }
     update();
     window.addEventListener('resize', update);

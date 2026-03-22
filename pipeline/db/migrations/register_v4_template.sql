@@ -28,7 +28,7 @@ WHERE niche = 'housekeeping';
 INSERT INTO templates (niche, name, description, template_path, is_active)
 SELECT
   'housekeeping',
-  'Housekeeping v4 — Premium Full-Bleed',
+  'Housekeeping v4 - Premium Full-Bleed',
   'Three-breakpoint mobile-first layout. Brand-adaptive hero with color overlay. SEO built in (JSON-LD, meta, OG). Live AI chat widget. 12 sections.',
   'housekeeping-v4',
   true
@@ -40,7 +40,7 @@ WHERE NOT EXISTS (
 UPDATE templates
 SET
   is_active    = true,
-  name         = 'Housekeeping v4 — Premium Full-Bleed',
+  name         = 'Housekeeping v4 - Premium Full-Bleed',
   description  = 'Three-breakpoint mobile-first layout. Brand-adaptive hero with color overlay. SEO built in (JSON-LD, meta, OG). Live AI chat widget. 12 sections.'
 WHERE template_path = 'housekeeping-v4';
 

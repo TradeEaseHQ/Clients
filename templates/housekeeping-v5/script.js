@@ -8,11 +8,13 @@ window.addEventListener('scroll', function() {
   progressBar.style.width = Math.min(pct, 100) + '%';
 }, { passive: true });
 
-/* ── Nav shadow on scroll ── */
+/* ── Nav: fade in background when user scrolls ~25% through the hero ── */
 var nav = document.getElementById('main-nav');
+var heroSection = document.querySelector('.hero');
 window.addEventListener('scroll', function() {
   if (!nav) return;
-  nav.classList.toggle('scrolled', window.scrollY > 60);
+  var threshold = heroSection ? heroSection.offsetHeight * 0.25 : window.innerHeight * 0.25;
+  nav.classList.toggle('scrolled', window.scrollY > threshold);
 }, { passive: true });
 
 /* ── Hamburger Menu ── */
@@ -28,15 +30,14 @@ if (hamburger && navLinks) {
   });
 }
 
-/* ── IntersectionObserver animation triggers ── */
-var observerOpts = { threshold: 0.12, rootMargin: '0px 0px -40px 0px' };
+/* ── IntersectionObserver animation triggers — element must be well into viewport ── */
+var observerOpts = { threshold: 0.25, rootMargin: '0px 0px -100px 0px' };
 
 // Text reveal wipes
 var revealObserver = new IntersectionObserver(function(entries) {
   entries.forEach(function(entry) {
     if (entry.isIntersecting) {
       var wrap = entry.target;
-      // Find reveal-text children and stagger them
       var texts = wrap.querySelectorAll('.reveal-text');
       texts.forEach(function(el, i) {
         el.style.setProperty('--delay', (i * 150) + 'ms');
@@ -48,7 +49,7 @@ var revealObserver = new IntersectionObserver(function(entries) {
 }, observerOpts);
 document.querySelectorAll('.reveal-wrap').forEach(function(el) { revealObserver.observe(el); });
 
-// Image mask reveals
+// Image opacity reveals
 var imgObserver = new IntersectionObserver(function(entries) {
   entries.forEach(function(entry) {
     if (entry.isIntersecting) {
@@ -56,7 +57,7 @@ var imgObserver = new IntersectionObserver(function(entries) {
       imgObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.1 });
+}, { threshold: 0.25, rootMargin: '0px 0px -100px 0px' });
 document.querySelectorAll('.split-img').forEach(function(el) { imgObserver.observe(el); });
 
 // Fade-up singles
@@ -78,16 +79,30 @@ var staggerObserver = new IntersectionObserver(function(entries) {
       staggerObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.06 });
+}, { threshold: 0.25, rootMargin: '0px 0px -100px 0px' });
 document.querySelectorAll('.stagger').forEach(function(el) { staggerObserver.observe(el); });
 
-/* ── Parallax on hero photo (desktop only) ── */
-var heroPhoto = document.querySelector('.hero-photo img');
+// Pill/tag stagger — set individual delays then trigger
+var pillObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      var pills = entry.target.children;
+      for (var i = 0; i < pills.length; i++) {
+        pills[i].style.setProperty('--pill-delay', (i * 55) + 'ms');
+      }
+      entry.target.classList.add('is-revealed');
+      pillObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.25, rootMargin: '0px 0px -100px 0px' });
+document.querySelectorAll('.pill-stagger').forEach(function(el) { pillObserver.observe(el); });
+
+/* ── Parallax on hero image (desktop only) ── */
+var heroPhoto = document.querySelector('.hero-image img');
 if (heroPhoto && window.innerWidth >= 1024) {
   window.addEventListener('scroll', function() {
     var scrolled = window.scrollY;
-    // Photo moves at 0.4x scroll rate — creates depth
-    heroPhoto.style.transform = 'scale(1.0) translateY(' + (scrolled * 0.25) + 'px)';
+    heroPhoto.style.transform = 'scale(1.08) translateY(' + (scrolled * 0.2) + 'px)';
   }, { passive: true });
 }
 
@@ -166,3 +181,107 @@ function sendMessage() {
 
 if (chatSend) chatSend.addEventListener('click', sendMessage);
 if (chatInput) chatInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') sendMessage(); });
+
+/* ── Nav Sliding Underline + Scrollspy ── */
+var navInner = document.querySelector('.nav-inner');
+var navHighlight = document.createElement('div');
+navHighlight.className = 'nav-highlight';
+if (navInner) navInner.appendChild(navHighlight);
+
+var _isHoveringNav = false;
+var _activeLink = null;
+var _highlightVisible = false;
+
+function moveHighlightTo(link, slideIn) {
+  if (!navInner || !link) return;
+  var rect = link.getBoundingClientRect();
+  var navRect = navInner.getBoundingClientRect();
+  var newLeft = (rect.left - navRect.left) + 'px';
+  var newWidth = rect.width + 'px';
+
+  if (slideIn && !_highlightVisible) {
+    // First appearance: position immediately, then animate scaleX 0→1
+    navHighlight.style.transition = 'none';
+    navHighlight.style.width = newWidth;
+    navHighlight.style.left = newLeft;
+    navHighlight.classList.add('entering');
+    navHighlight.style.opacity = '1';
+    // Force reflow, then trigger transition
+    navHighlight.getBoundingClientRect();
+    navHighlight.style.transition = '';
+    navHighlight.classList.remove('entering');
+    navHighlight.classList.add('active');
+  } else {
+    navHighlight.style.width = newWidth;
+    navHighlight.style.left = newLeft;
+    navHighlight.style.opacity = '1';
+    navHighlight.classList.add('active');
+  }
+  _highlightVisible = true;
+}
+
+function hideHighlight() {
+  navHighlight.style.opacity = '0';
+  _highlightVisible = false;
+  navHighlight.classList.remove('active', 'entering');
+}
+
+document.querySelectorAll('.nav-link').forEach(function(link) {
+  link.addEventListener('mouseenter', function() {
+    _isHoveringNav = true;
+    moveHighlightTo(link, !_highlightVisible);
+  });
+});
+
+if (navInner) {
+  navInner.addEventListener('mouseleave', function() {
+    _isHoveringNav = false;
+    // Revert to active scrollspy link or hide
+    if (_activeLink) {
+      moveHighlightTo(_activeLink, false);
+    } else {
+      hideHighlight();
+    }
+  });
+}
+
+// Scrollspy — highlight active section nav link
+var spySections = [];
+document.querySelectorAll('section[id]').forEach(function(el) { spySections.push(el); });
+
+function updateScrollspy() {
+  var scrollPos = window.scrollY + 100;
+  var found = null;
+  spySections.forEach(function(section) {
+    if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+      var id = section.getAttribute('id');
+      var link = document.querySelector('.nav-link[href="#' + id + '"]');
+      if (link) found = link;
+    }
+  });
+  var wasNull = !_activeLink;
+  _activeLink = found;
+  if (!_isHoveringNav) {
+    if (found) {
+      // Slide in if this is a new appearance (was hidden before)
+      moveHighlightTo(found, wasNull && !_highlightVisible);
+    } else {
+      hideHighlight();
+    }
+  }
+}
+
+window.addEventListener('scroll', updateScrollspy, { passive: true });
+updateScrollspy();
+
+/* ── Proof Bar Ticker ── */
+var proofTrack = document.getElementById('proof-track');
+if (proofTrack) {
+  var proofInner = proofTrack.querySelector('.proof-inner');
+  if (proofInner) {
+    var clone = proofInner.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    proofTrack.appendChild(clone);
+    proofTrack.classList.add('ticking');
+  }
+}

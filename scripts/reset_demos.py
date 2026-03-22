@@ -5,8 +5,9 @@ Usage:
     python scripts/reset_demos.py --city "Austin" --state TX --all-statuses
 
 What it does:
-  1. Deletes existing demo_sites rows for matching businesses
-  2. Sets business status back to 'scored' so the demo step will pick them up
+  1. Nulls out demo_site_id on outreach_drafts (releases FK constraint)
+  2. Deletes existing demo_sites rows for matching businesses
+  3. Sets business status back to 'scored' so the demo step will pick them up
 
 After running this, execute:
     python -m pipeline.run_campaign --city "Austin" --state TX --steps demo
@@ -55,7 +56,13 @@ def reset_demos(city: str, state: str, all_statuses: bool = False) -> None:
 
     ids = [b["id"] for b in to_reset]
 
-    # Step 1: Delete demo_sites for these businesses
+    # Step 1: Null out demo_site_id on outreach_drafts to release FK constraint
+    for biz_id in ids:
+        client.table("outreach_drafts").update({"demo_site_id": None}).eq("business_id", biz_id).execute()
+
+    print(f"  Cleared demo_site_id on outreach_drafts for {len(ids)} business(es)")
+
+    # Step 2: Delete demo_sites for these businesses
     deleted = 0
     for biz_id in ids:
         r = client.table("demo_sites").delete().eq("business_id", biz_id).execute()
