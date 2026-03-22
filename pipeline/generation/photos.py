@@ -27,13 +27,17 @@ HERO_PHOTOS = [
     f"{_BASE}1567016432779-094069958ea5{_HERO}",  # bright scandinavian style interior
 ]
 
-# Professional cleaners / cleaning in action — used in about section
-# All verified: show cleaners, cleaning supplies, or cleaning activities
+# Portrait-oriented photos for about section — clean interiors + cleaning action
+# All verified quality. Removed 1585421514738 (weak blue gloves shot).
 ABOUT_PHOTOS = [
     f"{_BASE}1581578731548-c64695cc6952{_ABOUT}",  # woman cleaning window shutters
     f"{_BASE}1628177142898-93e36e4e3a50{_ABOUT}",  # gloved hand spraying disinfectant
-    f"{_BASE}1585421514738-01798e348b17{_ABOUT}",  # blue gloves, professional cleaning
-    f"{_BASE}1556909172-54557c7e4fb7{_ABOUT}",     # small clean kitchen scene
+    f"{_BASE}1556909172-54557c7e4fb7{_ABOUT}",     # clean kitchen scene (user verified ✓)
+    f"{_BASE}1560448204-e02f11c3d0e2{_ABOUT}",     # living room large windows (user verified ✓)
+    f"{_BASE}1600566752355-35792bedcfea{_ABOUT}",  # modern bathroom freestanding tub (user verified ✓)
+    f"{_BASE}1484154218962-a197022b5858{_ABOUT}",  # modern kitchen white cabinets (user verified ✓)
+    f"{_BASE}1600607687939-ce8a6c25118c{_ABOUT}",  # open-plan contemporary living room
+    f"{_BASE}1567016432779-094069958ea5{_ABOUT}",  # bright scandinavian interior
 ]
 
 NICHE_HERO_QUERIES = {
