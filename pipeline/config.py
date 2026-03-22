@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     # AI models
     scoring_model: str = "claude-sonnet-4-6"
     extraction_model: str = "claude-haiku-4-5-20251001"
-    drafting_model: str = "claude-sonnet-4-6"
+    drafting_model: str = "claude-haiku-4-5-20251001"
 
 
 settings = Settings()
