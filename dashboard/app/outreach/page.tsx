@@ -46,6 +46,17 @@ export default async function OutreachPage({
     drafts = (data ?? []) as OutreachDraft[];
   }
 
+  // For draft/pending_review statuses, show only the most recent per business.
+  // Sent/approved/replied/etc are kept in full (historical record).
+  const DEDUPE_STATUSES = new Set(["draft", "pending_review"]);
+  const seenBusiness = new Set<string>();
+  drafts = drafts.filter((d) => {
+    if (!DEDUPE_STATUSES.has(d.status)) return true; // always show terminal statuses
+    if (!d.business_id || seenBusiness.has(d.business_id)) return false;
+    seenBusiness.add(d.business_id);
+    return true;
+  });
+
   return (
     <div className="p-4 md:p-8">
       <div className="mb-6">
