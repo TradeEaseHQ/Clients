@@ -2,21 +2,13 @@ export const dynamic = "force-dynamic";
 
 import { createSupabaseServer } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
-// TODO: Install @upstash/ratelimit and @upstash/redis to enable rate limiting.
-// Once installed, uncomment the block below and the rate-limit check in the handler.
-// Required limits to implement:
-//   - 10 messages per 60 seconds per IP (sliding window)
-//   - 50 messages per hour per IP
-//   - Minimum 1-second interval between messages from same IP
-//
-// import { Ratelimit } from "@upstash/ratelimit";
-// import { Redis } from "@upstash/redis";
-//
-// const redis = process.env.UPSTASH_REDIS_REST_URL ? Redis.fromEnv() : null;
-// const ratelimit = redis
-//   ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "60 s") })
-//   : null;
+const redis = process.env.UPSTASH_REDIS_REST_URL ? Redis.fromEnv() : null;
+const ratelimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "60 s") })
+  : null;
 
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
 
@@ -89,17 +81,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid message" }, { status: 400 });
     }
 
-    // TODO: Uncomment once @upstash/ratelimit is installed:
-    // if (ratelimit) {
-    //   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "unknown";
-    //   const { success } = await ratelimit.limit(ip);
-    //   if (!success) {
-    //     return NextResponse.json(
-    //       { reply: "Too many messages — please slow down!" },
-    //       { status: 429 }
-    //     );
-    //   }
-    // }
+    if (ratelimit) {
+      const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "unknown";
+      const { success } = await ratelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json(
+          { reply: "Too many messages — please slow down!" },
+          { status: 429 }
+        );
+      }
+    }
 
     // Validate history — only accept "user"/"assistant" roles, cap content at 500 chars,
     // keep last 10 turns. Rejects any injected "system" roles or malformed entries.

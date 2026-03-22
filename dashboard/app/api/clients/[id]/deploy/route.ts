@@ -3,9 +3,6 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServer } from "@/lib/supabase";
 
-// TODO: Add auth guard before production — this route deploys to Vercel and
-// must be restricted to authenticated admin users only.
-
 const VERCEL_TOKEN = process.env.VERCEL_API_TOKEN;
 const VERCEL_TEAM = process.env.VERCEL_TEAM_ID; // optional
 
@@ -13,6 +10,13 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Auth guard — middleware protects all /api/* routes not in PUBLIC_PREFIXES,
+  // but double-check here since this route has real side effects (Vercel deployment).
+  const session = req.cookies.get("admin_session")?.value;
+  if (session !== process.env.ADMIN_SESSION_SECRET) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
     const supabase = await createSupabaseServer();
