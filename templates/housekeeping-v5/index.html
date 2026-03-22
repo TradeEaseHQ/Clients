@@ -124,10 +124,7 @@
     <div class="services-grid stagger">
       {% for svc in services_enhanced %}
       <div class="service-card">
-        <div class="service-card-header">
-          <span class="service-num">0{{ loop.index }}</span>
-          <h3>{{ svc.name }}</h3>
-        </div>
+        <h3>{{ svc.name }}</h3>
         <p class="service-desc">{{ svc.description }}</p>
       </div>
       {% endfor %}

@@ -426,7 +426,6 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
-  border-top: 1px solid var(--border);
 }
 .service-card {
   padding: 40px 0;
@@ -434,19 +433,6 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-.service-card-header {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-}
-.service-num {
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--brand);
-  flex-shrink: 0;
 }
 .service-card h3 {
   font-family: var(--font-display);
@@ -600,7 +586,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 72px;
   font-weight: 400;
   color: var(--brand);
-  opacity: 0.18;
+  opacity: 0.38;
   line-height: 1;
 }
 .step-body {}
@@ -941,13 +927,11 @@ a { color: inherit; text-decoration: none; }
   /* Hero desktop */
   .hero h1 { font-size: clamp(56px, 5vw, 88px); }
 
-  /* Services 3-col — card gets brand accent border, reset tablet span override */
-  .services-grid { grid-template-columns: repeat(3, 1fr); gap: 0; }
-  .services-grid .service-card { padding: 48px 40px; border-top: 3px solid transparent; border-bottom: none; border-right: 1px solid var(--border); border-left: none; transition: border-color 0.3s ease; }
+  /* Services — auto-fit so fewer than 3 cards center naturally */
+  .services-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+  .services-grid .service-card { flex: 0 0 calc(33.33% - 1px); max-width: 420px; padding: 48px 40px; border-top: 3px solid transparent; border-bottom: none; border-right: 1px solid var(--border); border-left: none; transition: border-color 0.3s ease; }
   .services-grid .service-card:hover { border-top-color: var(--brand); }
   .services-grid .service-card:last-child { border-right: none; }
-  /* Reset the tablet odd-card rule so all 3 cards sit in one row */
-  .services-grid > .service-card:last-child:nth-child(odd) { grid-column: auto; max-width: none; margin: 0; }
 
   /* Split sections — image bleeds to viewport edge and fills section height */
   .split { gap: 0; align-items: stretch; }
@@ -968,14 +952,21 @@ a { color: inherit; text-decoration: none; }
   .section--flush { padding: 0; overflow: hidden; }
   .section--flush .split-text { padding-top: 80px; padding-bottom: 80px; }
   .section--flush .split-img { aspect-ratio: unset; height: 100%; min-height: 480px; }
-  /* About: flex column, centered vertically and horizontally in the column */
+  /* About: bleed to viewport left edge so column owns the true left half of screen.
+     Equal padding on both sides centers the content at 25vw (midpoint of left half). */
   #about .split-text {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    text-align: left;
+    margin-left: calc(-1 * max(0px, (100vw - 1280px) / 2 + 48px));
     padding: 80px;
   }
+  /* Override mobile center-alignment rules for desktop */
+  #about .split-text .section-sub,
+  #about .split-text p { margin-left: 0; margin-right: 0; text-align: left; }
+  #about .pill-row { justify-content: flex-start; }
 
   /* Reviews 3-col — flex so any number of cards centers naturally */
   .reviews-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 48px; border-top: none; }
