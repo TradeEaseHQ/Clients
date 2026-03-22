@@ -28,6 +28,7 @@
     "website_url":      { "required": false, "type": "string",  "source": "businesses.website_url" },
     "booking_url":      { "required": false, "type": "string",  "source": "static",          "fallback": "#contact" },
     "business_id":      { "required": false, "type": "string",  "source": "businesses.id",   "fallback": "" },
-    "chat_api_url":     { "required": false, "type": "string",  "source": "static",          "fallback": "/api/chat" }
+    "chat_api_url":     { "required": false, "type": "string",  "source": "static",          "fallback": "/api/chat" },
+    "quote_form_action":{ "required": false, "type": "string",  "source": "static",          "fallback": "" }
   }
 }

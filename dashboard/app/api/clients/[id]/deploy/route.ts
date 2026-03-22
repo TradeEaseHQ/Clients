@@ -57,6 +57,15 @@ export async function POST(
       );
     }
 
+    // 3b. Inject quote_form_action into HTML if set on this client
+    let finalHtml: string = demoSite.generated_html;
+    if (clientSite.quote_form_action) {
+      finalHtml = finalHtml.replace(
+        /<form id="quote-form">/g,
+        `<form id="quote-form" action="${clientSite.quote_form_action}" method="POST">`
+      );
+    }
+
     // 4. Build Vercel project name (slugified business name)
     const biz = clientSite.businesses;
     const businessName = Array.isArray(biz) ? biz[0]?.name ?? "client" : (biz as { name: string })?.name ?? "client";
@@ -82,7 +91,7 @@ export async function POST(
           files: [
             {
               file: "index.html",
-              data: Buffer.from(demoSite.generated_html).toString("base64"),
+              data: Buffer.from(finalHtml).toString("base64"),
               encoding: "base64",
             },
           ],

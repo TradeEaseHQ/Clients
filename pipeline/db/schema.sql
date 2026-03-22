@@ -218,6 +218,7 @@ ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS change_requests JSONB DEFAULT 
 ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS vercel_project_id TEXT;
 ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS vercel_deployment_url TEXT;
 ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS notes TEXT;
+ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS quote_form_action TEXT; -- Formspree endpoint, e.g. https://formspree.io/f/XXXX
 
 -- ============================================================
 -- Storage buckets (run separately in Supabase dashboard or via API)

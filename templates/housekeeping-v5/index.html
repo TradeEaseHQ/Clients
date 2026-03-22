@@ -308,7 +308,7 @@
       <p class="section-sub">We respond within a few hours. No commitment, no pressure.</p>
     </div>
     <div class="form-wrap">
-      <form id="quote-form">
+      <form id="quote-form"{% if quote_form_action %} action="{{ quote_form_action }}" method="POST"{% endif %}>
         <div class="form-grid">
           <div class="form-group">
             <label>Your Name</label>

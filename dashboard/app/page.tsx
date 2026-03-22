@@ -99,13 +99,13 @@ export default async function DashboardPage() {
         <StatCard
           label="Sent"
           value={stats.sent}
-          href="/outreach"
+          href="/outreach/approved"
           description="Outreach emails delivered"
         />
         <StatCard
           label="Converted"
           value={stats.converted}
-          href="/leads"
+          href="/clients"
           description="Paying clients"
           highlight={stats.converted > 0}
         />

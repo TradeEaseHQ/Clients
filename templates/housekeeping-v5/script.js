@@ -121,14 +121,17 @@ document.querySelectorAll('.faq-q').forEach(function(btn) {
 /* ── Quote Form ── */
 var form = document.getElementById('quote-form');
 if (form) {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var btn = form.querySelector('[type=submit]');
-    btn.textContent = 'Request Received';
-    btn.disabled = true;
-    btn.style.background = '#1a6b4a';
-    btn.style.opacity = '0.8';
-  });
+  // If no real action is set (demo mode), intercept and show fake success
+  if (!form.action || form.action === window.location.href) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var btn = form.querySelector('[type=submit]');
+      btn.textContent = 'Request Received';
+      btn.disabled = true;
+      btn.style.background = '#1a6b4a';
+      btn.style.opacity = '0.8';
+    });
+  }
 }
 
 /* ── Chat Widget (carried forward from v4) ── */

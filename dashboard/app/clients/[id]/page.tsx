@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { ClientSite } from "@/lib/types";
 import ClientDetailActions from "./ClientDetailActions";
-import { HOSTING_STATUS_COLORS } from "../_constants";
+import { HOSTING_STATUS_COLORS, TALLY_ONBOARDING_URL, ONBOARDING_STEPS } from "../_constants";
 
 export default async function ClientDetailPage({
   params,
@@ -77,6 +77,40 @@ export default async function ClientDetailPage({
           )}
         </div>
       </div>
+
+      {/* Onboarding Checklist */}
+      {client.hosting_status !== "live" && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-semibold text-amber-800">Onboarding Steps</p>
+            <a
+              href={TALLY_ONBOARDING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-amber-700 underline hover:text-amber-900"
+            >
+              Open Tally form ↗
+            </a>
+          </div>
+          <ol className="flex flex-col gap-2">
+            {ONBOARDING_STEPS.map(({ step, label, detail }) => (
+              <li key={step} className="flex gap-3 text-sm">
+                <span className="shrink-0 w-5 h-5 rounded-full bg-amber-200 text-amber-800 text-xs font-bold flex items-center justify-center mt-0.5">
+                  {step}
+                </span>
+                <div>
+                  <span className="font-medium text-amber-900">{label}</span>
+                  <span className="text-amber-700 ml-1">— {detail}</span>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-4 pt-3 border-t border-amber-200">
+            <p className="text-xs text-amber-600 font-medium">Tally onboarding link (send to client):</p>
+            <p className="text-xs font-mono text-amber-800 mt-0.5 select-all">{TALLY_ONBOARDING_URL}</p>
+          </div>
+        </div>
+      )}
 
       {/* Go-live date */}
       {client.live_at && (
