@@ -255,10 +255,16 @@ def upload_file(bucket: str, path: str, content: bytes, content_type: str = "tex
     """Upload bytes to Supabase Storage. Returns the public URL."""
     import time
     client = get_client()
+    # Delete first so re-uploads get correct Content-Type headers.
+    # Supabase upsert does not update metadata on existing files.
+    try:
+        client.storage.from_(bucket).remove([path])
+    except Exception:
+        pass  # file may not exist yet — that's fine
     client.storage.from_(bucket).upload(
         path=path,
         file=content,
-        file_options={"content_type": content_type, "upsert": "true"},
+        file_options={"content-type": content_type},
     )
     url_response = client.storage.from_(bucket).get_public_url(path)
     # Append cache-buster so CDN serves fresh content on re-uploads
