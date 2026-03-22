@@ -179,7 +179,9 @@
         </div>
       </div>
       <div class="split-img">
-        {% if hero_photo_url %}
+        {% if rooms_photo_url %}
+        <img src="{{ rooms_photo_url }}" alt="Immaculate home interior" loading="lazy">
+        {% elif hero_photo_url %}
         <img src="{{ hero_photo_url }}" alt="Immaculate home interior" loading="lazy">
         {% else %}
         <div class="hero-photo-placeholder" style="height:100%;"></div>

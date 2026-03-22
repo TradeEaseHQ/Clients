@@ -377,6 +377,7 @@ def _build_injection_data(biz: dict, upgraded, brand_css_vars: str | None = None
         "demo_banner_text": f"Demo site created for {biz['name']} by Trade Ease",
         "brand_css_vars": brand_css_vars,
         "hero_photo_url": photos.get("hero_photo_url"),
+        "rooms_photo_url": photos.get("rooms_photo_url"),
         "about_photo_url": photos.get("about_photo_url"),
         "logo_url": logo_url,
     }

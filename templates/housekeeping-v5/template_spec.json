@@ -22,6 +22,7 @@
     "address":          { "required": false, "type": "string",  "source": "businesses.address" },
     "logo_url":         { "required": false, "type": "string",  "source": "generated" },
     "hero_photo_url":   { "required": false, "type": "string",  "source": "generated",       "fallback": "" },
+    "rooms_photo_url":  { "required": false, "type": "string",  "source": "generated",       "fallback": "" },
     "about_photo_url":  { "required": false, "type": "string",  "source": "generated",       "fallback": "" },
     "brand_css_vars":   { "required": false, "type": "string",  "source": "generated",       "fallback": "" },
     "website_url":      { "required": false, "type": "string",  "source": "businesses.website_url" },

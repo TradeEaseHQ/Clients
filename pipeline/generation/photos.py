@@ -12,19 +12,19 @@ _BASE = "https://images.unsplash.com/photo-"
 _HERO = "?w=1400&h=900&fit=crop&q=85&auto=format"
 _ABOUT = "?w=800&h=1000&fit=crop&q=85&auto=format"
 
-# Bright, airy interiors — used as hero split-panel image (V2) or dark overlay bg (V3)
+# Bright, airy interiors — used as hero background and rooms section
 # All verified: clean residential interiors appropriate for a housekeeping service
+# 1567016432779 removed — user flagged as weak for hero use
 HERO_PHOTOS = [
     f"{_BASE}1484154218962-a197022b5858{_HERO}",  # modern kitchen white cabinets
     f"{_BASE}1502005229762-cf1b2da7c5d6{_HERO}",  # modern staircase, bright interior
     f"{_BASE}1513694203232-719a280e022f{_HERO}",  # modern living room, black sofa
     f"{_BASE}1586023492125-27b2c045efd7{_HERO}",  # minimalist living room, yellow chair
     f"{_BASE}1618221195710-dd6b41faaea6{_HERO}",  # living room, gray sofa and plants
-    f"{_BASE}1560448204-e02f11c3d0e2{_HERO}",    # living room, large windows, city view
+    f"{_BASE}1560448204-e02f11c3d0e2{_HERO}",    # living room, large windows, city view (user verified ✓)
     f"{_BASE}1600607687939-ce8a6c25118c{_HERO}",  # open-plan living room, contemporary
-    f"{_BASE}1600566752355-35792bedcfea{_HERO}",  # modern bathroom, freestanding tub
+    f"{_BASE}1600566752355-35792bedcfea{_HERO}",  # modern bathroom, freestanding tub (user verified ✓)
     f"{_BASE}1484101403633-562f891dc89a{_HERO}",  # light blue sofa, clean living room
-    f"{_BASE}1567016432779-094069958ea5{_HERO}",  # bright scandinavian style interior
 ]
 
 # Portrait-oriented photos for about section — clean interiors + cleaning action
@@ -65,7 +65,7 @@ def get_unsplash_photo(query: str, width: int, height: int, seed: str) -> str:
 def get_demo_photos(seed: str | None = None, niche: str = "housekeeping",
                     provided_hero: str | None = None, provided_about: str | None = None) -> dict:
     """
-    Return photo URLs for hero and about sections.
+    Return photo URLs for hero, about, and rooms sections.
     Pass seed (e.g. business_id) for deterministic, reproducible selection —
     same business always gets same photos, different businesses get different ones.
 
@@ -84,6 +84,14 @@ def get_demo_photos(seed: str | None = None, niche: str = "housekeeping",
         query = NICHE_HERO_QUERIES.get(niche, "clean home interior professional service")
         hero = get_unsplash_photo(query, 1400, 900, seed or "")
 
+    # Rooms photo — pick a different hero-pool photo so it's never the same as hero
+    if niche == "housekeeping" and len(HERO_PHOTOS) > 1:
+        remaining = [p for p in HERO_PHOTOS if p != hero]
+        rooms = rng.choice(remaining)
+    else:
+        query = NICHE_HERO_QUERIES.get(niche, "clean home interior professional service")
+        rooms = get_unsplash_photo(query, 1400, 900, (seed or "") + "_rooms")
+
     # About photo
     if provided_about:
         about = provided_about
@@ -93,4 +101,4 @@ def get_demo_photos(seed: str | None = None, niche: str = "housekeeping",
         query = NICHE_ABOUT_QUERIES.get(niche, "professional service team at work")
         about = get_unsplash_photo(query, 800, 1000, (seed or "") + "_about")
 
-    return {"hero_photo_url": hero, "about_photo_url": about}
+    return {"hero_photo_url": hero, "rooms_photo_url": rooms, "about_photo_url": about}
