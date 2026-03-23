@@ -317,12 +317,12 @@ def cli(
                     **contact_data,
                 })
 
-                comparison_url = build_comparison(biz, analysis, demo["preview_url"])
-
-                # Use proxy URLs so email links render HTML instead of downloading raw files
+                # Use proxy URLs so iframes and email links render HTML instead of downloading raw files
                 app_url = settings.next_public_app_url.rstrip("/")
                 demo_email_url = f"{app_url}/api/demo/{biz_id}"
                 comparison_email_url = f"{app_url}/api/comparison/{biz_id}"
+
+                comparison_url = build_comparison(biz, analysis, demo_email_url)
 
                 draft = drafter.draft(biz, analysis, demo_email_url, comparison_email_url)
                 save_outreach_draft({
