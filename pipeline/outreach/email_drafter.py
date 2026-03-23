@@ -112,7 +112,7 @@ RULES:
 - Do NOT say "I spent an hour" or imply you built it for free as a favour — frame it as a demo
 - Do NOT use: "I hope this finds you", "leverage", "seamlessly", "game-changer", "take your business to the next level", "I wanted to reach out and", or anything that reads like a template
 - Write like a real person. Short sentences. Real words.
-- HTML version: clean, max 600px, inline styles — no raw URLs visible, no flashy buttons
+- HTML version: plain personal email style — NO containers, NO max-width wrappers, NO background colors, NO inline font-family or font-size styles. Just bare <p> tags and <a> tags with no styling attributes. Should look identical to a plain Gmail message. No unsubscribe language in the HTML body itself (it gets appended separately).
 - Plain text version: same content but with raw URLs written out, no HTML tags
 
 Call the draft_email tool.
