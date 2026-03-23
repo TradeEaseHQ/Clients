@@ -5,8 +5,6 @@ import { NextResponse } from "next/server";
 
 const RESEND_SEND_URL = "https://api.resend.com/emails";
 
-const CANSPAM_HTML = `<p style="color:#999;font-size:11px;margin-top:32px;">Trade Ease | __ADDRESS__ | Reply to opt out.</p>`;
-
 const CANSPAM_TEXT = `\n\nTrade Ease | __ADDRESS__ | Reply to opt out.`;
 
 export async function POST(
@@ -51,7 +49,6 @@ export async function POST(
   }
 
   const address = process.env.PHYSICAL_ADDRESS ?? "";
-  const bodyHtml = (draft.body_html ?? "") + CANSPAM_HTML.replace("__ADDRESS__", address);
   const bodyText = (draft.body_text ?? "") + CANSPAM_TEXT.replace("__ADDRESS__", address);
 
   const fromName = process.env.RESEND_FROM_NAME ?? "Ben from Trade Ease";
@@ -61,7 +58,6 @@ export async function POST(
     from: `${fromName} <${fromEmail}>`,
     to: [contact.email],
     subject: draft.subject ?? "(no subject)",
-    html: bodyHtml,
     text: bodyText,
   };
 
