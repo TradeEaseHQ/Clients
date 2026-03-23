@@ -112,7 +112,7 @@ RULES:
 - Do NOT say "I spent an hour" or imply you built it for free as a favour — frame it as a demo
 - Do NOT use: "I hope this finds you", "leverage", "seamlessly", "game-changer", "take your business to the next level", "I wanted to reach out and", or anything that reads like a template
 - Write like a real person. Short sentences. Real words.
-- HTML version: plain personal email style — NO containers, NO max-width wrappers, NO background colors, NO inline font-family or font-size styles. Just bare <p> tags and <a> tags with no styling attributes. Should look identical to a plain Gmail message. No unsubscribe language in the HTML body itself (it gets appended separately).
+- HTML version: personal email style. Wrap everything in a single <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;max-width:600px;">. Use <p> tags for paragraphs. Links should use style="color:#1a1a1a;text-decoration:underline;" so they blend in as inline text links rather than bright blue. NO background colors, NO containers with padding/borders, NO CTA buttons, NO images. Should look like a clean personal email from someone's work account, not a newsletter.
 - Plain text version: same content but with raw URLs written out, no HTML tags
 
 Call the draft_email tool.
