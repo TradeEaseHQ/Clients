@@ -87,9 +87,8 @@ Ben noticed a specific problem with their site and put together a free demo show
 WHAT BEN NOTICED (pick the most impactful one):
 {weakness_list}
 
-LINKS TO INCLUDE:
-- Before/after: {comparison_url}
-- Demo: {demo_url}
+LINK TO INCLUDE (one link only):
+- Comparison page (contains the demo inside it): {comparison_url}
 
 ANGLE: {angle}
 
@@ -97,11 +96,11 @@ EMAIL STRUCTURE — follow this closely:
 1. Open: "Hi [owner name if known, otherwise skip]," then 1 sentence saying you came across {name} and noticed something specific
 2. Middle: Name the ONE problem you found (use plain language, not technical terms) and connect it to lost business — missed calls, people leaving before requesting a quote, etc. Most people searching for a cleaner are on their phone. Make that real.
 3. Say you put together a quick demo showing how it could look and feel better.
-4. List both links on their own lines with descriptive anchor text:
-   HTML version: <a href="{comparison_url}">View before/after →</a> and <a href="{demo_url}">View demo →</a> — NEVER show the raw URL
-   Plain text version: "Before/after: {comparison_url}" and "Demo: {demo_url}"
+4. Include the link ONCE, as inline anchor text in a sentence (e.g. "I put together a quick before/after here"):
+   HTML version: one <a href="{comparison_url}"> link inline in a sentence — NEVER show the raw URL, never put it on its own line
+   Plain text version: one raw URL written naturally in a sentence
 5. One line about what you do: help cleaning businesses make their site better at turning visitors into calls and quote requests.
-6. End CTA: "Worth sending over a couple quick ideas for your site?" — nothing else after this.
+6. End CTA: "Worth a look?" — nothing else after this.
 7. Sign off: "Ben\\ntradeeasehq.com"
 
 RULES:
