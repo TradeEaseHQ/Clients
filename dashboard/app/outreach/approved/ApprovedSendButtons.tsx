@@ -39,21 +39,38 @@ export default function ApprovedSendButtons({ draftId, hasEmail }: Props) {
     }
   }
 
+  const unapproveBtn = (
+    <button
+      onClick={handleUnapprove}
+      disabled={unapproving}
+      className="text-xs text-gray-400 hover:text-gray-600 disabled:opacity-50"
+      title="Move back to review queue"
+    >
+      Unapprove
+    </button>
+  );
+
   if (!hasEmail) {
-    return <span className="text-xs text-red-500">no email on file</span>;
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-red-500">no email on file</span>
+        {unapproveBtn}
+      </div>
+    );
   }
 
   if (state === "sent") {
-    return (
-      <span className="text-xs text-green-600 font-semibold">Sent!</span>
-    );
+    return <span className="text-xs text-green-600 font-semibold">Sent!</span>;
   }
 
   if (state === "error") {
     return (
-      <span className="text-xs text-red-600" title={errorMsg}>
-        Error — {errorMsg.slice(0, 40)}
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-red-600" title={errorMsg}>
+          Error — {errorMsg.slice(0, 40)}
+        </span>
+        {unapproveBtn}
+      </div>
     );
   }
 
@@ -66,14 +83,7 @@ export default function ApprovedSendButtons({ draftId, hasEmail }: Props) {
       >
         {state === "sending" ? "Sending…" : "Send Now"}
       </button>
-      <button
-        onClick={handleUnapprove}
-        disabled={unapproving}
-        className="text-xs text-gray-400 hover:text-gray-600 disabled:opacity-50"
-        title="Move back to review queue"
-      >
-        Unapprove
-      </button>
+      {unapproveBtn}
     </div>
   );
 }
