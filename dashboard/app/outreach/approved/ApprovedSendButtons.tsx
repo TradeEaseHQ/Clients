@@ -12,6 +12,13 @@ export default function ApprovedSendButtons({ draftId, hasEmail }: Props) {
   const router = useRouter();
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [unapproving, setUnapproving] = useState(false);
+
+  async function handleUnapprove() {
+    setUnapproving(true);
+    await fetch(`/api/outreach/${draftId}/unapprove`, { method: "POST" });
+    router.refresh();
+  }
 
   async function handleSend() {
     if (!hasEmail) return;
@@ -51,12 +58,22 @@ export default function ApprovedSendButtons({ draftId, hasEmail }: Props) {
   }
 
   return (
-    <button
-      onClick={handleSend}
-      disabled={state === "sending"}
-      className="text-sm bg-green-600 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-green-700 disabled:opacity-50"
-    >
-      {state === "sending" ? "Sending…" : "Send Now"}
-    </button>
+    <div className="flex items-center gap-2">
+      <button
+        onClick={handleSend}
+        disabled={state === "sending"}
+        className="text-sm bg-green-600 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-green-700 disabled:opacity-50"
+      >
+        {state === "sending" ? "Sending…" : "Send Now"}
+      </button>
+      <button
+        onClick={handleUnapprove}
+        disabled={unapproving}
+        className="text-xs text-gray-400 hover:text-gray-600 disabled:opacity-50"
+        title="Move back to review queue"
+      >
+        Unapprove
+      </button>
+    </div>
   );
 }
