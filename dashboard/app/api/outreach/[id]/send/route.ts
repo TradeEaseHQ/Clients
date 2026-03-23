@@ -5,9 +5,9 @@ import { NextResponse } from "next/server";
 
 const RESEND_SEND_URL = "https://api.resend.com/emails";
 
-const CANSPAM_HTML = `<div style="color:#999;font-size:11px;margin-top:32px;border-top:1px solid #eee;padding-top:12px;font-family:sans-serif;">Trade Ease | __ADDRESS__ | To unsubscribe, reply with &quot;unsubscribe&quot; in the subject line.</div>`;
+const CANSPAM_HTML = `<p style="color:#999;font-size:11px;margin-top:32px;">Trade Ease | __ADDRESS__ | Reply to opt out.</p>`;
 
-const CANSPAM_TEXT = `\n\n---\nTrade Ease | __ADDRESS__\nTo unsubscribe, reply with "unsubscribe" in the subject line.`;
+const CANSPAM_TEXT = `\n\nTrade Ease | __ADDRESS__ | Reply to opt out.`;
 
 export async function POST(
   _req: Request,
