@@ -19,6 +19,7 @@ export default function DraftReviewActions({ draft }: Props) {
 
   const [subject, setSubject] = useState(draft.subject ?? "");
   const [bodyText, setBodyText] = useState(draft.body_text ?? "");
+  const [toEmail, setToEmail] = useState(draft.contacts?.email ?? "");
   const [isSaving, setIsSaving] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
@@ -37,7 +38,7 @@ export default function DraftReviewActions({ draft }: Props) {
       const res = await fetch(`/api/outreach/${draft.id}/update`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, body_text: bodyText }),
+        body: JSON.stringify({ subject, body_text: bodyText, to_email: toEmail }),
       });
       if (!res.ok) throw new Error(await res.text());
       setMessage({ type: "success", text: "Changes saved." });
@@ -112,9 +113,20 @@ export default function DraftReviewActions({ draft }: Props) {
               <p className="text-sm font-semibold text-gray-800 mb-1">
                 Subject: <span className="font-normal text-gray-700">{draft.subject ?? "—"}</span>
               </p>
-              <p className="text-xs text-gray-500 mb-3">
-                To: {draft.contacts?.email ?? <span className="text-red-500">no email found</span>}
-              </p>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs text-gray-500 shrink-0">To:</span>
+                {isEditable ? (
+                  <input
+                    type="email"
+                    value={toEmail}
+                    onChange={(e) => setToEmail(e.target.value)}
+                    className="flex-1 text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                    placeholder="recipient@email.com"
+                  />
+                ) : (
+                  <span className="text-xs text-gray-700">{toEmail || <span className="text-red-500">no email found</span>}</span>
+                )}
+              </div>
               {draft.body_html ? (
                 <iframe
                   srcDoc={draft.body_html}
