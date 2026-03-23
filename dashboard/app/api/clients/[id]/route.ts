@@ -26,6 +26,7 @@ export async function PATCH(
     "notes",
     "hosting_status",
     "live_at",
+    "quote_form_action",
   ];
 
   const updates: Record<string, unknown> = {};

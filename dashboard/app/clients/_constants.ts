@@ -5,6 +5,7 @@ export const HOSTING_STATUS_COLORS: Record<string, string> = {
 };
 
 export const TALLY_ONBOARDING_URL = "https://tally.so/r/Gx02ke";
+export const TALLY_CHANGE_REQUEST_URL = ""; // TODO: add URL after creating Tally change request form
 
 export const ONBOARDING_STEPS = [
   { step: 1, label: "Send onboarding form", detail: "Copy the Tally link below and email it to the client." },

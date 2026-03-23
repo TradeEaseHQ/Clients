@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { ClientSite } from "@/lib/types";
 import ClientDetailActions from "./ClientDetailActions";
-import { HOSTING_STATUS_COLORS, TALLY_ONBOARDING_URL, ONBOARDING_STEPS } from "../_constants";
+import { HOSTING_STATUS_COLORS, TALLY_ONBOARDING_URL, TALLY_CHANGE_REQUEST_URL, ONBOARDING_STEPS } from "../_constants";
 
 export default async function ClientDetailPage({
   params,
@@ -109,6 +109,33 @@ export default async function ClientDetailPage({
             <p className="text-xs text-amber-600 font-medium">Tally onboarding link (send to client):</p>
             <p className="text-xs font-mono text-amber-800 mt-0.5 select-all">{TALLY_ONBOARDING_URL}</p>
           </div>
+        </div>
+      )}
+
+      {/* Live client — change request link */}
+      {client.hosting_status === "live" && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-5 mb-6">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-green-800">Site is Live</p>
+            {TALLY_CHANGE_REQUEST_URL ? (
+              <a
+                href={TALLY_CHANGE_REQUEST_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-green-700 underline hover:text-green-900"
+              >
+                Open change request form ↗
+              </a>
+            ) : (
+              <span className="text-xs text-green-600 italic">Change request form not yet created</span>
+            )}
+          </div>
+          {TALLY_CHANGE_REQUEST_URL && (
+            <div className="mt-3 pt-3 border-t border-green-200">
+              <p className="text-xs text-green-600 font-medium">Change request link (send to client):</p>
+              <p className="text-xs font-mono text-green-800 mt-0.5 select-all">{TALLY_CHANGE_REQUEST_URL}</p>
+            </div>
+          )}
         </div>
       )}
 
