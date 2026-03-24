@@ -8,6 +8,32 @@ import ApprovedSendButtons from "./ApprovedSendButtons";
 export default async function ApprovedOutreachPage() {
   const supabase = await createSupabaseServer();
 
+  // Warm-up config
+  const { data: configRows } = await supabase
+    .from("app_config")
+    .select("key, value")
+    .in("key", ["outreach_subdomain_start_date", "outreach_daily_cap"]);
+
+  const configMap = Object.fromEntries(
+    (configRows ?? []).map((r: { key: string; value: unknown }) => [r.key, r.value])
+  );
+  const dailyCap: number = (configMap["outreach_daily_cap"] as number) ?? 8;
+  const startDateStr: string = (configMap["outreach_subdomain_start_date"] as string) ?? "";
+
+  // Count emails sent today
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const { count: sentTodayCount } = await supabase
+    .from("outreach_drafts")
+    .select("id", { count: "exact", head: true })
+    .gte("sent_at", todayStart.toISOString());
+  const sentToday = sentTodayCount ?? 0;
+  const remaining = Math.max(0, dailyCap - sentToday);
+
+  const subdomainAge = startDateStr
+    ? Math.floor((Date.now() - new Date(startDateStr).getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+
   const { data } = await supabase
     .from("outreach_drafts")
     .select(
@@ -40,6 +66,27 @@ export default async function ApprovedOutreachPage() {
         >
           ← All Drafts
         </Link>
+      </div>
+
+      {/* Warm-up counter */}
+      <div className={`mb-6 rounded-xl border px-5 py-3 flex items-center gap-4 text-sm flex-wrap ${
+        remaining === 0
+          ? "bg-red-50 border-red-200 text-red-700"
+          : remaining <= 3
+          ? "bg-yellow-50 border-yellow-200 text-yellow-700"
+          : "bg-gray-50 border-gray-200 text-gray-600"
+      }`}>
+        <span>
+          <strong>Today:</strong> {sentToday} of {dailyCap} sent · {remaining} remaining
+        </span>
+        <span className="text-gray-300">|</span>
+        <span>Subdomain age: day {subdomainAge}</span>
+        {remaining === 0 && (
+          <>
+            <span className="text-gray-300">|</span>
+            <span className="font-medium">Daily cap reached — update in Supabase app_config to increase</span>
+          </>
+        )}
       </div>
 
       {/* Ready to send */}
