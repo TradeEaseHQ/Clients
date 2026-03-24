@@ -25,9 +25,10 @@ export async function POST(
     return NextResponse.json({ error: "Draft not found" }, { status: 404 });
   }
 
-  if (draft.status !== "approved") {
+  const sendableStatuses = ["approved", "follow_up_pending"];
+  if (!sendableStatuses.includes(draft.status)) {
     return NextResponse.json(
-      { error: `Draft status is "${draft.status}" — must be "approved" before sending` },
+      { error: `Draft status is "${draft.status}" — must be "approved" or "follow_up_pending" before sending` },
       { status: 400 }
     );
   }
