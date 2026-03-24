@@ -20,6 +20,7 @@ const navLinks = [
   { href: "/demos", label: "Demos" },
   { href: "/outreach", label: "Outreach" },
   { href: "/outreach/approved", label: "Send Queue" },
+  { href: "/outreach/followups", label: "Follow-ups" },
   { href: "/clients", label: "Clients" },
 ];
 
