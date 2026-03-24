@@ -226,3 +226,27 @@ ALTER TABLE client_sites ADD COLUMN IF NOT EXISTS quote_form_action TEXT; -- For
 -- bucket: screenshots  (public: false)
 -- bucket: demos        (public: true)
 -- bucket: comparisons  (public: true)
+
+-- ============================================================
+-- MIGRATIONS — email sequence (2-touch outreach)
+-- Safe to re-run (IF NOT EXISTS / ON CONFLICT guards)
+-- ============================================================
+ALTER TABLE outreach_drafts
+  ADD COLUMN IF NOT EXISTS sequence_number INT DEFAULT 1,
+  ADD COLUMN IF NOT EXISTS parent_draft_id UUID REFERENCES outreach_drafts(id);
+
+-- app_config: key-value store for dashboard settings (warm-up calendar etc.)
+CREATE TABLE IF NOT EXISTS app_config (
+  key         TEXT PRIMARY KEY,
+  value       JSONB NOT NULL,
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seed warm-up defaults (update subdomain_start_date to actual first-send date)
+INSERT INTO app_config (key, value) VALUES
+  ('outreach_subdomain_start_date', '"2026-03-24"'),
+  ('outreach_daily_cap', '8')
+ON CONFLICT (key) DO NOTHING;
+
+CREATE INDEX IF NOT EXISTS idx_outreach_drafts_parent ON outreach_drafts(parent_draft_id);
+CREATE INDEX IF NOT EXISTS idx_outreach_drafts_sequence ON outreach_drafts(sequence_number);

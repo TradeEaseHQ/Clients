@@ -21,6 +21,7 @@ export type OutreachDraftStatus =
   | "pending_review"
   | "approved"
   | "sent"
+  | "follow_up_pending"
   | "rejected"
   | "bounced"
   | "replied";
@@ -131,6 +132,8 @@ export interface OutreachDraft {
   opened_at: string | null;
   clicked_at: string | null;
   replied_at: string | null;
+  sequence_number: number;
+  parent_draft_id: string | null;
   // Joined fields
   businesses?: Pick<Business, "name" | "city" | "state" | "website_url">;
   contacts?: Pick<Contact, "name" | "email">;
