@@ -26,6 +26,19 @@ export default function DraftReviewActions({ draft }: Props) {
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectNotes, setRejectNotes] = useState("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [markingReplied, setMarkingReplied] = useState(false);
+
+  async function handleMarkReplied() {
+    setMarkingReplied(true);
+    try {
+      const res = await fetch(`/api/outreach/${draft.id}/mark-replied`, { method: "POST" });
+      if (!res.ok) throw new Error(await res.text());
+      router.refresh();
+    } catch (e: any) {
+      setMessage({ type: "error", text: e.message || "Failed to mark as replied." });
+      setMarkingReplied(false);
+    }
+  }
 
   const businessId = (draft as any).business_id;
   const demoUrl = draft.demo_url ?? null;
@@ -215,8 +228,23 @@ export default function DraftReviewActions({ draft }: Props) {
           )}
 
           {draft.status === "sent" && (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-700 font-medium text-center">
-              Sent {draft.sent_at ? `on ${new Date(draft.sent_at).toLocaleDateString()}` : ""}
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-700">
+              <p className="font-medium mb-2">
+                Sent {draft.sent_at ? `on ${new Date(draft.sent_at).toLocaleDateString()}` : ""}
+              </p>
+              <button
+                onClick={handleMarkReplied}
+                disabled={markingReplied}
+                className="text-xs text-green-700 underline hover:no-underline disabled:opacity-50"
+              >
+                {markingReplied ? "Marking…" : "They replied — mark as replied"}
+              </button>
+            </div>
+          )}
+
+          {draft.status === "replied" && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-sm text-emerald-700 font-medium text-center">
+              Replied {draft.replied_at ? `on ${new Date(draft.replied_at).toLocaleDateString()}` : ""}
             </div>
           )}
 
