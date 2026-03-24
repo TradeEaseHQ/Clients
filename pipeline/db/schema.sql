@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS outreach_drafts (
   body_text         TEXT,
   comparison_url    TEXT,   -- URL of side-by-side comparison page
   status            TEXT DEFAULT 'draft',
-  -- status: draft | pending_review | approved | sent | rejected | bounced | replied
+  -- status: draft | pending_review | approved | follow_up_pending | sent | rejected | bounced | replied
   rejection_notes   TEXT,
   admin_notes       TEXT,
   resend_message_id TEXT,   -- from Resend API after send

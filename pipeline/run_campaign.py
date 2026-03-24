@@ -324,18 +324,38 @@ def cli(
 
                 comparison_url = build_comparison(biz, analysis, demo_email_url)
 
-                draft = drafter.draft(biz, analysis, demo_email_url, comparison_email_url)
+                email1, email2 = drafter.draft_sequence(biz, analysis, comparison_email_url)
+
+                # Save Email 1 — goes through normal review → approve → send flow
+                email1_row = save_outreach_draft({
+                    "business_id": biz_id,
+                    "contact_id": contact_row["id"],
+                    "demo_site_id": demo.get("id"),
+                    "subject": email1["subject"],
+                    "body_html": email1.get("body_html"),
+                    "body_text": email1["body_text"],
+                    "comparison_url": comparison_url,
+                    "status": "draft",
+                    "sequence_number": 1,
+                    "parent_draft_id": None,
+                })
+
+                # Save Email 2 — held until 4 days after Email 1 sent with no reply
                 save_outreach_draft({
                     "business_id": biz_id,
                     "contact_id": contact_row["id"],
                     "demo_site_id": demo.get("id"),
-                    "subject": draft["subject"],
-                    "body_html": draft["body_html"],
-                    "body_text": draft["body_text"],
+                    "subject": email2["subject"],
+                    "body_html": email2.get("body_html"),
+                    "body_text": email2["body_text"],
                     "comparison_url": comparison_url,
-                    "status": "draft",
+                    "status": "follow_up_pending",
+                    "sequence_number": 2,
+                    "parent_draft_id": email1_row["id"],
                 })
+
                 update_business_status(biz_id, "outreach_drafted")
+                logger.info(f"[outreach] Saved Email 1 + Email 2 (follow_up_pending) for {biz['name']}")
             except Exception as e:
                 logger.error(f"Outreach drafting failed for {biz['name']}: {e}")
 
