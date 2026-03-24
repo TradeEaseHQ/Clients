@@ -3,7 +3,6 @@ Email drafter — uses Claude Sonnet with tool_use to draft personalised outreac
 """
 from __future__ import annotations
 
-import json
 import logging
 from typing import Any
 
@@ -23,99 +22,136 @@ def _get_client() -> anthropic.Anthropic:
     return _client
 
 
-# Tool schema for structured email output
-_DRAFT_EMAIL_TOOL = {
-    "name": "draft_email",
-    "description": "Output a fully drafted outreach email with subject, HTML body, and plain-text body.",
+# Tool schema for Email 1 structured output
+_DRAFT_EMAIL1_TOOL = {
+    "name": "draft_email1",
+    "description": "Output Email 1 of the outreach sequence — no link, specific problems called out, reply ask.",
     "input_schema": {
         "type": "object",
         "properties": {
             "subject": {
                 "type": "string",
-                "description": "Email subject line — max 8 words, references the business specifically.",
-            },
-            "body_html": {
-                "type": "string",
-                "description": "Full HTML email body with inline styles, readable in Gmail.",
+                "description": "Subject line — max 8 words, specific to the business, written like a real person.",
             },
             "body_text": {
                 "type": "string",
-                "description": "Plain-text version of the email body.",
+                "description": "Plain-text email body. No links. No HTML. 60–80 words max.",
             },
         },
-        "required": ["subject", "body_html", "body_text"],
+        "required": ["subject", "body_text"],
     },
 }
 
 
-def _build_prompt(
+def _build_email1_prompt(
     business: dict[str, Any],
     analysis: dict[str, Any],
-    demo_url: str,
-    comparison_url: str,
 ) -> str:
     name = business.get("name", "your business")
     city = business.get("city", "your city")
-    website_url = business.get("website_url") or "no website"
     extracted = business.get("extracted_content") or {}
     owner_name = extracted.get("owner_name")
 
     weaknesses: list[str] = analysis.get("top_3_weaknesses") or []
-    total_score: int = analysis.get("total_score") or 0
-    priority_tier: str = analysis.get("priority_tier") or "high_priority"
+    raw = analysis.get("raw_scores_json") or {}
+    seo_gaps: dict = raw.get("seo_gaps") or {}
+    pagespeed = analysis.get("pagespeed_score")
 
-    greeting = f"Hi {owner_name}" if owner_name else "Hi there"
-    primary_weakness = weaknesses[0] if weaknesses else "some areas that could be improved"
+    # Build a plain-language problem list from analysis data
+    problems: list[str] = []
 
-    if priority_tier == "candidate":
-        angle = (
-            "Their site is decent but missing something specific. "
-            "Mention what's working, then point out the one gap. Don't oversell it."
+    # Mobile / speed
+    if pagespeed is not None and pagespeed < 60:
+        problems.append(
+            f"slow on mobile ({pagespeed}/100 on Google's speed test) — "
+            "most people searching for a cleaner are on their phone and will leave before it loads"
         )
-    else:
-        angle = (
-            "Their site has real problems or doesn't exist. "
-            "Don't pile on — just say you built something and let them look."
+    elif weaknesses and any("mobile" in w.lower() or "phone" in w.lower() for w in weaknesses):
+        problems.append(
+            "doesn't load well on mobile — most people searching for a cleaner are on their phone"
         )
 
-    weakness_list = "\n".join(f"- {w}" for w in weaknesses) if weaknesses else "- Improvement areas identified"
+    # SEO gaps
+    if seo_gaps and not seo_gaps.get("schema_org"):
+        problems.append(
+            "no star rating showing in Google search results — competitors with ratings look more established"
+        )
+    if seo_gaps and not seo_gaps.get("meta_description"):
+        problems.append(
+            "missing a description in Google search results — just a blank snippet under the business name"
+        )
 
-    return f"""Write a cold outreach email from Ben to the owner of {name}, a cleaning business in {city}.
+    # Remaining top weaknesses (plain language, deduplicated)
+    for w in weaknesses[:2]:
+        plain = w.strip()
+        if plain and not any(plain.lower() in p for p in problems):
+            problems.append(plain)
 
-Ben noticed a specific problem with their site and put together a free demo showing how it could be fixed.
+    # Cap at 3
+    problems = problems[:3]
 
-WHAT BEN NOTICED (pick the most impactful one):
-{weakness_list}
+    if not problems:
+        problems = ["some things that are likely costing you leads"]
 
-LINK TO INCLUDE (one link only):
-- Comparison page (contains the demo inside it): {comparison_url}
+    problem_list = "\n".join(f"- {p}" for p in problems)
+    greeting = f"Hi {owner_name}," if owner_name else "Hi,"
 
-ANGLE: {angle}
+    return f"""Write Email 1 of a two-touch cold outreach sequence from Ben to the owner of {name}, a cleaning business in {city}.
 
-EMAIL STRUCTURE — follow this closely:
-1. Open: "Hi [owner name if known, otherwise skip]," then 1 sentence saying you came across {name} and noticed something specific
-2. Middle: Name the ONE problem you found (use plain language, not technical terms) and connect it to lost business — missed calls, people leaving before requesting a quote, etc. Most people searching for a cleaner are on their phone. Make that real.
-3. Say you put together a quick demo showing how it could look and feel better.
-4. Include the link ONCE, as inline anchor text in a sentence (e.g. "I put together a quick before/after here"):
-   HTML version: one <a href="{comparison_url}"> link inline in a sentence — NEVER show the raw URL, never put it on its own line
-   Plain text version: one raw URL written naturally in a sentence
-5. One line about what you do: help cleaning businesses make their site better at turning visitors into calls and quote requests.
-6. End CTA: "Worth a look?" — nothing else after this.
-7. Sign off: "Ben\\ntradeeasehq.com"
+CONTEXT:
+Greeting: {greeting}
+
+SPECIFIC PROBLEMS FOUND (use these — translate to plain business language, no tech terms):
+{problem_list}
+
+EMAIL STRUCTURE — follow exactly:
+1. "{greeting}" — then 1 short sentence saying you came across {name}
+2. Name the 2–3 problems above in plain language. Each one gets 1 sentence. Connect each to missed business (lost calls, people leaving before requesting a quote).
+3. Final line: "I put together something that shows how each of those could look fixed — want me to send it over?"
+4. Sign off: "Ben" — nothing else. No domain. No title. No tagline.
 
 RULES:
-- Subject line: specific to {name}, max 8 words, written like a real person (not "Quick question" or "I noticed your website")
-- Body: 110–140 words total. Short sentences. No fluff.
-- Business impact language only — not website diagnostics. "Cost you real leads" not "slow load time"
-- Do NOT say "no pitch" — it IS a pitch
-- Do NOT say "I spent an hour" or imply you built it for free as a favour — frame it as a demo
-- Do NOT use: "I hope this finds you", "leverage", "seamlessly", "game-changer", "take your business to the next level", "I wanted to reach out and", or anything that reads like a template
-- Write like a real person. Short sentences. Real words.
-- HTML version: personal email style. Wrap everything in a single <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;max-width:600px;">. Use <p> tags for paragraphs. Links should use style="color:#1a1a1a;text-decoration:underline;" so they blend in as inline text links rather than bright blue. NO background colors, NO containers with padding/borders, NO CTA buttons, NO images. Should look like a clean personal email from someone's work account, not a newsletter.
-- Plain text version: same content but with raw URLs written out, no HTML tags
+- NO links of any kind
+- Plain text only — no HTML, no formatting
+- 60–80 words total (excluding sign-off)
+- Subject: specific to {name}, max 8 words, written like a human (not "Quick question" or "I noticed your website")
+- Write like a real person who actually looked at their site. Short sentences.
+- Do NOT use: "I hope this finds you", "leverage", "seamlessly", "I wanted to reach out", "game-changer"
+- Do NOT say "no pitch" — this IS a pitch
+- Business impact only — "cost you real leads" not "slow load time"
 
-Call the draft_email tool.
+Call the draft_email1 tool.
 """
+
+
+def _build_email2(
+    business: dict[str, Any],
+    comparison_url: str,
+) -> dict[str, Any]:
+    """
+    Generate Email 2 programmatically — short follow-up delivering the comparison link.
+    No Claude API call needed.
+    """
+    name = business.get("name", "your business")
+    extracted = business.get("extracted_content") or {}
+    owner_name = extracted.get("owner_name")
+
+    greeting = f"Hey {owner_name}," if owner_name else "Hey,"
+    subject = f"The before/after I mentioned — {name}"
+
+    body_text = (
+        f"{greeting}\n\n"
+        f"Following up on my last email. I put together a quick before/after for {name} "
+        f"showing how those issues could look fixed: {comparison_url}\n\n"
+        "Worth a look?\n\n"
+        "Ben"
+    )
+
+    return {
+        "subject": subject,
+        "body_text": body_text,
+        "body_html": None,
+    }
 
 
 class EmailDrafter:
@@ -129,38 +165,60 @@ class EmailDrafter:
         comparison_url: str,
     ) -> dict[str, Any]:
         """
-        Draft an outreach email for a business.
-
-        Returns dict: {subject, body_html, body_text}
+        Legacy single-email draft method. Kept for backwards compatibility.
+        New code should use draft_sequence() instead.
         """
-        prompt = _build_prompt(business, analysis, demo_url, comparison_url)
+        email1, _ = self.draft_sequence(business, analysis, comparison_url)
+        return email1
+
+    def draft_sequence(
+        self,
+        business: dict[str, Any],
+        analysis: dict[str, Any],
+        comparison_url: str,
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        """
+        Draft both emails in the two-touch sequence.
+
+        Returns (email1, email2) where each is a dict with keys:
+          subject, body_text, body_html (html is None for both — plain text only)
+        """
+        email1 = self._draft_email1(business, analysis)
+        email2 = _build_email2(business, comparison_url)
+        return email1, email2
+
+    def _draft_email1(
+        self,
+        business: dict[str, Any],
+        analysis: dict[str, Any],
+    ) -> dict[str, Any]:
+        prompt = _build_email1_prompt(business, analysis)
 
         try:
             client = _get_client()
             response = client.messages.create(
                 model=settings.drafting_model,
-                max_tokens=2048,
-                tools=[_DRAFT_EMAIL_TOOL],
-                tool_choice={"type": "tool", "name": "draft_email"},
+                max_tokens=512,
+                tools=[_DRAFT_EMAIL1_TOOL],
+                tool_choice={"type": "tool", "name": "draft_email1"},
                 messages=[{"role": "user", "content": prompt}],
             )
 
-            # Extract tool_use block
             for block in response.content:
-                if block.type == "tool_use" and block.name == "draft_email":
+                if block.type == "tool_use" and block.name == "draft_email1":
                     result = block.input
                     logger.info(
-                        f"[email_drafter] Drafted email for {business.get('name')} "
+                        f"[email_drafter] Drafted Email 1 for {business.get('name')} "
                         f"— subject: {result.get('subject', '')[:60]}"
                     )
                     return {
                         "subject": result["subject"],
-                        "body_html": result["body_html"],
                         "body_text": result["body_text"],
+                        "body_html": None,
                     }
 
-            raise ValueError("Claude did not return a draft_email tool call")
+            raise ValueError("Claude did not return a draft_email1 tool call")
 
         except Exception as exc:
-            logger.error(f"[email_drafter] Draft failed for {business.get('name')}: {exc}")
+            logger.error(f"[email_drafter] Email 1 draft failed for {business.get('name')}: {exc}")
             raise
