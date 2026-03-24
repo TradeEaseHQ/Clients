@@ -81,10 +81,19 @@ def _build_email1_prompt(
             "missing a description in Google search results — just a blank snippet under the business name"
         )
 
-    # Remaining top weaknesses (plain language, deduplicated)
-    for w in weaknesses[:2]:
+    # Remaining top weaknesses — add if not semantically overlapping with existing problems
+    _SKIP_KEYWORDS = {"mobile", "phone", "schema", "rating", "google", "description", "snippet"}
+    for w in weaknesses[:3]:
         plain = w.strip()
-        if plain and not any(plain.lower() in p for p in problems):
+        if not plain:
+            continue
+        w_words = set(plain.lower().split())
+        # Skip if this weakness shares key terms with an already-added problem
+        already_covered = any(
+            w_words & set(p.lower().split()) & _SKIP_KEYWORDS
+            for p in problems
+        )
+        if not already_covered:
             problems.append(plain)
 
     # Cap at 3
@@ -132,6 +141,8 @@ def _build_email2(
     Generate Email 2 programmatically — short follow-up delivering the comparison link.
     No Claude API call needed.
     """
+    if not comparison_url:
+        raise ValueError("comparison_url is required for Email 2 but was empty or None")
     name = business.get("name", "your business")
     extracted = business.get("extracted_content") or {}
     owner_name = extracted.get("owner_name")
@@ -207,13 +218,17 @@ class EmailDrafter:
             for block in response.content:
                 if block.type == "tool_use" and block.name == "draft_email1":
                     result = block.input
+                    subject = result.get("subject") or ""
+                    body_text = result.get("body_text") or ""
+                    if not subject or not body_text:
+                        raise ValueError(f"Incomplete tool call response — missing subject or body_text: {result}")
                     logger.info(
                         f"[email_drafter] Drafted Email 1 for {business.get('name')} "
-                        f"— subject: {result.get('subject', '')[:60]}"
+                        f"— subject: {subject[:60]}"
                     )
                     return {
-                        "subject": result["subject"],
-                        "body_text": result["body_text"],
+                        "subject": subject,
+                        "body_text": body_text,
                         "body_html": None,
                     }
 
