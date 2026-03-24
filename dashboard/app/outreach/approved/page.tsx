@@ -17,7 +17,7 @@ export default async function ApprovedOutreachPage() {
   const configMap = Object.fromEntries(
     (configRows ?? []).map((r: { key: string; value: unknown }) => [r.key, r.value])
   );
-  const dailyCap: number = (configMap["outreach_daily_cap"] as number) ?? 8;
+  const dailyCap: number = Number(configMap["outreach_daily_cap"]) || 8;
   const startDateStr: string = (configMap["outreach_subdomain_start_date"] as string) ?? "";
 
   // Count emails sent today
