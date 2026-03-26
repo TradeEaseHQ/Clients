@@ -92,7 +92,7 @@ export default async function OutreachPage({
             <tr>
               <th className="text-left px-4 py-3 font-medium text-gray-500 w-44">Business</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500">Subject</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">To</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 w-[180px]">To</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">Status</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">Created</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">Action</th>
@@ -107,7 +107,7 @@ export default async function OutreachPage({
                 <td className="px-4 py-3 text-gray-600 max-w-xs truncate">
                   {d.subject ?? "—"}
                 </td>
-                <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                <td className="px-4 py-3 text-gray-500 text-xs max-w-[180px] truncate">
                   {(d as any).contacts?.email ?? "no email found"}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
