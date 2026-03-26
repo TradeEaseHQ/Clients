@@ -107,18 +107,18 @@ export default async function OutreachPage({
                 <td className="px-4 py-3 text-gray-600 max-w-xs truncate">
                   {d.subject ?? "—"}
                 </td>
-                <td className="px-4 py-3 text-gray-500 text-xs">
+                <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
                   {(d as any).contacts?.email ?? "no email found"}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <span className={`inline-block px-2 py-0.5 rounded text-xs ${STATUS_STYLES[d.status]}`}>
                     {d.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-gray-400 text-xs">
+                <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">
                   {new Date(d.created_at).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <Link
                     href={`/outreach/${d.id}`}
                     className="text-blue-600 hover:underline text-xs"
