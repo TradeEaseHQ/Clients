@@ -90,12 +90,12 @@ export default async function OutreachPage({
         <table className="w-full text-sm min-w-[640px]">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-500">Business</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 w-44">Business</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500">Subject</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-500">To</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-500">Created</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-500">Action</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">To</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">Status</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">Created</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 w-px whitespace-nowrap">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
