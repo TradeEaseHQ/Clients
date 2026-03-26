@@ -52,10 +52,10 @@ export async function POST(
   const address = process.env.PHYSICAL_ADDRESS ?? "";
   const bodyText = (draft.body_text ?? "") + CANSPAM_TEXT.replace("__ADDRESS__", address);
 
-  const fromName = process.env.RESEND_FROM_NAME ?? "Ben from Trade Ease";
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "ben@tradeeasehq.com";
+  const fromName = process.env.RESEND_FROM_NAME ?? "Ben";
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "ben@mail.tradeeasehq.com";
 
-  const replyTo = process.env.RESEND_REPLY_TO ?? fromEmail;
+  const replyTo = process.env.RESEND_REPLY_TO ?? "ben@tradeeasehq.com";
 
   const payload = {
     from: `${fromName} <${fromEmail}>`,
