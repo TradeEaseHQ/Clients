@@ -55,12 +55,10 @@ export async function POST(
   const fromName = process.env.RESEND_FROM_NAME ?? "Ben";
   const fromEmail = process.env.RESEND_FROM_EMAIL ?? "ben@mail.tradeeasehq.com";
 
-  const replyTo = process.env.RESEND_REPLY_TO ?? "ben@tradeeasehq.com";
-
   const payload = {
     from: `${fromName} <${fromEmail}>`,
     to: [contact.email],
-    reply_to: replyTo,
+    reply_to: "ben@tradeeasehq.com",
     subject: draft.subject ?? "(no subject)",
     text: bodyText,
   };
