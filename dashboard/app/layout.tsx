@@ -45,7 +45,7 @@ export default async function RootLayout({
                 <span className="text-lg font-bold tracking-tight">Trade Ease</span>
                 <p className="text-xs text-gray-400 mt-0.5">Admin Dashboard</p>
               </div>
-              <nav className="flex-1 px-3 py-4 space-y-1">
+              <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
