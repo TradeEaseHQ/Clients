@@ -74,7 +74,7 @@ Provider is not Client's legal or compliance advisor. Client is responsible for 
 
 **4.9 Price Adjustments.** Monthly pricing is locked for the first 6 months following launch. After that period, Provider may adjust pricing with 30 days written notice.
 
-**4.10 Proration.** If the website launches on a date other than the billing date, the first monthly invoice will be for a full month unless the parties agree in writing at the time of signing to prorate the first invoice based on the remaining days in the billing cycle.
+**4.10 Proration.** If the website launches on a date other than the billing date, the first monthly invoice will be prorated based on the number of days remaining in the billing cycle. All subsequent invoices will be for the full monthly fee.
 
 ---
 
