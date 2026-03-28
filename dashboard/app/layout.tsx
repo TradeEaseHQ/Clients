@@ -11,6 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Trade Ease — Admin Dashboard",
   description: "Lead generation and demo site management",
+  icons: { icon: "/logo.svg" },
 };
 
 const navLinks = [
