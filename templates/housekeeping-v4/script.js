@@ -41,9 +41,41 @@ if (form) {
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     var btn = form.querySelector('[type=submit]');
-    btn.textContent = '✓ Request Received!';
+    var formspreeUrl = form.dataset.formspree;
+
+    if (!formspreeUrl) {
+      // Demo mode — fake success, no submission
+      btn.textContent = '✓ Request Received!';
+      btn.disabled = true;
+      btn.style.background = '#16a34a';
+      return;
+    }
+
+    btn.textContent = 'Sending…';
     btn.disabled = true;
-    btn.style.background = '#16a34a';
+
+    var data = new FormData(form);
+    fetch(formspreeUrl, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(res) {
+      if (res.ok) {
+        btn.textContent = '✓ Request Sent!';
+        btn.style.background = '#16a34a';
+        form.reset();
+      } else {
+        btn.textContent = 'Error — please call us directly';
+        btn.style.background = '#dc2626';
+        btn.disabled = false;
+      }
+    })
+    .catch(function() {
+      btn.textContent = 'Error — please call us directly';
+      btn.style.background = '#dc2626';
+      btn.disabled = false;
+    });
   });
 }
 

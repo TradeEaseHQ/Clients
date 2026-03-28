@@ -309,23 +309,23 @@
         <h2>Request Your Free Quote</h2>
         <p class="section-sub">We'll respond within a few hours. No commitment, no pressure.</p>
       </div>
-      <form id="quote-form">
+      <form id="quote-form" data-formspree="{{ formspree_url | default('') }}">
         <div class="form-grid">
           <div class="form-group">
             <label>Your Name</label>
-            <input type="text" placeholder="Jane Smith" required>
+            <input type="text" name="name" placeholder="Jane Smith" required>
           </div>
           <div class="form-group">
             <label>Email</label>
-            <input type="email" placeholder="jane@email.com" required>
+            <input type="email" name="email" placeholder="jane@email.com" required>
           </div>
           <div class="form-group">
             <label>Phone</label>
-            <input type="tel" placeholder="(555) 000-0000">
+            <input type="tel" name="phone" placeholder="(555) 000-0000">
           </div>
           <div class="form-group">
             <label>Home Size</label>
-            <select>
+            <select name="home_size">
               <option value="">Select…</option>
               <option>Studio / 1 Bedroom</option>
               <option>2 Bedrooms</option>
@@ -335,7 +335,7 @@
           </div>
           <div class="form-group">
             <label>Service Needed</label>
-            <select>
+            <select name="service">
               <option value="">Select…</option>
               {% for svc in services_enhanced %}<option>{{ svc.name }}</option>{% endfor %}
               <option>Not sure — let's talk</option>
@@ -343,7 +343,7 @@
           </div>
           <div class="form-group">
             <label>How Often?</label>
-            <select>
+            <select name="frequency">
               <option value="">Select…</option>
               <option>One-time clean</option>
               <option>Weekly</option>
@@ -353,7 +353,7 @@
           </div>
           <div class="form-group span2">
             <label>Message (optional)</label>
-            <textarea placeholder="Tell us about your home, special requests, or questions…" rows="4"></textarea>
+            <textarea name="message" placeholder="Tell us about your home, special requests, or questions…" rows="4"></textarea>
           </div>
           <div class="form-group span2">
             <button type="submit" class="btn btn-primary btn-full">Send My Request →</button>
