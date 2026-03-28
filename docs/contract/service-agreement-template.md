@@ -74,6 +74,8 @@ Provider is not Client's legal or compliance advisor. Client is responsible for 
 
 **4.9 Price Adjustments.** Monthly pricing is locked for the first 6 months following launch. After that period, Provider may adjust pricing with 30 days written notice.
 
+**4.10 Proration.** If the website launches on a date other than the billing date, the first monthly invoice will be for a full month unless the parties agree in writing at the time of signing to prorate the first invoice based on the remaining days in the billing cycle.
+
 ---
 
 ## 5. Launch Process and Acceptance
@@ -236,7 +238,7 @@ To the maximum extent permitted by applicable law, services are provided "as is"
 
 **16.2 Setup Fee.** The setup fee is non-refundable under all circumstances, including cancellation before or after launch.
 
-**16.3 Pre-Launch Cancellation.** If Client cancels before the website launches, the setup fee is retained by Provider. Monthly billing will never start. Provider will deliver any completed work product as-available at the time of cancellation.
+**16.3 Pre-Launch Cancellation.** If Client cancels before the website launches, the setup fee is retained by Provider. Monthly billing will never start. Provider will deliver any completed work product as-available at the time of cancellation, excluding Provider-owned materials, systems, code, templates, and proprietary frameworks.
 
 **16.4 Post-Launch Cancellation.** If Client cancels after launch, the final month's fee is non-refundable. The website remains live through the end of the paid period and is then taken offline.
 
@@ -254,13 +256,13 @@ Provider is an independent contractor. Nothing in this Agreement creates an empl
 
 ## 18. Confidentiality
 
-Each party agrees to keep confidential any non-public business information shared by the other party in connection with this Agreement, and not to disclose it to third parties without prior written consent, except as required by applicable law. This obligation survives termination of the Agreement.
+Each party agrees to keep confidential any non-public business information shared by the other party in connection with this Agreement, and not to disclose it to third parties without prior written consent, except as required by applicable law or as necessary to disclose to subcontractors, accountants, attorneys, and vendors on a need-to-know basis, provided those parties are bound by substantially similar confidentiality obligations. This obligation survives termination of the Agreement.
 
 ---
 
 ## 19. Portfolio and Publicity Rights
 
-Provider may reference Client's name, business name, and website in Provider's portfolio, marketing materials, and case studies unless Client objects in writing within 30 days of the website launch date.
+Provider may reference Client's name, business name, and website in Provider's portfolio, marketing materials, and case studies unless Client objects in writing before the website launch date.
 
 ---
 
@@ -306,7 +308,7 @@ The parties agree to conduct this transaction by electronic means. Electronic si
 
 ## 25. Governing Law and Dispute Resolution
 
-This Agreement is governed by the laws of the State of Wyoming, without regard to its conflict of laws provisions. Any dispute, claim, or controversy arising out of or relating to this Agreement, or the breach, termination, or validity thereof, shall be resolved by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules, with the seat of arbitration in ___________ County, Wyoming. The arbitrator's decision will be final and binding and may be entered as a judgment in any court of competent jurisdiction. Either party may seek temporary injunctive or other equitable relief from a court of competent jurisdiction without waiving the right to arbitration on the underlying dispute.
+This Agreement is governed by the laws of the State of Wyoming, without regard to its conflict of laws provisions. Any dispute, claim, or controversy arising out of or relating to this Agreement, or the breach, termination, or validity thereof, shall be resolved by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules, with the seat of arbitration in Laramie County, Wyoming. The arbitrator's decision will be final and binding and may be entered as a judgment in any court of competent jurisdiction. Either party may seek temporary injunctive or other equitable relief from a court of competent jurisdiction without waiving the right to arbitration on the underlying dispute. Notwithstanding the foregoing, either party may bring an individual claim in small claims court in Laramie County, Wyoming, if the claim qualifies under that court's jurisdictional limits.
 
 ---
 
