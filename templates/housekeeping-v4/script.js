@@ -41,10 +41,10 @@ if (form) {
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     var btn = form.querySelector('[type=submit]');
-    var formspreeUrl = form.dataset.formspree;
+    var contactApi = form.dataset.contactApi;
 
-    if (!formspreeUrl) {
-      // Demo mode — fake success, no submission
+    if (!contactApi) {
+      // Demo mode — no API configured, fake success
       btn.textContent = '✓ Request Received!';
       btn.disabled = true;
       btn.style.background = '#16a34a';
@@ -54,11 +54,14 @@ if (form) {
     btn.textContent = 'Sending…';
     btn.disabled = true;
 
-    var data = new FormData(form);
-    fetch(formspreeUrl, {
+    var fields = { _hp: '' };
+    new FormData(form).forEach(function(val, key) { fields[key] = val; });
+    fields.business_id = form.dataset.businessId || '';
+
+    fetch(contactApi, {
       method: 'POST',
-      body: data,
-      headers: { 'Accept': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fields)
     })
     .then(function(res) {
       if (res.ok) {

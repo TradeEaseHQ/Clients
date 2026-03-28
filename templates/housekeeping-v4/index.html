@@ -309,7 +309,7 @@
         <h2>Request Your Free Quote</h2>
         <p class="section-sub">We'll respond within a few hours. No commitment, no pressure.</p>
       </div>
-      <form id="quote-form" data-formspree="{{ formspree_url | default('') }}">
+      <form id="quote-form" data-contact-api="{{ contact_api_url | default('') }}" data-business-id="{{ business_id | default('') }}">
         <div class="form-grid">
           <div class="form-group">
             <label>Your Name</label>

@@ -28,6 +28,6 @@
     "booking_url":      { "required": false, "type": "string",  "source": "static",          "fallback": "#contact" },
     "business_id":      { "required": false, "type": "string",  "source": "businesses.id",   "fallback": "" },
     "chat_api_url":     { "required": false, "type": "string",  "source": "static",          "fallback": "/api/chat" },
-    "formspree_url":    { "required": false, "type": "string",  "source": "client_sites.formspree_url", "fallback": "" }
+    "contact_api_url":  { "required": false, "type": "string",  "source": "static", "fallback": "" }
   }
 }
